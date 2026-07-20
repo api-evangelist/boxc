@@ -1,0 +1,66 @@
+generated: '2026-07-18'
+method: searched
+source: openapi/boxc-openapi-original.yml
+docs: https://docs.boxc.com/#tag/Authentication
+oidc_discovery: https://accounts.boxc.com/.well-known/openid-configuration
+summary:
+  types:
+  - oauth2
+  - openIdConnect
+  - http
+  api_key_in: []
+  oauth2_flows:
+  - authorizationCode
+  - implicit
+  - clientCredentials
+model: >-
+  BoxC uses OAuth 2.0 / OpenID Connect. Clients are created in the BoxC account (up to
+  two per account) and users authorize a client to obtain an access token. Access tokens
+  are RS256-signed JSON Web Tokens (JWT) presented as a Bearer token in the Authorization
+  header on every API request against https://api.boxc.com/v1. The entire authorization
+  workflow runs at accounts.boxc.com.
+authorization_server:
+  issuer: https://accounts.boxc.com
+  authorization_endpoint: https://accounts.boxc.com/auth/v1/authorize
+  token_endpoint: https://accounts.boxc.com/auth/v1/token
+  revocation_endpoint: https://accounts.boxc.com/auth/v1/revoke
+  registration_endpoint: https://accounts.boxc.com/auth/v1/register
+  token_endpoint_auth_methods_supported:
+  - client_secret_basic
+  id_token_signing_alg_values_supported:
+  - RS256
+  response_types_supported:
+  - code
+  - token
+  - id_token
+  - id_token token
+  - none
+  grant_types_supported:
+  - authorization_code
+  - client_credentials
+  - implicit
+schemes:
+- name: JWT
+  type: http
+  scheme: bearer
+  bearer_format: JWT
+  description: >-
+    All operations require a JSON Web Token obtained after completing an OAuth 2.0 flow.
+    Presented as `Authorization: Bearer <jwt>`.
+  sources:
+  - openapi/boxc-openapi-original.yml
+- name: PrivilegedClient
+  type: http
+  scheme: bearer
+  bearer_format: JWT
+  description: >-
+    Some operations require a client with special privileges granted by BoxC. No
+    additional scope is needed beyond the privileged-client grant.
+  sources:
+  - openapi/boxc-openapi-original.yml
+notes: >-
+  The OpenAPI securityDefinitions model the runtime credential as an http bearer JWT;
+  the OAuth 2.0 / OIDC authorization-code, implicit and client_credentials grants that
+  mint those JWTs are documented in the Authentication tag and confirmed by the live
+  OIDC discovery document. Client management and permission (scope) selection are done
+  in the BoxC Support Center.
