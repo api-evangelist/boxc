@@ -1,0 +1,1455 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty CustomsProducts API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: CustomsProducts
+  x-displayName: Customs\Products
+  description: 'Not to be confused with Fulfillment [Products](/#tag/Products), Customs Products are for clearing shipments containing regulated items like Food and Cosmetics (PGA). Customs Products contain information about the item including the manufacturer, seller, importer, etc. Shipments that are determined to be PGA must provide the `product_id` in the line item. Manifesting PGA shipments will notify the relevant agencies.
+
+
+    Several properties are conditional and offer different options based on the `coi` and `type` of product.
+
+
+    **Important:** This resource and its operations are in Beta and subject to change without notice.
+
+    '
+paths:
+  /customs/products:
+    get:
+      tags:
+      - CustomsProducts
+      summary: GET /customs/products
+      description: Retrieves a paginated list of customs products.
+      operationId: getCustomsProducts
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        default: 50
+        minimum: 50
+        maximum: 100
+        required: false
+        type: integer
+      - in: query
+        name: order
+        description: The sort order of the results.
+        default: desc
+        enum:
+        - asc
+        - desc
+        required: false
+        type: string
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+        default: null
+      security:
+      - JWT:
+        - read_shipments
+      x-badges:
+      - name: Beta
+        position: after
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/customs/products\\?limit=50\\&order=desc\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/definitions/CustomsProduct'
+                  next_page:
+                    type: string
+                    description: Page token. Set by the system.
+                    example: ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - CustomsProducts
+      summary: POST /customs/products
+      description: Creates a customs product.
+      operationId: addCustomsProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-badges:
+      - name: Beta
+        position: after
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/customs/products \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n        \"product\":{\n            \"coo\": \"CN\",\n            \"coi\": \"US\",\n            \"code\": \"1231-21\",\n            \"contact: {\n              \"name\": \"John Doe\",\n              \"email\": \"john@doe.com\",\n              \"phone\": \"1231231234\"\n            },\n            \"brand_name\": \"Tyson\",\n            \"description\": \"Chicken wings\",\n            \"packaging\": {\n                \"type\": \"BAG\",\n                \"quantity\": 1\n            },\n            \"quantity\": 1,\n            \"uom\": \"PCS\",\n            \"type\": \"FOO\",\n            \"processing_code\": \"PRO\",\n            \"intended_use_code\": \"210.000\",\n            \"prior_notice_submitter\": {\n                \"use_consignor\": true\n            },\n            \"affirmation_of_compliance\":[\n                {\n                    \"code\": \"FME\",\n                    \"value\": \"K\"\n                }\n            ],\n            \"manufacturer\": {\n                \"use_consignor\": false,\n                \"id\": {\n                    \"type\": \"DUNS\",\n                    \"value\": \"16324234\"\n                },\n                \"address\": {\n                    \"name\": \"hey\",\n                    \"street1\": \"123 main st\",\n                    \"city\": \"Dallas\",\n                    \"province\": \"TX\",\n                    \"postal_code\": \"75325\",\n                    \"country\": \"US\"\n                }\n            },\n            \"importer\": {\n                \"use_consignor\": true\n            },\n            \"shipper\": {\n                \"use_consignor\": true\n            }\n        }\n    }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  $ref: '#/definitions/CustomsProduct'
+              required:
+              - product
+      responses:
+        '200':
+          description: Success OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/CustomsProduct'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /product/type: Product type must be one of [FOO, COS, FOO-CCW]'
+                    status: error
+                    errors:
+                    - '/product/type: Product type must be one of [FOO, COS, FOO-CCW]'
+                cannotAdd:
+                  summary: Bad Request
+                  description: Product can't be created
+                  value:
+                    code: 1462
+                    message: Product could not be added to the catalog
+                    errors:
+                    - Product could not be added to the catalog
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /customs/products/{id}:
+    get:
+      tags:
+      - CustomsProducts
+      summary: GET /customs/products/{id}
+      description: Retrieves a customs product.
+      operationId: getCustomsProductById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shipments
+      x-badges:
+      - name: Beta
+        position: after
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/customs/products/{id}\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/CustomsProduct'
+                required:
+                - product
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Customs Product not found
+                  value:
+                    code: 1460
+                    message: Customs Product not found
+                    errors:
+                    - Customs Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - CustomsProducts
+      summary: PUT /customs/products/{id}
+      description: Updates a customs product.
+      operationId: updateCustomsProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-badges:
+      - name: Beta
+        position: after
+      parameters:
+      - name: id
+        in: path
+        description: The product id.
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/customs/products/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n        \"product\":{\n            \"coo\": \"CN\",\n            \"coi\": \"US\",\n            \"code\": \"1231-21\",\n            \"brand_name\": \"Tyson\",\n            \"contact\": {\n              \"name\": \"John Doe\",\n              \"email\": \"john@doe.com\",\n              \"phone\": \"1231231234\"\n            },\n            \"description\": \"Chicken wings\",\n            \"packaging\": {\n                \"type\": \"BAG\",\n                \"quantity\": 1\n            },\n            \"quantity\": 1,\n            \"uom\": \"PCS\",\n            \"type\": \"FOO\",\n            \"processing_code\": \"PRO\",\n            \"intended_use_code\": \"210.000\",\n            \"prior_notice_submitter\": {\n                \"use_consignor\": true\n            },\n            \"affirmation_of_compliance\":[\n                {\n                    \"code\": \"FME\",\n                    \"value\": \"K\"\n                }\n            ],\n            \"manufacturer\": {\n                \"use_consignor\": false,\n                \"id\": {\n                    \"type\": \"DUNS\",\n                    \"value\": \"16324234\"\n                },\n                \"address\": {\n                    \"name\": \"hey\",\n                    \"street1\": \"123 main st\",\n                    \"city\": \"Dallas\",\n                    \"province\": \"TX\",\n                    \"postal_code\": \"75325\",\n                    \"country\": \"US\"\n                }\n            },\n            \"importer\": {\n                \"use_consignor\": true\n            },\n            \"shipper\": {\n                \"use_consignor\": true\n            }\n        }\n    }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  $ref: '#/definitions/CustomsProduct'
+                required:
+                - product
+      responses:
+        '200':
+          description: Success OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/CustomsProduct'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /product/type: Product type must be one of [FOO, COS, FOO-CCW]'
+                    status: error
+                    errors:
+                    - '/product/type: Product type must be one of [FOO, COS, FOO-CCW]'
+                cannotUpdate:
+                  summary: Bad Request
+                  description: Product can't be updated
+                  value:
+                    code: 1462
+                    message: Product could not be added to the catalog
+                    errors:
+                    - Product could not be added to the catalog
+                cannotChangeType:
+                  summary: Immutable Type
+                  description: Product type can't be changed
+                  value:
+                    code: 1463
+                    message: Product type can't be changed
+                    errors:
+                    - Product type can't be changed
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Customs Product not found
+                  value:
+                    code: 1460
+                    message: Customs Product not found
+                    errors:
+                    - Customs Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    delete:
+      tags:
+      - CustomsProducts
+      summary: DELETE /customs/products/{id}
+      description: Deletes a customs product. It is only a soft delete since products may still be referenced from shipments.
+      operationId: deleteCustomsProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-badges:
+      - name: Beta
+        position: after
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/customs/products/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Customs Product not found
+                  value:
+                    code: 1460
+                    message: Customs Product not found
+                    errors:
+                    - Customs Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  customs-product:
+    type: object
+    properties:
+      affirmation_of_compliance:
+        type:
+        - array
+        - 'null'
+        default: null
+        example:
+        - code: FME
+          value: K
+        - code: FSX
+          value: ''
+        minItems: 1
+        maxItems: 5
+        description: The affirmation of compliance is required for products of `type` "FOO". You may include up to 5 AOC codes to a product.
+        items:
+          oneOf:
+          - type: object
+            title: FME
+            properties:
+              code:
+                type: string
+                description: AOC Code
+                const: FME
+                example: FME
+              value:
+                type: string
+                description: AOC Value
+                enum:
+                - A
+                - B
+                - C
+                - D
+                - E
+                - F
+                - K
+                example: K
+            required:
+            - code
+            - value
+          - type: object
+            title: FSVP
+            properties:
+              code:
+                type: string
+                description: AOC Code
+                const: FSX
+                example: FSX
+              value:
+                type: string
+                description: AOC Value. Always an empty string.
+                const: ''
+                example: ''
+            required:
+            - code
+          - type: object
+            title: Other
+            properties:
+              code:
+                type: string
+                description: AOC Code
+                enum:
+                - PFR
+                - CFR
+                - GFR
+                - IFR
+                - ORN
+                - SFR
+                - SRN
+                example: FME
+              value:
+                type: string
+                description: AOC Value
+                example: K
+                minLength: 1
+                maxLength: 15
+            required:
+            - code
+            - value
+      brand_name:
+        type: string
+        description: Brand name
+        pattern:
+        - A-Z0-9\s
+        minLength: 3
+        maxLength: 35
+        example: Test
+      code:
+        type:
+        - string
+        - 'null'
+        default: null
+        minLength: 7
+        maxLength: 7
+        description: The importing country's government's code for this product. Refer to https://www.accessdata.fda.gov/scripts/ora/pcb/index.cfm?action=main.pcb for FDA codes.
+        example: 1234-57
+      coi:
+        type: string
+        pattern:
+        - A-Z
+        minLength: 2
+        maxLength: 2
+        description: Country of import code
+        example: US
+      coo:
+        type: string
+        pattern:
+        - A-Z
+        minLength: 2
+        maxLength: 2
+        description: Country of origin code
+        example: CN
+      compliance_code:
+        type:
+        - array
+        - 'null'
+        description: The compliance code requirement and options depend on the `type`.
+        default: null
+        example:
+        - code: COS
+          value: '1231231'
+        items:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Code
+              example: COS
+            value:
+              type: string
+              description: Value
+              maxLength: 20
+              minLength: 1
+              example: '1243123'
+          required:
+          - code
+          - value
+      contact:
+        type: object
+        description: Point of contact information for the `importer` and `prior_notice_submitter`.
+        example:
+          name: John Doe
+          email: john@doe.com
+          phone: '1231231234'
+        properties:
+          email:
+            type: string
+            maxLength: 64
+            description: Contact's email address
+            default: null
+            example: john@doe.com
+          name:
+            type: string
+            maxLength: 40
+            description: Contact's full name
+            default: null
+            example: John Doe
+          phone:
+            type: string
+            maxLength: 20
+            description: Contact's phone number
+            default: null
+            example: '1231231234'
+        required:
+        - email
+        - name
+        - phone
+      created_at:
+        type: string
+        description: The date and time this product was created.
+        example: '2025-08-29 12:13:14'
+        readOnly: true
+      deleted_at:
+        type: string
+        description: The date and time this product was deleted.
+        example: '2025-08-29 19:11:33'
+        readOnly: true
+      description:
+        type: string
+        description: Product description
+        pattern:
+        - A-Z0-9\s
+        minLength: 3
+        maxLength: 45
+        example: Test
+      fsvp_importer:
+        type: object
+        description: FSVP (Foreign Supplier Verification Program) Importer of the product. Required for products where `type` is "FOO".
+        example:
+          exempt: false
+          use_consignor: false
+          id:
+            type: DUNS
+            value: '1231231'
+          address:
+            name: Test
+            street1: test
+            street2: null
+            city: test
+            province: null
+            postal_code: null
+            country: CN
+            email: test@mail.com
+            phone: 1234-47223
+        properties:
+          exempt:
+            type: boolean
+            description: Indicates this product is exempt from Foreign Supplier Verification Program (FSVP). If `false` then FSVP details must be provided.
+            default: false
+            example: true
+          use_consignor:
+            type: boolean
+            description: Option to use the shipment's `consignor` address. If false then an `address` must be provided.
+            example: false
+          id:
+            type: object
+            description: FSVP Importer id
+            properties:
+              type:
+                type: string
+                enum:
+                - DUNS
+                - FEI
+              value:
+                type: string
+                maxLength: 32
+            required:
+            - type
+            - value
+          address:
+            type: object
+            description: Address and contact information for the FSVP Importer if `use_consignor=false`.
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+                maxLength: 40
+                default: null
+                description: Name
+              street1:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 1
+                maxLength: 50
+              street2:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 2
+                maxLength: 50
+              city:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: City
+                maxLength: 40
+              province:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Province or state code
+                maxLength: 40
+              postal_code:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Postal code
+                maxLength: 10
+              country:
+                type:
+                - string
+                - 'null'
+                pattern:
+                - A-Z
+                default: null
+                description: Country code
+                maxLength: 2
+                minLength: 2
+              email:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: E-mail address
+                maxLength: 64
+              phone:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Phone number
+                maxLength: 20
+            required:
+            - name
+            - street1
+            - city
+            - country
+            - email
+            - phone
+        required:
+        - use_consignor
+      id:
+        description: Product ID
+        type: integer
+        readOnly: true
+        example: 121006
+      importer:
+        type: object
+        description: Importing party for this product.
+        example:
+          use_consignor: false
+          address:
+            name: Test
+            street1: test
+            street2: null
+            city: test
+            province: null
+            postal_code: null
+            country: CN
+            email: test@mail.com
+            phone: 1234-47223
+        properties:
+          use_consignor:
+            type: boolean
+            description: Option to use the shipment's `consignor` address. If false then an address must be provided.
+          address:
+            type: object
+            description: Address and contact information for the importer if `use_consignor=false`.
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+                maxLength: 40
+                default: null
+                description: Name
+              street1:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 1
+                maxLength: 50
+              street2:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 2
+                maxLength: 50
+              city:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: City
+                maxLength: 40
+              province:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Province or state code
+                maxLength: 40
+              postal_code:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Postal code
+                maxLength: 10
+              country:
+                type:
+                - string
+                - 'null'
+                pattern:
+                - A-Z
+                default: null
+                description: Country code
+                maxLength: 2
+                minLength: 2
+              email:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: E-mail address
+                maxLength: 64
+              phone:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Phone number
+                maxLength: 20
+            required:
+            - name
+            - street1
+            - city
+            - country
+            - email
+            - phone
+        required:
+        - use_consignor
+      intended_use_code:
+        type: string
+        description: The intended use code options depends on the `type` of product and `coi`.
+        example: '100.000'
+      manufacturer:
+        type: object
+        description: Manufacturer of the product.
+        example:
+          use_consignor: false
+          id:
+            type: DUNS
+            value: '1231231'
+          address:
+            name: Test
+            street1: test
+            street2: null
+            city: test
+            province: null
+            postal_code: null
+            country: CN
+            email: test@mail.com
+            phone: 1234-47223
+        properties:
+          use_consignor:
+            type: boolean
+            description: Option to use the shipment's `consignor` address. If false then an address must be provided.
+          id:
+            type: object
+            description: Manufacturer id
+            properties:
+              type:
+                type: string
+                enum:
+                - DUNS
+                - FEI
+              value:
+                type: string
+                maxLength: 32
+            required:
+            - type
+            - value
+          address:
+            type: object
+            description: Address and contact information for the manufacturer if `use_consignor=false`.
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+                maxLength: 40
+                default: null
+                description: Name
+              street1:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 1
+                maxLength: 50
+              street2:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 2
+                maxLength: 50
+              city:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: City
+                maxLength: 40
+              province:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Province or state code
+                maxLength: 40
+              postal_code:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Postal code
+                maxLength: 10
+              country:
+                type:
+                - string
+                - 'null'
+                pattern:
+                - A-Z
+                default: null
+                description: Country code
+                maxLength: 2
+                minLength: 2
+              email:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: E-mail address
+                maxLength: 64
+              phone:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Phone number
+                maxLength: 20
+            required:
+            - name
+            - street1
+            - city
+            - country
+            - email
+            - phone
+        required:
+        - use_consignor
+      packaging:
+        type:
+        - object
+        - 'null'
+        default: null
+        description: New container product packaging details.
+        example:
+          type: BOX
+          quantity: 2
+        properties:
+          type:
+            type: string
+            description: Packaging type
+            enum:
+            - CTN
+            - BOX
+            - PKG
+            - BAG
+            - CS
+            - JAR
+            - BOT
+            - TBE
+            - CAN
+            - PKT
+            - SAC
+            - EA
+            example: CTN
+          quantity:
+            type: integer
+            description: Packing unit count
+            exclusiveMinimum: 0
+            exclusiveMaximum: 10000
+            example: 2
+        required:
+        - type
+        - quantity
+      prior_notice_submitter:
+        type: object
+        description: Prior notice submitter is required for some product types.
+        example:
+          use_consignor: false
+          address:
+            name: Test
+            street1: test
+            street2: null
+            city: test
+            province: null
+            postal_code: null
+            country: CN
+            email: test@mail.com
+            phone: 1234-47223
+        properties:
+          use_consignor:
+            type: boolean
+            description: Option to use the shipment's `consignor` address. If false then an address must be provided.
+          address:
+            type: object
+            description: Address and contact information for the prior notice submitter if `use_consignor=false`.
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+                maxLength: 40
+                default: null
+                description: Name
+              street1:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 1
+                maxLength: 50
+              street2:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 2
+                maxLength: 50
+              city:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: City
+                maxLength: 40
+              province:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Province or state code
+                maxLength: 40
+              postal_code:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Postal code
+                maxLength: 10
+              country:
+                type:
+                - string
+                - 'null'
+                pattern:
+                - A-Z
+                default: null
+                description: Country code
+                maxLength: 2
+                minLength: 2
+              email:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: E-mail address
+                maxLength: 64
+              phone:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Phone number
+                maxLength: 20
+            required:
+            - name
+            - street1
+            - city
+            - country
+            - email
+            - phone
+        required:
+        - use_consignor
+      processing_code:
+        type:
+        - string
+        - 'null'
+        description: The processing code depends on the `type`.
+        default: null
+        example: ADD
+      quantity:
+        description: Base product quantity
+        type:
+        - number
+        - 'null'
+        exclusiveMinimum: 0
+        exclusiveMaximum: 10000000
+        default: null
+        example: 123.51
+      shipper:
+        type: object
+        description: Shipper for this product.
+        example:
+          use_consignor: false
+          address:
+            name: Test
+            street1: test
+            street2: null
+            city: test
+            province: null
+            postal_code: null
+            country: CN
+            email: test@mail.com
+            phone: 1234-47223
+        properties:
+          use_consignor:
+            type: boolean
+            description: Option to use the shipment's `consignor` address. If false then an address must be provided.
+          address:
+            type: object
+            description: Address and contact information for the shipper if `use_consignor=false`.
+            properties:
+              name:
+                type:
+                - string
+                - 'null'
+                maxLength: 40
+                default: null
+                description: Name
+              street1:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 1
+                maxLength: 50
+              street2:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Street address 2
+                maxLength: 50
+              city:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: City
+                maxLength: 40
+              province:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Province or state code
+                maxLength: 40
+              postal_code:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Postal code
+                maxLength: 10
+              country:
+                type:
+                - string
+                - 'null'
+                pattern:
+                - A-Z
+                default: null
+                description: Country code
+                maxLength: 2
+                minLength: 2
+              email:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: E-mail address
+                maxLength: 64
+              phone:
+                type:
+                - string
+                - 'null'
+                default: null
+                description: Phone number
+                maxLength: 20
+            required:
+            - name
+            - street1
+            - city
+            - country
+            - email
+            - phone
+        required:
+        - use_consignor
+      type:
+        type: string
+        description: Product type. This value is immutable after creation.
+        enum:
+        - FOO
+        - COS
+        - FOO-CCW
+        example: FOO
+      uom:
+        description: Unit of measurement for quantity.
+        type:
+        - string
+        - 'null'
+        enum:
+        - 'null'
+        - CG
+        - CM3
+        - DOZ
+        - DPC
+        - DPR
+        - FOZ
+        - G
+        - GAL
+        - KG
+        - L
+        - LB
+        - M3
+        - MCG
+        - MG
+        - ML
+        - OZ
+        - PCS
+        - PRS
+        - PTL
+        - QTL
+        - TOZ
+        example: PCS
+        default: null
+      updated_at:
+        type: string
+        description: The date and time this product was last updated.
+        example: '2025-08-29 14:10:14'
+        readOnly: true
+    required:
+    - brand_name
+    - coo
+    - coi
+    - contact
+    - description
+    - intended_use_code
+    - manufacturer
+    - importer
+    - shipper
+    - type
+    - uom
+  NotFound:
+    $ref: '#/definitions/not-found'
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  CustomsProduct:
+    $ref: '#/definitions/customs-product'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

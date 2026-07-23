@@ -1,0 +1,972 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty ValidateAddress API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: ValidateAddress
+  x-displayName: Validate Address
+  description: The Validate Address resource permits a user to validate and retrieve the most likely matches of provided postal addresses. Each successful validation costs $0.03 (USD).
+paths:
+  /validate-address:
+    post:
+      tags:
+      - ValidateAddress
+      summary: POST /validate-address
+      description: Get validated possible matches of provided postal addresses.
+      operationId: validateAddress
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - validate
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/validate-address \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"addresses\": [\n      {\n        \"street1\": \"113 INTL BROADWAY\",\n        \"street2\": \"\",\n        \"city\": \"LOS ANGELES\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\",\n        \"country\": \"US\"\n      }\n    ]\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                addresses:
+                  type: array
+                  items:
+                    $ref: '#/definitions/ValidateAddress'
+              required:
+              - addresses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  addresses:
+                    type: array
+                    items:
+                      $ref: '#/definitions/ValidatedAddress'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: Request is malformed.
+                    status: error
+                    errors:
+                    - Request is malformed.
+                addressError:
+                  summary: Address Validation
+                  description: Unable to validate address due to an error
+                  value:
+                    code: 1425
+                    message: Unable to validate address due to an error
+                    errors:
+                    - Unable to validate address due to an error
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '402':
+          $ref: '#/definitions/PaymentRequired'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                balanceError:
+                  summary: Server Error - Retrieving Balance
+                  description: There was an error while fetching the account balance
+                  value:
+                    code: 1081
+                    message: There was an error while fetching the account balance
+                    errors:
+                    - There was an error while fetching the account balance
+                chargingError:
+                  summary: Server Error - Charging Account
+                  description: There was an error while charging the account balance
+                  value:
+                    code: 1082
+                    message: There was an error while charging the account balance
+                    errors:
+                    - There was an error while charging the account balance
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  PaymentRequired:
+    $ref: '#/definitions/payment-required'
+  ValidateAddress:
+    $ref: '#/definitions/validate-address'
+  ValidatedAddressMatch:
+    $ref: '#/definitions/validated-address-match'
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  payment-required:
+    description: Payment Required
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Payment Required
+          description: There are insufficient funds available for this resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Duplicate of the error message
+              type: array
+              items:
+                type: string
+        examples:
+          paymentRequired:
+            summary: Payment Required
+            description: Insufficient funds
+            value:
+              code: 1080
+              message: Insufficient funds
+              errors:
+              - Insufficient funds
+  validated-address:
+    type: object
+    properties:
+      original:
+        type: object
+        $ref: '#/definitions/ValidateAddress'
+      error:
+        type: boolean
+        description: Whether or not there has been an error while validating the address.
+        example: true
+      message:
+        type: string|null
+        description: A message which explains the error occurred.
+      matches:
+        type: array
+        description: List of postal address matches for the provided original address.
+        items:
+          $ref: '#/definitions/ValidatedAddressMatch'
+    additionalProperties: false
+  validated-address-match:
+    type: object
+    properties:
+      street1:
+        description: The street address.
+        type: string
+        maxLength: 50
+        example: 113 INTL BROADWAY
+      street2:
+        description: Additional space for street address.
+        type: string
+        maxLength: 50
+        example: ''
+      city:
+        type: string
+        description: The city.
+        example: LOS ANGELES
+      province:
+        type: string
+        description: The province or the state. Optional. Required for US.
+        example: CA
+      postal_code:
+        type: string
+        description: The postal code or ZIP Code.
+        example: 90210
+      country:
+        type: string
+        description: The country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        example: US
+      confidence:
+        type: string
+        description: 'Confidence value inside each match describes how accurate the match is. You can increase the confidence of an existing match by providing additional or more accurate information.
+
+
+          LOW confidence means that the address is most probably does not exist thus, it should not be provided as an address input to any of our endpoints.
+
+
+          MEDIUM confidence means that the address is missing some components or some parts are unconfirmed but plausible. It is usually acceptable as an address input but whether it can be used or not depends on its completeness thus, caution is advised.
+
+
+          HIGH confidence means that there''s an exact match thus, it is recommended and can be used as an address input. '
+        example: HIGH
+        enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+      verdict:
+        type: object
+        description: High level overview of the address validation result.
+        properties:
+          inputGranularity:
+            type: string
+            description: The various granularities that an address can have.
+            example: PREMISE
+            enum:
+            - GRANULARITY_UNSPECIFIED
+            - SUB_PREMISE
+            - PREMISE
+            - PREMISE_PROXIMITY
+            - BLOCK
+            - ROUTE
+            - OTHER
+          validationGranularity:
+            type: string
+            description: The level of granularity for the post-processed address that the API can fully validate.
+            example: SUB_PREMISE
+            enum:
+            - GRANULARITY_UNSPECIFIED
+            - SUB_PREMISE
+            - PREMISE
+            - PREMISE_PROXIMITY
+            - BLOCK
+            - ROUTE
+            - OTHER
+          geocodeGranularity:
+            type: string
+            description: How coarse or fine the geocoded location is.
+            example: PREMISE_PROXIMITY
+            enum:
+            - GRANULARITY_UNSPECIFIED
+            - SUB_PREMISE
+            - PREMISE
+            - PREMISE_PROXIMITY
+            - BLOCK
+            - ROUTE
+            - OTHER
+          addressComplete:
+            type: boolean
+            description: The post-processed address is considered complete if there are no unresolved tokens, no unexpected or missing address components. If unset, indicates that the value is false.
+            example: true
+          hasUnconfirmedComponents:
+            type: boolean
+            description: At least one address component cannot be categorized or validated.
+            example: false
+          hasInferredComponents:
+            type: boolean
+            description: At least one address component was added that wasn't in the input.
+            example: true
+          hasReplacedComponents:
+            type: boolean
+            description: At least one address component was replaced.
+            example: false
+          possibleNextAction:
+            type: string
+            description: An interpretive summary of the API response that should not be considered as a guarantee of accuracy.
+            example: ACCEPT
+            enum:
+            - POSSIBLE_NEXT_ACTION_UNSPECIFIED
+            - FIX
+            - CONFIRM_ADD_SUBPREMISES
+            - CONFIRM
+            - ACCEPT
+          hasSpellCorrectedComponents:
+            type: boolean
+            description: At least one address component was spell-corrected.
+            example: true
+      addressComponents:
+        description: List of address components such as a street, city, or state.
+        type: array
+        items:
+          type: object
+          properties:
+            componentName:
+              type: object
+              description: A wrapper for the name of the component.
+              properties:
+                text:
+                  type: string
+                  description: The name text.
+                  example: Main St.
+                languageCode:
+                  type: string
+                  description: Two letter language code.
+                  example: en
+            componentType:
+              type: string
+              description: The type of the address component.
+              example: street_number
+            confirmationLevel:
+              type: string
+              description: Indicates the level of certainty that the component is correct.
+              example: CONFIRMED
+              enum:
+              - CONFIRMATION_LEVEL_UNSPECIFIED
+              - CONFIRMED
+              - UNCONFIRMED_BUT_PLAUSIBLE
+              - UNCONFIRMED_AND_SUSPICIOUS
+      missingComponentTypes:
+        description: The types of components that were expected to be present in a correctly formatted mailing address but were not found in the input AND could not be inferred.
+        type: array
+        example:
+        - street_address
+        - postal_code
+        items:
+          type: string
+      unconfirmedComponentTypes:
+        description: The types of the components that are present in the addressComponents but could not be confirmed to be correct.
+        type: array
+        example:
+        - subpremise
+        - route
+        items:
+          type: string
+      unresolvedTokens:
+        description: Input that was not recognized as a valid part of an address.
+        type: array
+        example:
+        - Box
+        - '11789'
+        items:
+          type: string
+      metadata:
+        type: object
+        description: The metadata for the post-processed address.
+        properties:
+          business:
+            type: boolean
+            description: Is the address for a business.
+            example: false
+          poBox:
+            type: boolean
+            description: Is the address a PO box.
+            example: false
+          residential:
+            type: boolean
+            description: Is the address a residence.
+            example: true
+      uspsData:
+        type: object
+        description: The USPS data for the address.
+        properties:
+          standardizedAddress:
+            type: object
+            description: USPS representation of a US address.
+            properties:
+              firstAddressLine:
+                type: string
+                description: First address line.
+                example: 123 Main St.
+              firm:
+                type: string
+                description: The firm's name.
+                example: IBM Corp.
+              secondAddressLine:
+                type: string
+                description: Second address line.
+                example: Apt. 3B
+              urbanization:
+                type: string
+                description: Puerto Rican urbanization name.
+                example: Urbanización Valle Verde
+              cityStateZipAddressLine:
+                type: string
+                description: City, state and postal code.
+                example: 10123
+              city:
+                type: string
+                description: The address city.
+                example: New Orleans
+              state:
+                type: string
+                description: The two letter address state abbreviation.
+                example: LA
+              zipCode:
+                type: string
+                description: Postal code.
+                example: 70112
+              zipCodeExtension:
+                type: string
+                description: 4-digit postal code extension.
+                example: 2431
+          deliveryPointCode:
+            type: string
+            description: 2 digit delivery point code
+            example: 12
+          deliveryPointCheckDigit:
+            type: string
+            description: The delivery point check digit
+            example: 8
+          dpvConfirmation:
+            type: string
+            description: The possible values for DPV confirmation.
+            example: Y
+            enum:
+            - N
+            - D
+            - S
+            - Y
+            - Empty
+          dpvFootnote:
+            type: string
+            description: The footnotes from delivery point validation.
+            example: AA
+            enum:
+            - AA
+            - A1
+            - BB
+            - CC
+            - C1
+            - N1
+            - M1
+            - M3
+            - P1
+            - P3
+            - F1
+            - G1
+            - U1
+            - PB
+            - RR
+            - R1
+            - R7
+            - IA
+            - TA
+          dpvCmra:
+            type: string
+            description: Is the address a Commercial Mail Receiving Agency?
+            example: N
+          dpvVacant:
+            type: string
+            description: Is this a vacant address?
+            example: N
+          dpvNoStat:
+            type: string
+            description: No stat addresses are ones which are not continuously occupied or addresses that the USPS does not service.
+            example: N
+          dpvNoStatReasonCode:
+            type: integer
+            description: No stat type.
+            example: 1
+          dpvDrop:
+            type: string
+            description: Flag indicates mail is delivered to a single receptable at a site.
+            example: Y
+          dpvThrowback:
+            type: string
+            description: Indicates that mail is not delivered to the street address.
+            example: N
+          dpvNonDeliveryDays:
+            type: string
+            description: Flag indicates mail delivery is not performed every day of the week.
+            example: N
+          dpvNonDeliveryDaysValues:
+            type: integer
+            description: Integer identifying non-delivery days.
+            example: 1
+          dpvNoSecureLocation:
+            type: string
+            description: Flag indicates door is accessible, but package will not be left due to security concerns.
+            example: N
+          dpvPbsa:
+            type: string
+            description: Indicates the address was matched to PBSA record.
+            example: Y
+          dpvEnhancedDeliveryCode:
+            type: string
+            description: Indicates that more than one DPV return code is valid for the address.
+            example: D
+            enum:
+            - Y
+            - N
+            - S
+            - D
+            - R
+          carrierRoute:
+            type: string
+            description: The four character carrier route code.
+            example: R008
+          carrierRouteIndicator:
+            type: string
+            description: Carrier route rate sort indicator.
+            example: D
+          ewsNoMatch:
+            type: boolean
+            description: The delivery address is matchable, but the EWS file indicates that an exact match will be available soon.
+            example: true
+          postOfficeCity:
+            type: string
+            description: Main post office city.
+            example: Miami
+          postOfficeState:
+            type: string
+            description: Main post office state abbreviation.
+            example: FL
+          abbreviatedCity:
+            type: string
+            description: Abbreviated city.
+            example: LA
+          fipsCountyCode:
+            type: string
+            description: FIPS county code.
+            example: 111
+          county:
+            type: string
+            description: County name
+            example: Dade
+          elotNumber:
+            type: string
+            description: Enhanced Line of Travel (eLOT) number.
+            example: 365
+          elotFlag:
+            type: string
+            description: eLOT Ascending/Descending Flag.
+            example: D
+          lacsLinkReturnCode:
+            type: string
+            description: LACSLink return code.
+            example: 92
+          lacsLinkIndicator:
+            type: string
+            description: LACSLink indicator.
+            example: Y
+            enum:
+            - Y
+            - N
+            - F
+            - S
+            - blank
+          poBoxOnlyPostalCode:
+            type: boolean
+            description: PO Box only postal code.
+            example: false
+          suitelinkFootnote:
+            type: string
+            description: Footnotes from matching a street or highrise record to suite information.
+            example: 0
+          pmbDesignator:
+            type: string
+            description: Private Mail Box unit designator.
+            example: Piloto
+          pmbNumber:
+            type: string
+            description: Private Mail Box number.
+            example: 123
+          addressRecordType:
+            type: string
+            description: Type of the address record that matches the input address.
+            example: R
+            enum:
+            - F
+            - G
+            - H
+            - P
+            - R
+            - S
+          defaultAddress:
+            type: boolean
+            description: Indicator that a default address was found, but more specific addresses exists.
+            example: false
+          errorMessage:
+            type: string
+            description: Error message for USPS data retrieval.
+            example: Invalid zip code extension
+          cassProcessed:
+            type: boolean
+            description: Has the request been CASS processed.
+            example: false
+      englishLatinAddress:
+        type: object
+        description: The address translated to English.
+        properties:
+          formattedAddress:
+            type: string
+            description: The post-processed address, formatted as a single-line address.
+            example: 123 Main St. New Orleans, LA 70112-2431, US
+          postalAddress:
+            type: object
+            description: Represents a postal address, such as for postal delivery.
+            properties:
+              revision:
+                type: integer
+                description: The schema revision.
+                example: 0
+              regionCode:
+                type: string
+                description: CLDR region code of the country/region of the address.
+                example: CH
+              languageCode:
+                type: string
+                description: Two letter language code.
+                example: en
+              postalCode:
+                type: string
+                description: Postal code of the address.
+                example: 90210
+              sortingCode:
+                type: string
+                description: Additional, country-specific, sorting code.
+                example: CEDEX 7
+              administrativeArea:
+                type: string
+                description: Highest administrative subdivision which is used for postal addresses of a country or region.
+                example: Barcelona
+              locality:
+                type: string
+                description: Generally refers to the city or town portion of the address.
+                example: New York
+              sublocality:
+                type: string
+                description: Neighborhood, borough, or district.
+                example: Brooklyn
+              addressLines:
+                type: array
+                description: Unstructured address lines describing the lower levels of an address.
+                example:
+                - 123 Main St.
+                - New Orleans
+                - LA
+                - 70112-2431
+                - US
+                items:
+                  type: string
+          addressComponents:
+            description: List of address components such as a street, city, or state.
+            type: array
+            items:
+              type: object
+              properties:
+                componentName:
+                  type: object
+                  description: A wrapper for the name of the component.
+                  properties:
+                    text:
+                      type: string
+                      description: The name text.
+                      example: Main St.
+                    languageCode:
+                      type: string
+                      description: Two letter language code.
+                      example: en
+                componentType:
+                  type: string
+                  description: The type of the address component.
+                  example: street_number
+                confirmationLevel:
+                  type: string
+                  description: Indicates the level of certainty that the component is correct.
+                  example: CONFIRMED
+                  enum:
+                  - CONFIRMATION_LEVEL_UNSPECIFIED
+                  - CONFIRMED
+                  - UNCONFIRMED_BUT_PLAUSIBLE
+                  - UNCONFIRMED_AND_SUSPICIOUS
+          missingComponentTypes:
+            description: The types of components that were expected to be present in a correctly formatted mailing address but were not found in the input AND could not be inferred.
+            type: array
+            example:
+            - street_address
+            - postal_code
+            items:
+              type: string
+          unconfirmedComponentTypes:
+            description: The types of the components that are present in the addressComponents but could not be confirmed to be correct.
+            type: array
+            example:
+            - subpremise
+            - route
+            items:
+              type: string
+          unresolvedTokens:
+            description: Input that was not recognized as a valid part of an address.
+            type: array
+            example:
+            - Box
+            - '11789'
+            items:
+              type: string
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  validate-address:
+    type: object
+    properties:
+      street1:
+        description: The street address.
+        type: string
+        maxLength: 50
+        example: 113 INTL BROADWAY
+      street2:
+        description: Additional space for street address.
+        type: string
+        maxLength: 50
+        example: ''
+      city:
+        type: string
+        description: The city.
+        example: LOS ANGELES
+      province:
+        type: string
+        description: The province or the state. Optional. Required for US.
+        example: CA
+      postal_code:
+        type: string
+        description: The postal code or ZIP Code.
+        example: '91013'
+      country:
+        type: string
+        description: 'The country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Required.
+
+
+          Allowed Values: AR, AT, AU, BE, BG, BR, CA, CH, CL, CO, CZ, DE, DK, EE, ES, FI, FR, GB, HR, HU, IE, IN, IT, JP, LT, LU, LV, MX, MY, NL, NO, NZ, PL, PR, PT, SE, SG, SI, SK, US'
+        example: US
+    required:
+    - street1
+    - city
+    - country
+    additionalProperties: false
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  ValidatedAddress:
+    $ref: '#/definitions/validated-address'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

@@ -1,0 +1,691 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Shops API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Shops
+  x-displayName: Shops
+  description: The Shops resource allows a user to manage their fulfillment shop. A shop with orders or SKUs cannot be deleted. Clients should use a third party platform for integrating their ecommerce marketplaces with the BoxC API.
+paths:
+  /shops:
+    get:
+      tags:
+      - Shops
+      summary: GET /shops
+      description: Retrieves a list of shops.
+      operationId: getShops
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shops
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        required: false
+        type: integer
+        default: 50
+        maximum: 100
+      - in: query
+        name: name
+        description: Filter that searches for shops with a similar name.
+        default: null
+        required: false
+        type: string
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/shops\\?limit=50\\&name=PhoneBlox\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shops:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Shop'
+                  next_page:
+                    type: string
+                    description: Page token. Set by the system.
+                    example: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - Shops
+      summary: POST /shops
+      description: Creates a new shop.
+      operationId: addShop
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shops
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/shops \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"active\": true,\n      \"name\": \"Appleseeds\",\n      \"settings\": {\n        \"delay_processing\": 240\n      },\n      \"type\": \"BoxC\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shop:
+                  $ref: '#/definitions/Shop'
+              required:
+              - shop
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Shop object
+                properties:
+                  shop:
+                    $ref: '#/definitions/Shop'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /shop: The required properties (name) are missing'
+                    status: error
+                    errors:
+                    - '/shop: The required properties (name) are missing'
+                badRequest:
+                  summary: Bad Request
+                  description: Shop ID is already in use
+                  value:
+                    code: 1373
+                    message: Shop ID is already in use
+                    errors:
+                    - Shop ID is already in use
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Shop can't be created
+                  value:
+                    code: 1372
+                    message: Shop can't be created
+                    errors:
+                    - Shop can't be created
+  /shops/{id}:
+    get:
+      tags:
+      - Shops
+      summary: GET /shops/{id}
+      description: Retrieves a shop.
+      operationId: getShopsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shops
+      parameters:
+      - name: id
+        in: path
+        description: The shop ID
+        required: true
+        type: string
+        maxLength: 32
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/shops/{id}\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shop:
+                    $ref: '#/definitions/Shop'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shop not found
+                  value:
+                    code: 1370
+                    message: Shop not found
+                    errors:
+                    - Shop not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Shops
+      summary: PUT /shops/{id}
+      description: Updates a shop.
+      operationId: updateShop
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shops
+      parameters:
+      - name: id
+        in: path
+        description: The shop ID
+        required: true
+        type: string
+        maxLength: 32
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/shops/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shop\": {\n      \"active\": true,\n      \"name\": \"Appleseeds\",\n      \"settings\": {\n        \"delay_processing\": 200\n      },\n      \"type\": \"BoxC\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Shop object
+              properties:
+                shop:
+                  $ref: '#/definitions/ShopPut'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Shop object
+                properties:
+                  shop:
+                    $ref: '#/definitions/Shop'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: Request is malformed.
+                    status: error
+                    errors:
+                    - Request is malformed.
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shop not found
+                  value:
+                    code: 1370
+                    message: Shop not found
+                    errors:
+                    - Shop not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    delete:
+      tags:
+      - Shops
+      summary: DELETE /shops/{id}
+      description: Deletes a shop.
+      operationId: deleteShop
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shops
+      parameters:
+      - name: id
+        in: path
+        description: The shop ID
+        required: true
+        type: string
+        maxLength: 32
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/shops/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotDelete:
+                  summary: Bad Request
+                  description: Shop can't be deleted
+                  value:
+                    code: 1371
+                    message: Shop can't be deleted
+                    errors:
+                    - Shop can't be deleted
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shop not found
+                  value:
+                    code: 1370
+                    message: Shop not found
+                    errors:
+                    - Shop not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  settings:
+    type: object
+    description: Default settings for the shop.
+    properties:
+      delay_processing:
+        type: integer
+        description: 'The number of <u>hours</u> an order should remain unprocessed in the system before packing. Orders will be processed if their <em>created</em> value plus the shop''s <em>delay_processing</em> value is greater than the current time. Max: 240.'
+        example: 240
+        default: 0
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  shop:
+    allOf:
+    - type: object
+      properties:
+        id:
+          type: string
+          description: The shop ID. This property is immutable and must be unique.
+          minLength: 3
+          maxLength: 32
+          pattern: A-Za-z0-9-_
+          example: my-shop
+      required:
+      - id
+      - name
+    - $ref: '#/definitions/ShopPut'
+  Shop:
+    $ref: '#/definitions/shop'
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  Settings:
+    $ref: '#/definitions/settings'
+  NotFound:
+    $ref: '#/definitions/not-found'
+  shop-put:
+    type: object
+    properties:
+      active:
+        type: boolean
+        description: Whether or not the shop is active. This only applies to third party shops. An inactive third party shop will no longer have its orders imported into the system.
+        example: true
+        default: true
+      created:
+        type: string
+        description: The date and time the shop was created.
+        example: '2024-06-17 13:22:44'
+        readOnly: true
+      name:
+        type: string
+        description: The shop name.
+        minLength: 3
+        maxLength: 32
+        example: Appleseeds
+      settings:
+        $ref: '#/definitions/Settings'
+      type:
+        type: string
+        description: The type of shop. Always "BoxC".
+        example: BoxC
+        deprecated: true
+        enum:
+        - BoxC
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  ShopPut:
+    $ref: '#/definitions/shop-put'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

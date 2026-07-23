@@ -1,0 +1,1384 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Products API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Products
+  x-displayName: Products
+  description: 'The Products resource allows users to add their products to the BoxC system. A product can have one or more Stock Keeping Units (SKUs). This gives users the ability to link their different shops'' SKUs to the same product. There can only be one active SKU per shop per product. Orders won''t be fulfilled until the warehouse accepts and processes your products. This includes measuring the weight and dimensions, and updating the quantity.
+
+
+    **Note:** Products and SKUs linked to orders can''t be deleted. Existing SKUs can''t be assigned to a different shop.'
+paths:
+  /products:
+    get:
+      tags:
+      - Products
+      summary: GET /products
+      description: Retrieves a paginated list of products.
+      operationId: getProducts
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        required: false
+        type: integer
+        default: 50
+        minimum: 50
+        maximum: 100
+      - in: query
+        name: order
+        description: The sort order of the results.
+        required: false
+        default: desc
+        enum:
+        - asc
+        - desc
+        type: string
+      - in: query
+        name: name
+        description: Filter that searches for products with a similar name.
+        required: false
+        default: null
+        type: string
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+      - in: query
+        name: shop.id
+        description: Filter that selects products for a shop with the matching Shop ID. Products for all shops are returned by default.
+        required: false
+        type: string
+        default: null
+        maxLength: 32
+      - in: query
+        name: sku
+        description: Filter that searches for products with a matching SKU.
+        required: false
+        default: null
+        type: string
+      - in: query
+        name: sort
+        description: The property to sort the results by.
+        required: false
+        enum:
+        - id
+        - name
+        - backordered
+        - quantity
+        default: id
+        type: string
+      security:
+      - JWT:
+        - read_products
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/products\\?limit=50\\&order=desc\\&sort=id\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Product'
+                  next_page:
+                    type: string
+                    description: Page token
+                    example: ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - Products
+      summary: POST /products
+      description: Creates a product.
+      operationId: addProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/products \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"product\": {\n      \"barcode\": \"4011200296908\",\n      \"coo\": \"CN\",\n      \"cost\": 2.25,\n      \"description\": \"100% Cotton Shirt\",\n      \"dg_code\": \"0966\",\n      \"hs_codes\": [\n        {\n          \"country\": \"US\",\n          \"hs_code\": \"3109165102\"\n        },\n        {\n          \"country\": \"CN\",\n          \"hs_code\": \"0302410090\"\n        }\n      ],\n      \"local_descriptions\": [\n        {\n          \"description\": \"100% Cotton T-Shirt\",\n          \"language_code\": \"en\"\n        },\n        {\n          \"description\": \"毛衣\",\n          \"language_code\": \"zh\"\n        }\n      ],\n      \"name\": \"XL Pink T-Shirt\",\n      \"supplier\": \"US123456789\",\n      \"url\": \"https://example.com/product/1234\",\n      \"value\": 19.99\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  $ref: '#/definitions/Product'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/ProductWarehouse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /product: The required properties (coo) are missing'
+                    status: error
+                    errors:
+                    - '/product: The required properties (coo) are missing'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /products/{id}:
+    get:
+      tags:
+      - Products
+      summary: GET /products/{id}
+      description: Retrieves a product.
+      operationId: getProductsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_products
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+          example: application/pdf
+          enum:
+          - application/json
+          - application/pdf
+        description: Optionally download the product barcode.
+      - in: query
+        name: type
+        type: string
+        description: The data stream type for downloading the product barcode.
+        required: false
+        deprecated: true
+        enum:
+        - PDF
+        example: PDF
+      - in: query
+        name: height
+        description: The height of the barcode in inches.
+        type: decimal
+        default: 1
+        minimum: 0.5
+        maximum: 4
+        required: false
+      - in: query
+        name: width
+        description: The width of the barcode in inches.
+        type: decimal
+        default: 2
+        minimum: 0.5
+        maximum: 4
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"accept: application/json\" \\\n  https://api.boxc.com/v1/products/{id}\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/ProductWarehouse'
+            application/pdf:
+              type: string
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Products
+      summary: PUT /products/{id}
+      description: Updates a product.
+      operationId: updateProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/products/{id} \\\n    -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"product\": {\n        \"barcode\": \"4011200296908\",\n        \"coo\": \"CN\",\n        \"cost\": 2.25,\n        \"description\": \"100% Cotton Shirt\",\n        \"dg_code\": \"0966\",\n        \"hs_codes\": [\n          {\n            \"country\": \"US\",\n            \"hs_code\": \"3109165102\"\n          },\n          {\n            \"country\": \"CN\",\n            \"hs_code\": \"0302410090\"\n          }\n        ],\n        \"local_descriptions\": [\n          {\n            \"description\": \"100% Cotton T-Shirt\",\n            \"language_code\": \"en\"\n          },\n          {\n            \"description\": \"毛衣\",\n            \"language_code\": \"zh\"\n          }\n        ],\n        \"name\": \"XL Pink T-Shirt\",\n        \"supplier\": \"US123456789\",\n        \"url\": \"https://example.com/product/1234\",\n        \"value\": 19.99\n      }\n    }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  $ref: '#/definitions/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/ProductWarehouse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /product: The required properties (coo) are missing'
+                    status: error
+                    errors:
+                    - '/product: The required properties (coo) are missing'
+                barcode:
+                  summary: Bad Request
+                  description: Contact support to update barcode for Product
+                  value:
+                    code: 1338
+                    message: Contact support to update barcode for Product
+                    errors:
+                    - Contact support to update barcode for Product
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    delete:
+      tags:
+      - Products
+      summary: DELETE /products/{id}
+      description: Deletes a product.
+      operationId: deleteProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/products/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotDelete:
+                  summary: Bad Request
+                  description: Product can't be deleted because it's being used
+                  value:
+                    code: 1333
+                    message: Product can't be deleted because it's being used
+                    errors:
+                    - Product can't be deleted because it's being used
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Product can't be deleted
+                  value:
+                    code: 1333
+                    message: Product can't be deleted
+                    errors:
+                    - Product can't be deleted
+  /products/{id}/skus:
+    post:
+      tags:
+      - Products
+      summary: POST /products/{id}/skus
+      description: Adds a SKU to a product.
+      operationId: addProductSku
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/products/{id}/skus \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"sku\": {\n      \"active\": true,\n      \"shop_id\": \"<YOUR SHOP ID>\",\n      \"sku\": \"<PRODUCT SKU>\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sku:
+                  $ref: '#/definitions/Sku'
+              required:
+              - sku
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/ProductWarehouse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /sku: The required properties (shop_id) are missing'
+                    status: error
+                    errors:
+                    - '/sku: The required properties (shop_id) are missing'
+                missingShop:
+                  summary: Bad Shop Request
+                  description: Shop not found
+                  value:
+                    code: 1370
+                    message: Shop not found
+                    errors:
+                    - Shop not found
+                skuInUse:
+                  summary: Bad SKU Request
+                  description: SKU for Shop is already in use
+                  value:
+                    code: 1334
+                    message: SKU for Shop is already in use
+                    errors:
+                    - SKU for Shop is already in use
+                productSku:
+                  summary: Bad Product/SKU Request
+                  description: Only one SKU can be active for Product in Shop
+                  value:
+                    code: 1337
+                    message: Only one SKU can be active for Product in Shop
+                    errors:
+                    - Only one SKU can be active for Product in Shop
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /products/{id}/shop/{shopId}/sku/{sku}:
+    put:
+      tags:
+      - Products
+      summary: PUT /products/{id}/shop/{shopId}/sku/{sku}
+      description: Updates an existing SKU for a given product and shop.
+      operationId: updateProductSku
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      - name: shopId
+        in: path
+        description: The shop ID
+        required: true
+        type: string
+        maxLength: 32
+      - name: sku
+        in: path
+        description: The product SKU
+        required: true
+        type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/products/{id}/shop/{shopId}/sku/{sku} \\\n    -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"sku\": {\n        \"active\": false,\n        \"sku\": \"<PRODUCT SKU>\"\n      }\n    }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sku:
+                  type: object
+                  properties:
+                    active:
+                      description: Whether or not this SKU is active. Orders with an inactive SKU will not be imported or created.
+                      type: boolean
+                      default: true
+                      example: true
+                    sku:
+                      description: The SKU identifier
+                      type: string
+                      minLength: 3
+                      maxLength: 32
+                      example: SK10291
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: '#/definitions/ProductWarehouse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /sku: The required properties (active) are missing'
+                    status: error
+                    errors:
+                    - '/sku: The required properties (active) are missing'
+                missingShop:
+                  summary: Bad Shop Request
+                  description: Shop not found
+                  value:
+                    code: 1370
+                    message: Shop not found
+                    errors:
+                    - Shop not found
+                skuInUse:
+                  summary: Bad SKU Request
+                  description: SKU for Shop is already in use
+                  value:
+                    code: 1334
+                    message: SKU for Shop is already in use
+                    errors:
+                    - SKU for Shop is already in use
+                productSku:
+                  summary: Bad Product/SKU Request
+                  description: Only one SKU can be active for Product in Shop
+                  value:
+                    code: 1337
+                    message: Only one SKU can be active for Product in Shop
+                    errors:
+                    - Only one SKU can be active for Product in Shop
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+                skuNotFound:
+                  summary: SKU Not Found
+                  description: SKU does not exist in Shop
+                  value:
+                    code: 1330
+                    message: SKU does not exist in Shop
+                    errors:
+                    - SKU does not exist in Shop
+        '429':
+          $ref: '#/definitions/RateLimit'
+    delete:
+      tags:
+      - Products
+      summary: DELETE /products/{id}/shop/{shopId}/sku/{sku}
+      description: Deletes a SKU if it's not being used by orders.
+      operationId: deleteProductSku
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The product ID
+        required: true
+        type: integer
+      - name: shopId
+        in: path
+        description: The shop ID
+        required: true
+        type: string
+        maxLength: 32
+      - name: sku
+        in: path
+        description: The product SKU
+        required: true
+        type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/products/{id}/shop/{shopId}/sku/{sku} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotDelete:
+                  summary: Bad Request
+                  description: SKU can't be deleted
+                  value:
+                    code: 1335
+                    message: SKU can't be deleted
+                    errors:
+                    - SKU can't be deleted
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                skuNotFound:
+                  summary: SKU Not Found
+                  description: SKU does not exist in Shop
+                  value:
+                    code: 1330
+                    message: SKU does not exist in Shop
+                    errors:
+                    - SKU does not exist in Shop
+                notFound:
+                  summary: Product Not Found
+                  description: Product not found
+                  value:
+                    code: 1332
+                    message: Product not found
+                    errors:
+                    - Product not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  sku:
+    type: object
+    properties:
+      active:
+        description: Whether or not this SKU is active. Orders with an inactive SKU can't be created.
+        type: boolean
+        default: true
+        example: true
+      shop_id:
+        description: The shop ID associated with this SKU
+        type: string
+        example: my-shop
+      sku:
+        description: The SKU identifier
+        type: string
+        minLength: 3
+        maxLength: 32
+        pattern: A-Za-z0-9-_ /
+        example: SK10291
+    required:
+    - shop_id
+    - sku
+  NotFound:
+    $ref: '#/definitions/not-found'
+  Sku:
+    $ref: '#/definitions/sku'
+  Product:
+    $ref: '#/definitions/product'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  product-warehouse:
+    type: object
+    description: Information about the product and warehouse the inbound shipment is being sent to.
+    properties:
+      backordered:
+        description: The quantity that's backordered for this product.
+        type: integer
+        example: 43
+        readOnly: true
+      barcode:
+        description: The barcode for this product such as UPC, EAN, ISBN, etc.
+        type: string
+        maxLength: 32
+        default: Product ID
+        example: 4011200296908
+      coo:
+        description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format for Customs
+        type: string
+        maxLength: 2
+        minLength: 2
+        example: CN
+      cost:
+        description: The product cost value in USD. Important for insurance claims.
+        type: decimal
+        default: 0
+        example: 2.25
+      created:
+        description: The date and time the shipment was created.
+        type: string
+        example: '2024-06-20 10:11:12'
+        readOnly: true
+      description:
+        description: The product description for reference.
+        type: string
+        maxLength: 64
+        example: 100% Cotton Shirt
+      dg_code:
+        description: A code that identifies dangerous goods. Required if shipping lithium batteries, ORM-D, or other dangerous goods. Refer to [this page](/#tag/DangerousGoods) for a list of codes and further information.
+        type: string
+        example: 0966
+      height:
+        description: The product height in CM.
+        type: integer
+        example: 5
+        readOnly: true
+      hs_codes:
+        description: An array of objects containing HS codes used for Customs clearance in different countries. Some countries or services require an HS code for import and/or export. Optional. Remove countries' HS codes from the product by omitting the objects you no longer want associated in an update request. Remove all HS codes by passing an empty array.
+        type: array
+        items:
+          type: object
+          properties:
+            country:
+              type: string
+              example: US
+            hs_code:
+              type: string
+              example: 3109165102
+          required:
+          - country
+          - hs_code
+        example:
+        - country: US
+          hs_code: '3109165102'
+        - country: CN
+          hs_code: 0302410090
+      id:
+        description: The product ID.
+        type: integer
+        example: 20191
+        readOnly: true
+      is_packaging:
+        description: Indicates if this product is using for packaging at the warehouse. Immutable. Optional.
+        type: boolean
+        default: false
+        example: false
+      length:
+        description: The product length in CM.
+        type: integer
+        example: 12
+        readOnly: true
+      name:
+        description: The product name to help identify the product.
+        type: string
+        maxLength: 64
+        minLength: 3
+        example: XL Pink T-Shirt
+      quantity:
+        description: The quantity on hand across all warehouses.
+        type: integer
+        example: 544
+        readOnly: true
+      skus:
+        description: An array of SKUs that reference this product.
+        type: array
+        items:
+          $ref: '#/definitions/Sku'
+          example:
+          - active: true
+            shop_id: my-shop
+            sku: SK10291
+          - active: false
+            shop_id: my-shop
+            sku: 08X092
+      supplier:
+        type: string
+        maxLength: 32
+        example: US1234567890
+        default: null
+      value:
+        description: The product retail value in USD.
+        type: decimal
+        example: 19.99
+      warehouses:
+        description: An array of warehouses and their inventory for this product. Only present when retrieving a single product.
+        type: array
+        items:
+          $ref: '#/definitions/Warehouse'
+          example:
+          - description: 毛衣
+            entry_point: HKG101
+            id: WH0HK001
+            language: Chinese
+            language_code: zh
+            quantity: 102
+          - description: 毛衣
+            entry_point: SZX001
+            id: WH0SZ001
+            language: Chinese
+            language_code: zh
+            quantity: 0
+      weight:
+        description: The product weight in KG.
+        type: decimal
+        example: 0.325
+        readOnly: true
+      width:
+        description: The product width in CM.
+        type: integer
+        example: 10
+        readOnly: true
+    required:
+    - coo
+    - description
+    - name
+    - skus
+    - value
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  warehouse:
+    type: object
+    description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
+    properties:
+      address:
+        description: The warehouse address with newlines (\n).
+        type: string
+        example: 'Unit 5b, 102 Jinfanghua Ecommerce District
+
+          Shenzhen
+
+          GD 518000
+
+          China'
+        readOnly: true
+      country:
+        description: The country where the warehouse resides.
+        type: string
+        example: HK
+        readOnly: true
+      entry_point:
+        description: The [Entry Point](#tag/EntryPoints) id associated to the warehouse.
+        type: string
+        example: SZX002
+        readOnly: true
+      id:
+        description: The unique warehouse ID
+        type: string
+        example: WH0SZ001
+      language:
+        description: The local language for the warehouse.
+        type: string
+        example: Chinese
+        readOnly: true
+      language_code:
+        description: The local language code for the warehouse in ISO 639-1 format.
+        type: string
+        example: zh
+        readOnly: true
+      name:
+        description: The warehouse name.
+        type: string
+        example: BoxC Shenzhen 1
+        readOnly: true
+    required:
+    - id
+  product:
+    type: object
+    description: Information about the warehouse the inbound shipment is being sent to. Only the id is required when creating a shipment. View the Warehouses resource for a list.
+    properties:
+      backordered:
+        description: The quantity that's backordered for this product.
+        type: integer
+        example: 43
+        readOnly: true
+      barcode:
+        description: The barcode for this product such as UPC, EAN, ISBN, etc. Defaults to the product ID if one isn't provided.
+        type: string|null
+        maxLength: 32
+        default: null
+        example: '4011200296908'
+      coo:
+        description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format for Customs clearance.
+        type: string
+        maxLength: 2
+        minLength: 2
+        example: CN
+      cost:
+        description: The product cost value in USD. Important for insurance claims.
+        type: decimal
+        default: 0
+        example: 2.25
+      created:
+        description: The date and time the shipment was created.
+        type: string
+        example: '2024-06-20 10:11:12'
+        readOnly: true
+      description:
+        description: The product description for reference.
+        type: string
+        maxLength: 64
+        example: 100% Cotton Shirt
+      dg_code:
+        description: A code that identifies dangerous goods. Required if shipping lithium batteries, ORM-D, or other dangerous goods. Refer to [this page](/#tag/DangerousGoods) for a list of codes and further information.
+        type: string
+        example: 0966
+      height:
+        description: The product height in CM.
+        type: integer
+        example: 5
+        readOnly: true
+      hs_codes:
+        description: An array of objects containing HS codes used for Customs clearance in different countries. Some countries or services require an HS code for import and/or export. Remove countries' HS codes from the product by omitting the objects you no longer want associated in an update request. Remove all HS codes by passing an empty array.
+        type: array
+        items:
+          type: object
+          properties:
+            country:
+              type: string
+              description: Country code
+              pattern: '[A-Z]{2}'
+              example: US
+            hs_code:
+              type: string
+              description: The country's HTS Code for the product
+              pattern: '[0-9]{8,12}'
+              example: 3109165102
+          required:
+          - country
+          - hs_code
+        example:
+        - country: US
+          hs_code: '3109165102'
+        - country: CN
+          hs_code: 0302410090
+      id:
+        description: The product ID. Set by the system.
+        type: integer
+        example: 20191
+        readOnly: true
+      length:
+        description: The product length in CM. Set by the system.
+        type: integer
+        example: 12
+        readOnly: true
+      local_descriptions:
+        description: A list of product descriptions in different languages. Only used to update the description in a warehouse's local language. It will update all descriptions with a matching language_code. Required if the product is actually inventoried at warehouses.
+        type: array
+        writeOnly: true
+        items:
+          type: object
+          properties:
+            description:
+              description: The product description in the language indicated by language_code.
+              type: string
+              maxLength: 64
+            language_code:
+              description: The local language code for the warehouse in ISO 639-1 format.
+              type: string
+          required:
+          - description
+          - language_code
+        example:
+        - description: 100% Cotton T-Shirt
+          language_code: en
+        - description: 毛衣
+          language_code: zh
+      name:
+        description: The product name to help identify the product.
+        type: string
+        maxLength: 64
+        minLength: 3
+        example: XL Pink T-Shirt
+      quantity:
+        description: The quantity on hand across all warehouses.
+        type: integer
+        example: 544
+        readOnly: true
+      supplier:
+        description: The product supplier or manufacturer. This is known as the Manufacturer Identification code (MID) in the US. It's required for some countries based on the origin and destination.
+        type: string
+        example: 212312311
+        maxLength: 32
+        default: null
+      url:
+        description: A link to the product on your marketplace used for customs clearance.
+        type: string
+        maxLength: 128
+        format: uri
+        example: https://example.com/product/1234
+      value:
+        description: The product retail value in USD.
+        type: decimal
+        example: 19.99
+      weight:
+        description: The product weight in KG.
+        type: decimal
+        example: 0.325
+        readOnly: true
+      width:
+        description: The product width in CM.
+        type: integer
+        example: 10
+        readOnly: true
+    required:
+    - coo
+    - description
+    - name
+    - value
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  Warehouse:
+    $ref: '#/definitions/warehouse'
+  ProductWarehouse:
+    $ref: '#/definitions/product-warehouse'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

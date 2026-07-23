@@ -1,0 +1,1066 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Labels API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Labels
+  x-displayName: Labels
+  description: The Labels resource allows a user to create, cancel, retrieve, and track labels for shipments. A label can't be created if there is already an uncancelled or processed label for the shipment. Labels that have been processed can't be cancelled. The user is responsible for paying the shipping costs if a label is cancelled but still processed at a facility. Test labels are routinely purged from the system.
+paths:
+  /labels/{id}:
+    get:
+      tags:
+      - Labels
+      summary: GET /labels/{id}
+      description: Retrieves a label.
+      operationId: getLabelsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shipments
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+          example: application/pdf
+          enum:
+          - application/json
+          - application/pdf
+        description: Optionally download the label.
+      - in: query
+        name: type
+        description: The data stream type if you don't want the label details and need the shipment label.
+        required: false
+        deprecated: true
+        type: string
+        enum:
+        - PDF
+        example: PDF
+      - name: id
+        in: path
+        description: The label ID or tracking number
+        required: true
+        type:
+        - integer
+        - string
+        maxLength: 40
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/labels/{id}\n"
+      responses:
+        '200':
+          description: OK. Returns PDF blob if `type=PDF` parameter is used.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  label:
+                    $ref: '#/definitions/Label'
+            application/pdf:
+              type: string
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Label not found
+                  value:
+                    code: 1205
+                    message: Label not found
+                    errors:
+                    - Label not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    patch:
+      tags:
+      - Labels
+      summary: PATCH /labels/{id}
+      description: Updates a label / package.
+      operationId: patchLabel
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      parameters:
+      - name: id
+        in: path
+        description: The label ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PATCH https://api.boxc.com/v1/labels/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n  -d '{\n    \"label\":\n    {\n        \"cancelled\": true,\n        \"overpack_id\": null\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  $ref: '#/definitions/LabelPatch'
+              required:
+              - label
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  label:
+                    $ref: '#/definitions/Label'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                alreadyCancelled:
+                  summary: Bad Request
+                  description: Label was previously cancelled
+                  value:
+                    code: 1204
+                    message: Label was previously cancelled
+                    errors:
+                    - Label was previously cancelled
+                cannotCancel:
+                  summary: Bad Request
+                  description: Label can't be cancelled
+                  value:
+                    code: 1206
+                    message: Label can't be cancelled
+                    errors:
+                    - Label can't be cancelled
+                overpackLocked:
+                  summary: Overpack is locked
+                  description: Overpack is locked because it was previously manifested.
+                  value:
+                    code: 1251
+                    message: Overpack is locked
+                    errors:
+                    - Overpack is locked
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Label not found
+                  value:
+                    code: 1205
+                    message: Label not found
+                    errors:
+                    - Label not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                labelError:
+                  summary: Server Error Creating Label
+                  description: Label can't be cancelled
+                  value:
+                    code: 1206
+                    message: Label can't be cancelled
+                    errors:
+                    - Label can't be cancelled
+  /labels:
+    post:
+      tags:
+      - Labels
+      summary: POST /labels
+      description: Creates a label using an existing shipment with no label or cancelled labels.
+      operationId: addLabel
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/labels \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"label\":\n    {\n        \"shipment_id\": <YOUR SHIPMENT ID>\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  $ref: '#/definitions/Label'
+              required:
+              - label
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  label:
+                    $ref: '#/definitions/Label'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /label: The required properties (shipment_id) are missing'
+                    status: error
+                    errors:
+                    - '/label: The required properties (shipment_id) are missing'
+                badRequest:
+                  summary: Bad Request
+                  description: Shipment has uncancelled or processed labels
+                  value:
+                    code: 1201
+                    message: Shipment has uncancelled or processed labels
+                    errors:
+                    - Shipment has uncancelled or processed labels
+                noRoutes:
+                  summary: Bad Routes Request
+                  description: No routes found
+                  value:
+                    code: 1050
+                    message: No routes found
+                    errors:
+                    - No routes found
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '402':
+          $ref: '#/definitions/PaymentRequired'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shipment not found
+                  value:
+                    code: 1210
+                    message: Shipment not found
+                    errors:
+                    - Shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                labelError:
+                  summary: Server Error - Creating Label
+                  description: Label could not be created
+                  value:
+                    code: 1082
+                    message: Label could not be created
+                    errors:
+                    - Label could not be created
+                balanceError:
+                  summary: Server Error - Retrieving Balance
+                  description: There was an error while fetching the account balance
+                  value:
+                    code: 1081
+                    message: There was an error while fetching the account balance
+                    errors:
+                    - There was an error while fetching the account balance
+                chargingError:
+                  summary: Server Error - Charging Account
+                  description: There was an error while charging the account balance
+                  value:
+                    code: 1082
+                    message: There was an error while charging the account balance
+                    errors:
+                    - There was an error while charging the account balance
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Server error. Try again later.
+                  value:
+                    code: 1001
+                    message: Server error. Try again later.
+                    errors:
+                    - Server error. Try again later.
+  /labels/bulk:
+    post:
+      tags:
+      - Labels
+      summary: POST /labels/bulk
+      description: Create a PDF with up to 100 labels.
+      operationId: bulkAddLabel
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/labels/bulk \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"labels\": [\n      \"<YOUR TRACKING NUMBER 1>\",\n      \"<YOUR TRACKING NUMBER 2>\",\n      \"<YOUR TRACKING NUMBER 3>\"\n    ]\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/LabelPostBulkRequest'
+      responses:
+        '200':
+          description: A single PDF file with up to 100 labels.
+          content: applicatin/pdf
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: Label not available for PDF download.
+                  value:
+                    code: 1205
+                    message: Label not found.
+                    status: error
+                    errors:
+                    - Label not found.
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /labels/{id}/cancel:
+    put:
+      tags:
+      - Labels
+      summary: PUT /labels/{id}/cancel
+      description: Cancels a label.
+      operationId: cancelLabel
+      deprecated: true
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      parameters:
+      - name: id
+        in: path
+        description: The label ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/labels/{id}/cancel \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotCancel:
+                  summary: Bad Request
+                  description: Label can't be cancelled
+                  value:
+                    code: 1206
+                    message: Label can't be cancelled
+                    errors:
+                    - Label can't be cancelled
+                overpackLocked:
+                  summary: Overpack is locked
+                  description: Overpack is locked
+                  value:
+                    code: 1251
+                    message: Overpack is locked
+                    errors:
+                    - Overpack is locked
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Label not found
+                  value:
+                    code: 1205
+                    message: Label not found
+                    errors:
+                    - Label not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                labelError:
+                  summary: Server Error Creating Label
+                  description: Label can't be cancelled
+                  value:
+                    code: 1206
+                    message: Label can't be cancelled
+                    errors:
+                    - Label can't be cancelled
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  payment-required:
+    description: Payment Required
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Payment Required
+          description: There are insufficient funds available for this resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Duplicate of the error message
+              type: array
+              items:
+                type: string
+        examples:
+          paymentRequired:
+            summary: Payment Required
+            description: Insufficient funds
+            value:
+              code: 1080
+              message: Insufficient funds
+              errors:
+              - Insufficient funds
+  NotFound:
+    $ref: '#/definitions/not-found'
+  Event:
+    $ref: '#/definitions/event'
+  Label:
+    $ref: '#/definitions/label'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  event:
+    type: object
+    description: The tracking history for this label in descending order. Set by the system.
+    properties:
+      carrier:
+        description: The carrier that provided this event.
+        type: string
+        example: USPS
+        readOnly: true
+      city:
+        description: The city the event took place in.
+        type: string
+        maxLength: 40
+        example: New York City
+        readOnly: true
+      code:
+        description: A code matching the description and to help identify the event.
+        type: integer
+        example: 200
+        readOnly: true
+      country:
+        description: The country code the event took place in.
+        type: string
+        maxLength: 2
+        minLength: 2
+        pattern:
+        - A-Z
+        example: US
+        readOnly: true
+      description:
+        description: A description of the event.
+        type: string
+        example: DELIVERED
+        readOnly: true
+      latitude:
+        description: Latitude coordinate of the event.
+        type:
+        - number
+        - 'null'
+        minimum: -90
+        maximum: 90
+        example: null
+        readOnly: true
+      longitude:
+        description: Longitude coordinate of the event.
+        type:
+        - number
+        - 'null'
+        minimum: -180
+        maximum: 180
+        example: null
+        readOnly: true
+      postal_code:
+        description: The postal code the event took place in.
+        type: string
+        maxLength: 10
+        example: '10001'
+        readOnly: true
+      province:
+        description: The province the event took place in.
+        type: string
+        maxLength: 40
+        example: NY
+        readOnly: true
+      time:
+        description: The local date and time the event occurred.
+        type: string
+        format: datetime
+        default: null
+        example: '2024-05-26 07:11:45'
+        readOnly: true
+  LabelPostBulkRequest:
+    $ref: '#/definitions/label-post-bulk-request'
+  package-contents:
+    type: object
+    title: PackageContents
+    properties:
+      description:
+        description: A description of this item.
+        type: string
+        minLength: 3
+        maxLength: 64
+        example: Dayman figurines
+      value:
+        description: The total value of this item.
+        type: decimal
+        exclusiveMinimum: 0
+        example: 200.25
+      quantity:
+        description: The number of units of this item.
+        type: integer
+        exclusiveMinimum: 0
+        example: 10
+    required:
+    - description
+    - value
+    - quantity
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  LabelPatch:
+    $ref: '#/definitions/label-patch'
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  PaymentRequired:
+    $ref: '#/definitions/payment-required'
+  label-patch:
+    type: object
+    properties:
+      cancelled:
+        description: Set to `true` to cancel this label and remove the package from the overpack.
+        type: boolean
+        default: false
+        example: true
+      overpack_id:
+        description: Set to `null` to remove this package from the overpack.
+        default: null
+        type:
+        - integer
+        - 'null'
+        example: null
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+  label-post-bulk-request:
+    type: object
+    properties:
+      labels:
+        description: An array of `label.id` or `label.tracking_number`.
+        type: array
+        minItems: 1
+        maxItems: 100
+        items:
+          type: string
+          maxLength: 40
+        example:
+        - '9261299991753900000301'
+        - '9261299991753900000323'
+        - '9261299991753900000339'
+    required:
+    - labels
+    additionalProperties: false
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  PackageContents:
+    $ref: '#/definitions/package-contents'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  label:
+    type: object
+    properties:
+      cancelled:
+        description: Whether or not the label was cancelled.
+        type: boolean
+        default: false
+        example: false
+      carrier:
+        description: The final mile carrier for this label.
+        type: string
+        example: USPS
+        readOnly: true
+      chargeable_weight:
+        description: The chargeable weight for this shipment which is the greater of gross weight and volumetric weight.
+        type: decimal
+        example: 0.3
+        readOnly: true
+      contents:
+        type: array
+        readOnly: true
+        description: List of contents in this package.
+        default: []
+        minItems: 0
+        items:
+          $ref: '#/definitions/PackageContents'
+      cost:
+        description: The shipping cost for the label.
+        type: decimal
+        example: 3.15
+        readOnly: true
+      created:
+        description: The date and time the label was created.
+        type: string
+        default: null
+        example: '2024-05-17 15:43:03'
+        readOnly: true
+      delivery_date:
+        description: The date the shipment was delivered.
+        type: string
+        default: null
+        example: '2024-05-26 12:05:09'
+        readOnly: true
+      exit_point:
+        description: The exit port for this shipment determined by the system. This value is null for shipments where exit port is determined irrelevant for the destination.
+        type: string
+        example: LAX
+        readOnly: true
+      events:
+        description: The tracking history for this package in descending order.
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/Event'
+      height:
+        description: The height of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 1
+        example: 1.5
+      id:
+        description: The unique ID of the label in the system.
+        type: integer
+        example: 2382131
+        readOnly: true
+      insurance_fee:
+        description: The cost of insurance for this shipment if requested.
+        type: decimal
+        default: 0
+        example: 0
+        readOnly: true
+      is_master:
+        description: Indicates this package is the master label. Default is true for single package shipments.
+        type: boolean
+        readOnly: true
+        example: true
+      is_ready:
+        description: Indicates the label file is ready for download. This is true for most cases during shipment creation. Some carriers provide labels asynchronously.
+        type: boolean
+        example: true
+        readOnly: true
+      length:
+        description: The length of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 15
+        example: 15
+      overpack_id:
+        description: The overpack ID assigned to this package.
+        default: null
+        type:
+        - integer
+        - 'null'
+        example: 1501231
+      processed:
+        description: Whether or not the label was processed at our facility.
+        type: boolean
+        default: false
+        example: false
+        readOnly: true
+      processed_date:
+        description: The date the label was first processed at a facility.
+        type: string
+        default: null
+        example: '2024-05-27 19:14:55'
+        readOnly: true
+      processed_weight:
+        description: The processed weight of the shipment at a facility.
+        type: decimal
+        default: null
+        example: 0.284
+        readOnly: true
+      service:
+        type: string
+        description: The type of shipping service this label is billed for.
+        example: BoxC Parcel
+        readOnly: true
+      shipment_id:
+        description: The ID of the shipment you want to create a label for, or is associated with the label.
+        type: integer
+        example: 1014
+      status:
+        description: The latest status of the shipment.
+        type: string
+        enum:
+        - Pending
+        - Processed
+        - Cancelled
+        - Customs
+        - En Route
+        - Exception
+        - Delivered
+        example: Processed
+        readOnly: true
+      surcharge:
+        description: Additional cost for this shipment based on the route and chargeable weight.
+        type: decimal
+        default: 0
+        example: 0
+        readOnly: true
+      tracking_number:
+        type: string
+        description: The tracking number for the label.
+        example: '9261299991753900000290'
+        readOnly: true
+      weight:
+        description: The weight of the package in kg.
+        type: decimal
+        example: 0.202
+        exclusiveMinimum: 0
+        exclusiveMaximum: 10000
+      width:
+        description: The width of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 10
+        example: 8
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

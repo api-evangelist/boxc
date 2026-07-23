@@ -1,0 +1,893 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Returns API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Returns
+  x-displayName: Returns
+  description: 'The Returns resource allows a user to retrieve a list of returned shipments processed at a BoxC warehouse. Users may verify, [reship](/#tag/Reshipments), or discard their returns. Discarding a return is irreversible.
+
+    ### Verify
+
+    Users have the option to verify a return before reshipping it. The facility operator will take additional pictures of the contents inside the return and add messages if necessary. To verify a return the user should <strong>PUT</strong> a `status` of "Verify". This will change the status of the return to "Verifying" which cannot be reversed. Only returns in the "Processed" state can be verified.'
+paths:
+  /returns:
+    get:
+      tags:
+      - Returns
+      summary: GET /returns
+      description: Retrieves a paginated list of returns.
+      operationId: getReturns
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - returns
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        default: 50
+        minimum: 50
+        maximum: 100
+        required: false
+        type: integer
+      - in: query
+        name: order
+        description: The sort order of the results
+        enum:
+        - asc
+        - desc
+        default: desc
+        required: false
+        type: string
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+      - in: query
+        name: tracking_number
+        description: Filter that selects returns with the given tracking_number. Default behavior is to return all returns.
+        required: false
+        default: null
+        type: string
+      - in: query
+        name: status
+        description: Filter that selects returns with the given status. Default behavior is to return all returns.
+        required: false
+        default: null
+        type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/returns\\?limit=50\\&order=desc\\&status=Processed\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  returns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        created:
+                          description: The UTC date and time the return was processed at a facility.
+                          type: string
+                          example: '2024-06-27 11:32:18'
+                          readOnly: true
+                        id:
+                          description: The unique ID for this return.
+                          type: integer
+                          example: 13489
+                          readOnly: true
+                        messages:
+                          type: integer
+                          description: The number of messages.
+                          example: 2
+                          readOnly: true
+                        process_fee:
+                          description: The fee in USD for processing this return.
+                          type: decimal
+                          example: 1
+                          readOnly: true
+                        reshipment_id:
+                          description: The unique ID for this return's reshipment if available.
+                          type: integer
+                          default: null
+                          example: 102910
+                          readOnly: true
+                        rma_number:
+                          type: string
+                          description: The return merchandise authorization (RMA) for this return if available.
+                          default: null
+                          example: RMA10293021
+                        status:
+                          type: string
+                          enum:
+                          - Processed
+                          - Verifying
+                          - Verified
+                          - Reshipping
+                          - Reshipped
+                          description: 'The status of the return.
+
+                            '
+                          example: Processed
+                          readOnly: true
+                        tracking_number:
+                          type: string
+                          description: The tracking number that was used by the sender for this return.
+                          example: '9261299997140101431920'
+                          readOnly: true
+                        verify_fee:
+                          description: The fee in USD for verifying this return. Only applies to returns that were verified.
+                          type: decimal
+                          default: 0
+                          example: 0
+                          readOnly: true
+                        warehouse:
+                          description: Information about the warehouse the return was processed at.
+                          type: object
+                          properties:
+                            id:
+                              description: The warehouse id
+                              type: string
+                              example: WH0CVG01
+                              readOnly: true
+                        weight:
+                          description: The measured weight of this return in KG.
+                          type: decimal
+                          default: 0
+                          example: 0.128
+                          readOnly: true
+                  next_page:
+                    type: string
+                    description: Page token. Set by the system.
+                    example: ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw
+                    readOnly: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /returns/{id}:
+    get:
+      tags:
+      - Returns
+      summary: GET /returns/{id}
+      description: Retrieves a return.
+      operationId: getReturnsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - returns
+      parameters:
+      - name: id
+        in: path
+        description: The return ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/returns/{id}\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  return:
+                    $ref: '#/definitions/Return'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Return not found
+                  value:
+                    code: 1120
+                    message: Return not found
+                    errors:
+                    - Return not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Returns
+      summary: PUT /returns/{id}
+      description: Request verification of a return.
+      operationId: updateReturn
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - returns
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/returns/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"return\": {\n      \"status\": \"Verify\"\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                return:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      description: Change the status to Verify.
+                      example: Verify
+                      enum:
+                      - Verify
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  return:
+                    $ref: '#/definitions/Return'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /return: The required properties (status) are missing'
+                    status: error
+                    errors:
+                    - '/return: The required properties (status) are missing'
+                badRequest:
+                  summary: Bad Request
+                  description: Return must be processed before verifying
+                  value:
+                    code: 1121
+                    message: Return must be processed before verifying
+                    errors:
+                    - Return must be processed before verifying
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '402':
+          $ref: '#/definitions/PaymentRequired'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Return not found
+                  value:
+                    code: 1120
+                    message: Return not found
+                    errors:
+                    - Return not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: There was an error while fetching the account balance
+                  value:
+                    code: 1081
+                    message: There was an error while fetching the account balance
+                    errors:
+                    - There was an error while fetching the account balance
+                chargingError:
+                  summary: Internal Server Error - Charging Account
+                  description: There was an error while charging the account balance
+                  value:
+                    code: 1082
+                    message: There was an error while charging the account balance
+                    errors:
+                    - There was an error while charging the account balance
+    delete:
+      tags:
+      - Returns
+      summary: DELETE /returns/{id}
+      description: Deletes a return.
+      operationId: deleteReturn
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - returns
+      parameters:
+      - name: id
+        in: path
+        description: The return ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/returns/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotDelete:
+                  summary: Bad Request
+                  description: Return can't be discarded with this status
+                  value:
+                    code: 1122
+                    message: Return can't be discarded
+                    errors:
+                    - Return can't be discarded
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Return not found
+                  value:
+                    code: 1120
+                    message: Return not found
+                    errors:
+                    - Return not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /returns/{id}/messages:
+    post:
+      tags:
+      - Returns
+      summary: POST /returns/{id}/messages
+      description: Adds a message to a return.
+      operationId: addReturn
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - returns
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/returns/{id}/messages \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"message\": {\n      \"body\": \"Forward to John Doe, Order ID #123458-10\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: object
+                  properties:
+                    body:
+                      type: string
+                      description: The content body of the message.
+                      example: 'Forward to John Doe, Order ID #123458-10'
+                      maxLength: 200
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  return:
+                    $ref: '#/definitions/Return'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /return: The required properties (body) are missing'
+                    status: error
+                    errors:
+                    - '/return: The required properties (body) are missing'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Return not found
+                  value:
+                    code: 1120
+                    message: Return not found
+                    errors:
+                    - Return not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  PaymentRequired:
+    $ref: '#/definitions/payment-required'
+  Message:
+    $ref: '#/definitions/message'
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  payment-required:
+    description: Payment Required
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Payment Required
+          description: There are insufficient funds available for this resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Duplicate of the error message
+              type: array
+              items:
+                type: string
+        examples:
+          paymentRequired:
+            summary: Payment Required
+            description: Insufficient funds
+            value:
+              code: 1080
+              message: Insufficient funds
+              errors:
+              - Insufficient funds
+  NotFound:
+    $ref: '#/definitions/not-found'
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  message:
+    type: object
+    properties:
+      author:
+        description: The creator of the message. Can be either "user" or "operator".
+        type: string
+        example: user
+        readOnly: true
+      body:
+        description: The content body of the message.
+        type: string
+        maxLength: 200
+        example: Please handle with care
+      created:
+        description: The UTC date and time the message was created.
+        type: string
+        example: '2024-06-20 10:11:12'
+        readOnly: true
+      id:
+        description: The unique ID for this message.
+        type: integer
+        example: 40119
+        readOnly: true
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Return:
+    $ref: '#/definitions/return'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+  return:
+    type: object
+    properties:
+      created:
+        description: The UTC date and time the return was processed at a facility.
+        type: string
+        example: '2024-06-27 11:32:18'
+        format: datetime
+        readOnly: true
+      id:
+        description: The unique ID for this return.
+        type: integer
+        example: 13489
+        readOnly: true
+      images:
+        type: array
+        description: A list of images taken for this return. Only present when retrieving a single return. Images are removed when the return is discarded.
+        readOnly: true
+        items: string
+        example:
+        - https://api.boxc.com/i/32e186166912f18072645e793933904a115f23ce3d33108853640d1d3f94c6b6.jpg
+        - https://api.boxc.com/i/032b960ff67c0fe830e78cb60a2a1b09df18c216a15cacddfbcbfaed33da473e.jpg
+      messages:
+        type: array
+        description: A list of message objects left by the user or operater for this return. Messages are sorted by created in descending order. If searching, the number of messages will be returned instead. See message for details about each property.
+        items:
+          messages:
+            $ref: '#/definitions/Message'
+      process_fee:
+        description: The fee in USD for processing this return.
+        type: decimal
+        example: 1
+        readOnly: true
+      reshipment_id:
+        description: The unique ID for this return's reshipment if available.
+        type: integer
+        default: null
+        example: 102910
+        readOnly: true
+      rma_number:
+        type: string
+        description: The return merchandise authorization (RMA) for this return if available.
+        default: null
+        example: RMA10293021
+        readOnly: true
+      status:
+        type: string
+        enum:
+        - Processed
+        - Verifying
+        - Verified
+        - Reshipping
+        - Reshipped
+        description: The status of the return.
+        example: Processed
+      tracking_number:
+        type: string
+        description: The tracking number that was used by the sender for this return.
+        example: '9261299997140101431920'
+        readOnly: true
+      verify_fee:
+        description: The fee in USD for verifying this return. Only applies to returns that were verified.
+        type: decimal
+        default: 0
+        example: 0
+        readOnly: true
+      warehouse:
+        description: Information about the warehouse the return was processed at.
+        type: object
+        properties:
+          id:
+            description: The warehouse id
+            type: string
+            example: WH0CVG01
+            readOnly: true
+      weight:
+        description: The measured weight of this return in KG.
+        type: decimal
+        default: 0
+        example: 0.128
+        readOnly: true
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

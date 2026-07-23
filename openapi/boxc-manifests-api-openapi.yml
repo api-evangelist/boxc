@@ -1,0 +1,838 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Manifests API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Manifests
+  x-displayName: Manifests
+  description: 'The Manifests resource is used for generating the paperwork required for dropping off Overpacks at a [collection center](/#tag/EntryPoints) or carrier facility at the end of the day. It also transmits the shipment data to the carrier(s) electronically. In order to create a manifest you must provide a list of the Overpacks that will be dropped off together. A manifest consists of all Shipments that are linked to each Overpack.
+
+
+    **Note:** All overpacks in a manifest must have the same ```entry_point```, can''t be empty, or missing weight and dimensions.
+
+
+    Some manifests may have separate forms or no forms at all for the different carriers depending on the routes utilized by the affected shipments. Shipments should be sorted into Overpacks based on the carrier and other details prior to manifesting. Multiple copies of a form may exist for the driver and facility.
+
+
+    **Note:** It can take up to several minutes before forms are available for download after manifesting because the required background tasks run asynchronously.
+
+
+    **Important:** Once a manifest is created the associated overpacks and shipments can''t be modified.'
+paths:
+  /manifests:
+    get:
+      tags:
+      - Manifests
+      summary: GET /manifests
+      description: Retrieves a paginated list of manifests.
+      operationId: getManifests
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shipments
+      parameters:
+      - in: query
+        name: entry_point
+        description: Filter that returns manifests for a single entry point.
+        required: false
+        type: string
+      - in: query
+        name: limit
+        description: The number of results to return.
+        default: 50
+        minimum: 50
+        maximum: 100
+        required: false
+        type: integer
+      - in: query
+        name: order
+        description: The sort order of the results.
+        default: desc
+        required: false
+        type: string
+        enum:
+        - asc
+        - desc
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/manifests\\?limit=50\\&order=desc\\&entry_point=HKGI01\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  manifests:
+                    type: array
+                    items:
+                      $ref: '#/definitions/ManifestItem'
+                  next_page:
+                    type: string
+                    description: Page token. Set by the system.
+                    example: ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - Manifests
+      summary: POST /manifests
+      description: Creates an manifest.
+      operationId: addManifest
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/manifests \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"manifest\": {\n      \"carrier\": \"USPS\",\n      \"tracking_number\": \"<YOUR TRACKING NUMBER>\",\n      \"overpacks\": [\n        <YOUR OVERPACK ID 1>,\n        <YOUR OVERPACK ID 2>\n      ]\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                manifest:
+                  allOf:
+                  - $ref: '#/definitions/Manifest'
+                  - properties:
+                      overpacks:
+                        description: List of overpack IDs to include in the manifest.
+                        type: array
+                        minItems: 1
+                        example:
+                        - 1000001
+                        - 1000002
+                        items:
+                          type: integer
+                          minimum: 1
+                    required:
+                    - overpacks
+              required:
+              - manifest
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  manifest:
+                    allOf:
+                    - $ref: '#/definitions/Manifest'
+                    - properties:
+                        overpacks:
+                          description: A list of the overpacks and their details that are part of this manifest. Only available when creating and requesting a single manifest.
+                          type: array
+                          items:
+                            $ref: '#/definitions/Overpack'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /manifest/overpacks: Array should have at least 1 items, 0 found'
+                    status: error
+                    errors:
+                    - 'Validation Error. /manifest/overpacks: Array should have at least 1 items, 0 found'
+                badRequest:
+                  summary: Bad Request - Overpack
+                  description: Overpack not found
+                  value:
+                    code: 1250
+                    message: Overpack not found
+                    errors:
+                    - Overpack not found
+                emptyOverpack:
+                  summary: Bad Request - Empty Overpack
+                  description: Overpack is empty
+                  value:
+                    code: 1270
+                    message: Overpack is empty
+                    errors:
+                    - Overpack is empty
+                entryPoint:
+                  summary: Bad Request - Entry Point
+                  description: All overpacks must have the same entry point
+                  value:
+                    code: 1271
+                    message: All overpacks must have the same entry point
+                    errors:
+                    - All overpacks must have the same entry point
+                overpackReuse:
+                  summary: Bad Request - Overpack re-use
+                  description: Overpack was already used in another manifest
+                  value:
+                    code: 1272
+                    message: Overpack was already used in another manifest
+                    errors:
+                    - Overpack was already used in another manifest
+                overpackIncomplete:
+                  summary: Bad Request - Overpack Incomplete
+                  description: Overpack is missing weight or dimensions
+                  value:
+                    code: 1273
+                    message: Overpack is missing weight or dimensions
+                    errors:
+                    - Overpack is missing weight or dimensions
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Manifest could not be created.
+                  value:
+                    code: 1274
+                    message: Manifest could not be created.
+                    errors:
+                    - Manifest could not be created.
+  /manifests/{id}:
+    get:
+      tags:
+      - Manifests
+      summary: GET /manifests/{id}
+      description: Retrieves a manifest.
+      operationId: getManifestsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shipments
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+          example: application/pdf
+          enum:
+          - application/json
+          - application/pdf
+        description: Optionally download the manifest documents.
+      - in: query
+        name: type
+        description: 'The data stream type if you don''t want the manifest details, but need the paperwork or forms. Only **PDF** is accepted.
+
+          '
+        required: false
+        deprecated: true
+        type: string
+        example: PDF
+        enum:
+        - PDF
+      - name: id
+        in: path
+        description: The manifest ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"accept: application/json\" \\\n  https://api.boxc.com/v1/manifests/{id}\n"
+      responses:
+        '200':
+          description: OK. Returns PDF blob if `type=PDF` parameter is used. The PDF combines all carrier documents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  manifest:
+                    allOf:
+                    - $ref: '#/definitions/Manifest'
+                    - properties:
+                        overpacks:
+                          description: A list of the overpacks and their details that are part of this manifest. Only available when creating and requesting a single manifest.
+                          type: array
+                          items:
+                            $ref: '#/definitions/Overpack'
+            application/pdf:
+              type: string
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Manifest not found
+                  value:
+                    code: 1275
+                    message: Manifest not found
+                    errors:
+                    - Manifest not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  overpack:
+    type: object
+    properties:
+      carrier:
+        description: The final mile carrier for this overpack inherited from the shipments.
+        type: string
+        example: USPS
+        readOnly: true
+      contains_dg:
+        description: Indicates the overpack contains a shipment with a dangerous good.
+        type: boolean
+        example: true
+        readOnly: true
+      created:
+        description: The date and time the overpack was created.
+        type: string
+        format: datetime
+        example: '2024-05-17 15:43:03'
+        readOnly: true
+      entry_point:
+        description: The drop off location for this overpack. See Entry Points for a list of codes. All shipments must have the same entry point. The system determines the entry point based on the shipments.
+        type: string
+        example: LAXI01
+        minLength: 3
+        maxLength: 3
+        readOnly: true
+      exit_point:
+        description: The exit port for this overpack determined by the system. This value is null for shipments where exit port is deemed inconsequential for the destination.
+        type: string
+        default: null
+        example: LAX
+        pattern:
+        - A-Z
+        minLength: 3
+        maxLength: 3
+        readOnly: true
+      external_tracking:
+        description: Some carriers require their own tracking numbers to be present on the overpack label.
+        type: string
+        default: null
+        example: null
+        readOnly: true
+        maxLength: 40
+      height:
+        description: The height of the overpack in cm. Required to manifest.
+        type: integer
+        example: 50
+      id:
+        description: The ID of the overpack.
+        type: integer
+        example: 12091
+        readOnly: true
+      length:
+        description: The length of the overpack in cm. Required to manifest.
+        type: integer
+        example: 91
+      locked:
+        description: Whether or not the overpack is locked. Overpacks are locked by the system when they are part of a manifest. They can't be modified once manifested.
+        type: boolean
+        example: false
+        readOnly: true
+      manifest_id:
+        description: The ID of the manifest this overpack is linked to.
+        type: integer
+        example: 1010023
+        readOnly: true
+      pga:
+        description: Indicates this overpack contains sensitive materials based on the HTS code(s) and destination country.
+        type: boolean
+        example: false
+        default: false
+        readOnly: true
+      route_heading:
+        type: string
+        description: Route heading.
+        example: null
+        readOnly: true
+      route_subheading:
+        type: string
+        description: Route subheading.
+        example: null
+        readOnly: true
+      service:
+        description: The BoxC service type. All shipments inside this overpack must have the same service. The system determines the service type based on the shipments.
+        type: string
+        example: BoxC Parcel
+        readOnly: true
+      shipments:
+        description: 'A list of shipments inside this overpack. Clients should use this to add multiple shipments at once. Only one child attribute is required to add the shipment to the overpack. The system will check for matching shipments in the following order: shipments[].id, shipments[].label_id, or shipments[].tracking_number. Only present when getting or putting a single overpack. At least one shipment is required to determine the routing logic of the overpack. Subsequent shipments'' attributes must match the first one that was added.'
+        type: array
+        minItems: 1
+        items:
+          type: object
+          properties:
+            id:
+              description: The shipment ID.
+              type: integer
+              example: 1212
+            label_id:
+              description: The label ID.
+              type: integer
+              example: 781028
+            tracking_number:
+              type: string
+              description: The shipment's tracking number.
+              example: '9261299991753900000290'
+              maxLength: 40
+            error:
+              type: string
+              description: Error message only present when a shipment can't be assigned to an overpack because of a mismatch of attributes.
+              example: Can't mix shipments with different terms
+              readOnly: true
+          additionalProperties: false
+      terms:
+        description: The shipping terms for this overpack inherited from the shipments. All shipments in the overpack must have the same terms.
+        type: string
+        example: null
+        readOnly: true
+      total_shipments:
+        description: The total number of shipments in the overpack. Only present when getting a list of overpacks.
+        type: integer
+        example: 432
+        minimum: 0
+        readOnly: true
+      type86:
+        description: Indicates the overpack contains only Type 86 shipments. This will be false for most clients.
+        type: boolean
+        example: false
+        readOnly: true
+        deprecated: true
+      weight:
+        description: The weight of the overpack in KG rounded to 1 significant digit after the decimal point. Required to manifest.
+        type: decimal
+        example: 87.5
+      width:
+        description: The width of the overpack in cm. Required to manifest.
+        type: integer
+        example: 30
+    required:
+    - shipments
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  manifest:
+    type: object
+    properties:
+      carrier:
+        description: The carrier delivering the overpacks to the warehouse.
+        type: string
+        maxLength: 20
+        example: DHL Express
+      created:
+        description: The date and time the manifest was created.
+        type: string
+        format: datetime
+        example: '2024-05-27 15:43:03'
+        readOnly: true
+      entry_point:
+        description: The drop off location for the overpacks. Inherited from the overpacks used to create the manifest.
+        type: string
+        readOnly: true
+        example: TEST01
+      id:
+        description: The manifest ID.
+        type: integer
+        example: 1002329
+        readOnly: true
+      mawb_id:
+        description: The ID for the Master Airway Bill this manifest is attached to. Not immediately available after creation.
+        type: integer
+        default: null
+        example: 1229
+        readOnly: true
+      overpack_details:
+        description: A list of the overpacks and their details that are part of this manifest. Only available when creating and requesting a single manifest.
+        type: array
+        deprecated: true
+        readOnly: true
+        items:
+          $ref: '#/definitions/Overpack'
+      total_shipments:
+        description: Total number of shipments in the manifest. This may show as null while the manifest is being created in the background.
+        type: integer
+        readOnly: true
+        example: 432
+      tracking_number:
+        type: string
+        description: The tracking number for the overpacks being delivered to the warehouse.
+        maxLength: 40
+        example: '9410293108'
+      warehouse_no:
+        type: string
+        description: An 11 or 12 character string for internal reference. It may not be immediately available after creating a manifest.
+        example: '753906563638'
+        readOnly: true
+    additionalProperties: false
+  ManifestItem:
+    $ref: '#/definitions/manifest-item'
+  NotFound:
+    $ref: '#/definitions/not-found'
+  Overpack:
+    $ref: '#/definitions/overpack'
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  manifest-item:
+    type: object
+    properties:
+      carrier:
+        description: The carrier delivering the overpacks to the warehouse.
+        type: string
+        maxLength: 20
+        example: DHL Express
+      created:
+        description: The date and time the manifest was created.
+        type: string
+        format: datetime
+        example: '2024-05-27 15:43:03'
+        readOnly: true
+      entry_point:
+        description: The drop off location for the overpacks. Inherited from the overpacks used to create the manifest.
+        type: string
+        example: TEST01
+      id:
+        description: The manifest ID.
+        type: integer
+        example: 1002329
+        readOnly: true
+      mawb_id:
+        description: The ID for the Master Airway Bill this manifest is attached to. Not immediately available after creation.
+        type: integer
+        default: null
+        example: 1229
+        readOnly: true
+      total_overpacks:
+        description: Total number of overpacks in the manifest. Only viewable while searching.
+        type: integer
+        example: 21
+        readOnly: true
+      total_shipments:
+        description: Total number of shipments in the manifest. Set by system. This may show as null while the manifest is being created in the background.
+        type: integer
+        example: 432
+        readOnly: true
+      tracking_number:
+        type: string
+        description: The tracking number for the overpacks being delivered to the warehouse.
+        maxLength: 40
+        example: '9410293108'
+      warehouse_no:
+        type: string
+        description: An 11 or 12 character string for internal reference. It may not be immediately available after creating a manifest.
+        example: '753906563638'
+        readOnly: true
+    additionalProperties: false
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  Manifest:
+    $ref: '#/definitions/manifest'
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

@@ -1,0 +1,519 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Users API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Users
+  x-displayName: Users
+  description: 'The Users resources allows an application to retrieve information about the tokenized user such as balances, personal/company address, and subscriptions. Only the addresses can be updated by applications
+
+
+    ### Subscriptions
+
+
+    A subscription is a recurring payment for a provided service. The specified `amount` is deducted from the user''s BoxC balance at the start of each `interval` - also known as `current_period_start`.
+
+
+    - Applications can only view subscriptions that belong to them.
+
+    - Subscriptions automatically renew each interval until cancelled.
+
+    - Cancelling a subscription will flag it to be deleted after `current_period_end`. To save a subscription it must be renewed before `current_period_end`.
+
+    - Subscriptions are automatically removed from the list if their `current_period_end` is less than the current time.
+
+    - A subscription cannot be modified after creation - only renewed.
+
+    - A subscription will not be renewed if the user has insufficient funds.
+
+    - A subscription can only be cancelled by the user from their account''s dashboard.
+
+    '
+paths:
+  /users/me:
+    get:
+      tags:
+      - Users
+      summary: GET /users/me
+      description: Retrieves this user.
+      operationId: getThisUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - openid profile email
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/users/me\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/definitions/User'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Users
+      summary: PUT /users/me
+      description: Updates a user.
+      operationId: updateUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - openid profile email
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/users/me \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"user\": {\n      \"address\": {\n        \"company_name\": \"Terracotta Warriors Ltd, Co\",\n        \"street1\": \"4 Jing Shan Qian Jie\",\n        \"street2\": \"Dongcheng\",\n        \"city\": \"Beijing\",\n        \"province\": \"Hebei\",\n        \"postal_code\": \"100009\",\n        \"country\": \"CN\"\n      }\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: User object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    address:
+                      $ref: '#/definitions/Address'
+              required:
+              - user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: User object
+                properties:
+                  user:
+                    $ref: '#/definitions/User'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /user/address: The required properties (street1) are missing.'
+                    status: error
+                    errors:
+                    - '/user/address: The required properties (street1) are missing.'
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  Address:
+    $ref: '#/definitions/address'
+  Subscription:
+    $ref: '#/definitions/subscription'
+  User:
+    $ref: '#/definitions/user'
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  address:
+    description: This is the user's personal or company address and may not be the same as the consignor.
+    type: object
+    properties:
+      company_name:
+        description: The company name.
+        type: string
+        maxLength: 40
+        example: Terracotta Warriors Ltd, Co
+      street1:
+        description: The company's street address.
+        type: string
+        maxLength: 50
+        example: 4 Jing Shan Qian Jie
+      street2:
+        description: Additional space for the company's street address.
+        type:
+        - string
+        - 'null'
+        default: null
+        maxLength: 50
+        example: Dongcheng
+      city:
+        description: The company's city.
+        type: string
+        maxLength: 40
+        example: Beijing
+      province:
+        description: The company's province. Required for some countries.
+        type:
+        - string
+        - 'null'
+        default: null
+        maxLength: 40
+        example: Hebei
+      postal_code:
+        description: The company's postal code. Required for some countries.
+        type:
+        - string
+        - 'null'
+        maxLength: 10
+        example: '100009'
+        default: null
+      country:
+        description: The company's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        pattern: /^[A-Z]{2}$/
+        example: CN
+    required:
+    - company_name
+    - street1
+    - city
+    - country
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  subscription:
+    type: object
+    description: Subscription.
+    properties:
+      amount:
+        description: The amount charged each interval.
+        type: decimal
+        example: 29.95
+      application:
+        description: The name of the application that created the subscription.
+        type: string
+        example: Returns By BoxC
+      cancelled_at:
+        description: The UTC date and time the subscription was cancelled.
+        type: datetime
+        default: null
+        example: null
+      created:
+        description: The UTC date and time the subscription was created.
+        type: datetime
+        default: null
+        example: '2024-07-18 14:10:01'
+      currency:
+        description: The currency code for the amount. Always "USD".
+        type: string
+        default: USD
+        example: USD
+      current_period_end:
+        description: The UTC date and time the subscription ends for this interval.
+        type: datetime
+        example: '2024-08-18 23:59:59'
+      current_period_start:
+        description: The UTC date and time the subscription started for this interval.
+        type: datetime
+        example: '2024-07-18 14:10:01'
+      id:
+        description: The unique ID of the subscription.
+        type: integer
+        example: sub_578d2a6bb75be
+      interval:
+        description: How often the subscription is renewed and the user is charged. Always "monthly".
+        type: string
+        example: monthly
+      name:
+        description: The name of the subscription set by the application.
+        type: string
+        example: RBB Basic Plan
+      status:
+        description: The status of the subscription.
+        type: string
+        enum:
+        - active
+        - cancelled
+        example: active
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  user:
+    type: object
+    properties:
+      address:
+        $ref: '#/definitions/Address'
+      balance:
+        description: The user's current balance with BoxC in USD. A negative amount is an outstanding balance.
+        deprecated: true
+        type: decimal
+        example: 1525.46
+        readOnly: true
+      balances:
+        description: A list of balances in different currencies for this user.
+        type: object
+        example:
+          USD: 1201.42
+          CNY: 421090
+        readOnly: true
+      credit_limits:
+        description: A list of credit limits in different currencies for this user.
+        type: object
+        example:
+          USD: 100000
+          CNY: 0
+        readOnly: true
+      first_name:
+        description: The user's first name.
+        type: string
+        example: Huang
+        readOnly: true
+      id:
+        description: The user's ID.
+        type: integer
+        example: 12006
+        readOnly: true
+      last_name:
+        description: The user's last name.
+        type: string
+        example: Qin
+        readOnly: true
+      subscriptions:
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/Subscription'
+      timezone:
+        description: The user's timezone following the format of [tz database](https://www.iana.org/time-zones).
+        type: string
+        default: UTC
+        example: UTC
+        readOnly: true
+    additionalProperties: false
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

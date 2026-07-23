@@ -1,0 +1,862 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Inbound API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Inbound
+  x-displayName: Inbound
+  description: 'The Inbound resource is part of the fulfillment component and allows customers to restock their products at warehouses operated by BoxC. An inbound shipment''s products can''t be modified after creation, but the warehouse, carrier, tracking number, and notes can be modified.
+
+
+    ### Inbound Status
+
+    The following table lists all possible states of an inbound shipment indicated by its `status` property. Only the system or warehouse can modify a shipment''s status.
+
+
+    | Status | Description |
+
+    |--------|-------------|
+
+    | Pending | The inbound shipment was created and may be en route to the warehouse. Default state. |
+
+    | Received | The inbound shipment arrived at the warehouse. It can no longer be updated or deleted. |
+
+    | Processed | The inbound shipment was processed and inventoried by the warehouse. |
+
+    '
+paths:
+  /inbound:
+    get:
+      tags:
+      - Inbound
+      summary: GET /inbound
+      description: Retrieves a list of inbound shipments.
+      operationId: getInboundList
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        required: false
+        default: 50
+        minimum: 50
+        maximum: 100
+        type: string
+      - in: query
+        name: order
+        description: The sort order of the results.
+        required: false
+        default: desc
+        type: string
+        enum:
+        - asc
+        - desc
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        type: string
+      security:
+      - JWT:
+        - read_products
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/inbound\\?limit=50\\&order=desc\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inbound:
+                    type: array
+                    items:
+                      $ref: '#/definitions/InboundShipments'
+                  next_page:
+                    type: string
+                    description: Page token. Set by the system.
+                    example: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - Inbound
+      summary: POST /inbound
+      description: Creates an inbound shipment.
+      operationId: addInbound
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/inbound \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"inbound\": {\n      \"carrier\": \"DHL\",\n      \"notes\": \"Manufacturer: XYZ; Delivery: 12/2/24\",\n      \"products\": [\n        {\n          \"cost\": 2.25,\n          \"id\": <YOUR PRODUCT ID>,\n          \"quantity\": 299\n        }\n      ],\n      \"tracking_number\": \"<YOUR TRACKING NUMBER>\",\n      \"warehouse\": {\n        \"id\": \"WH0SZ001\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\"\n      }\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inbound:
+                  $ref: '#/definitions/Inbound'
+              required:
+              - inbound
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inbound:
+                    $ref: '#/definitions/Inbound'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'inbound/warehouse/id: Warehouse is not valid'
+                    status: error
+                    errors:
+                    - Warehouse is not valid
+                product:
+                  summary: Product error
+                  description: Product not found or doesn't belong to user.
+                  value:
+                    code: 1352
+                    message: Product '100312' can't be added
+                    status: error
+                    errors: []
+                duplicates:
+                  summary: Duplicate products
+                  description: Products must be unique when creating an inbound shipment.
+                  value:
+                    code: 1354
+                    message: 'Duplicate products in the shipment: 100420'
+                    status: error
+                    errors: []
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+  /inbound/{id}:
+    get:
+      tags:
+      - Inbound
+      summary: GET /inbound/{id}
+      description: Retrieves an inbound shipment.
+      operationId: getInboundById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_products
+      parameters:
+      - in: query
+        name: type
+        description: The data stream type for downloading the inbound shipment label.
+        required: false
+        type: string
+        enum:
+        - PDF
+        example: PDF
+      - name: id
+        in: path
+        description: The inbound ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/inbound/{id}\n"
+      responses:
+        '200':
+          description: OK. Returns PDF blob if `type=PDF` parameter is used.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inbound:
+                    $ref: '#/definitions/Inbound'
+            application/pdf:
+              type: string
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Inbound shipment not found
+                  value:
+                    code: 1350
+                    message: Inbound shipment not found
+                    errors:
+                    - Inbound shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Inbound
+      summary: PUT /inbound/{id}
+      description: Updates an inbound shipment.
+      operationId: updateInbound
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The inbound ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/inbound/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"inbound\": {\n      \"carrier\": \"DHL\",\n      \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n      \"tracking_number\": \"9261299991753900000290\",\n      \"warehouse\": {\n        \"id\": \"WH0SZ001\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\"\n      }\n    }\n  }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inbound:
+                  $ref: '#/definitions/InboundUpdate'
+              required:
+              - inbound
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inbound:
+                    $ref: '#/definitions/Inbound'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'inbound/warehouse/id: Warehouse is not valid'
+                    status: error
+                    errors:
+                    - 'inbound/warehouse/id: Warehouse is not valid'
+                inbound:
+                  summary: Can't be updated
+                  description: Inbound shipment can't be updated because the status doesn't allow it.
+                  value:
+                    code: 1353
+                    message: Inbound shipment can't be updated
+                    status: error
+                    errors:
+                    - Inbound shipment can't be updated
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Inbound shipment not found
+                  value:
+                    code: 1350
+                    message: Inbound shipment not found
+                    errors:
+                    - Inbound shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    delete:
+      tags:
+      - Inbound
+      summary: DELETE /inbound/{id}
+      description: Deletes an inbound shipment.
+      operationId: deleteInbound
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_products
+      parameters:
+      - name: id
+        in: path
+        description: The inbound ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/inbound/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Inbound shipment not found
+                  value:
+                    code: 1350
+                    message: Inbound shipment not found
+                    errors:
+                    - Inbound shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  inbound-put:
+    type: object
+    summary: InboundShipment
+    properties:
+      carrier:
+        description: The carrier for the inbound shipment.
+        type: string
+        maxLength: 32
+        default: null
+        example: DHL
+      notes:
+        description: User defined notes for reference.
+        type: string
+        maxLength: 64
+        default: null
+        example: 'Manufacturer: XYZ; Delivery: 9/2/24'
+      tracking_number:
+        type: string
+        description: The tracking number for the inbound shipment.
+        maxLength: 40
+        default: null
+        example: '9261299991753900000290'
+      warehouse:
+        type: object
+        $ref: '#/definitions/warehouse'
+  InboundShipments:
+    $ref: '#/definitions/inbound-shipments'
+  NotFound:
+    $ref: '#/definitions/not-found'
+  Inbound:
+    $ref: '#/definitions/inbound'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  inbound:
+    type: object
+    properties:
+      carrier:
+        description: The carrier for the inbound shipment.
+        type: string
+        maxLength: 32
+        default: null
+        example: DHL
+      created:
+        description: The date and time the inbound shipment was created.
+        type: datetime
+        default: null
+        example: '2024-05-17 14:00:00'
+        readOnly: true
+      id:
+        description: The unique ID of the inbound shipment.
+        type: integer
+        example: 10000
+        readOnly: true
+      notes:
+        description: User defined notes for reference.
+        type: string
+        maxLength: 64
+        default: null
+        example: 'Manufacturer: XYZ; Delivery: 9/2/24'
+      processed_at:
+        description: The date and time the inbound shipment was processed.
+        type: datetime
+        default: null
+        example: '2024-06-03 18:20:54'
+        readOnly: true
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/InboundProduct'
+      received:
+        description: The date and time the inbound shipment was received at the warehouse.
+        type: datetime
+        default: null
+        example: '2024-05-24 11:21:33'
+        readOnly: true
+      status:
+        description: The status of the inbound shipment.
+        type: string
+        example: Pending
+        readOnly: true
+      tracking_number:
+        type: string
+        description: The tracking number for the inbound shipment.
+        maxLength: 40
+        default: null
+        example: '9261299991753900000290'
+      warehouse:
+        type: object
+        $ref: '#/definitions/warehouse'
+  inbound-product:
+    type: object
+    description: Inbound shipment product
+    properties:
+      cost:
+        description: The cost per unit from the manufacturer for this product at the time of inbounding in USD.
+        type: decimal
+        example: 2.25
+      id:
+        description: The product ID.
+        type: integer
+        example: 20111
+      is_packaging:
+        description: Indicates this product is packaging material.
+        type: boolean
+        example: false
+        readOnly: true
+      name:
+        description: The product name.
+        type: string
+        example: XL T-Shirt
+        readOnly: true
+      processed:
+        description: The number of units processed by the warehouse.
+        type: integer
+        example: 300
+        readOnly: true
+      quantity:
+        description: The number of units being sent to the warehouse.
+        type: integer
+        example: 299
+        minimum: 1
+      codes:
+        description: A list of codes describing problems with the units after processing.
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/Code'
+  inbound-shipments:
+    type: object
+    properties:
+      carrier:
+        description: The carrier for the inbound shipment.
+        type: string
+        maxLength: 32
+        default: null
+        example: DHL
+      created:
+        description: The date and time the inbound shipment was created. Set by the system.
+        type: string
+        default: null
+        example: '2024-05-17 14:00:00'
+        readOnly: true
+      id:
+        description: The unique ID of the inbound shipment. Set by the system.
+        type: integer
+        example: 10000
+        readOnly: true
+      notes:
+        description: User defined notes for reference.
+        type: string
+        maxLength: 64
+        default: null
+        example: 'Manufacturer: XYZ; Delivery: 9/2/24'
+      processed_at:
+        description: The date and time the inbound shipment was processed.
+        type: datetime
+        default: null
+        example: '2024-06-03 18:20:54'
+        readOnly: true
+      received:
+        description: The date and time the inbound shipment was received at the warehouse. Set by the system.
+        type: string
+        default: null
+        example: null
+        readOnly: true
+      status:
+        description: The status of the inbound shipment. Set by the system.
+        type: string
+        example: Pending
+        readOnly: true
+      tracking_number:
+        type: string
+        description: The tracking number for the inbound shipment.
+        maxLength: 40
+        default: null
+        example: '9261299991753900000290'
+      warehouse:
+        type: object
+        $ref: '#/definitions/warehouse'
+  Code:
+    $ref: '#/definitions/code'
+  warehouse:
+    type: object
+    description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
+    properties:
+      address:
+        description: The warehouse address with newlines (\n).
+        type: string
+        example: 'Unit 5b, 102 Jinfanghua Ecommerce District
+
+          Shenzhen
+
+          GD 518000
+
+          China'
+        readOnly: true
+      country:
+        description: The country where the warehouse resides.
+        type: string
+        example: HK
+        readOnly: true
+      entry_point:
+        description: The [Entry Point](#tag/EntryPoints) id associated to the warehouse.
+        type: string
+        example: SZX002
+        readOnly: true
+      id:
+        description: The unique warehouse ID
+        type: string
+        example: WH0SZ001
+      language:
+        description: The local language for the warehouse.
+        type: string
+        example: Chinese
+        readOnly: true
+      language_code:
+        description: The local language code for the warehouse in ISO 639-1 format.
+        type: string
+        example: zh
+        readOnly: true
+      name:
+        description: The warehouse name.
+        type: string
+        example: BoxC Shenzhen 1
+        readOnly: true
+    required:
+    - id
+  code:
+    type: object
+    description: Code describing a problem with the units after processing.
+    properties:
+      code:
+        type: string
+        description: Description of the issue.
+        example: Insufficient units arrived.
+        readOnly: true
+      quantity:
+        type: integer
+        description: The number of units affected.
+        example: 1
+        readOnly: true
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  InboundUpdate:
+    $ref: '#/definitions/inbound-put'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+  InboundProduct:
+    $ref: '#/definitions/inbound-product'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

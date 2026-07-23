@@ -1,0 +1,2239 @@
+swagger: '2.0'
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC CalculateDuty Shipments API
+  version: '1.123'
+  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
+
+    '
+schemes:
+- https
+tags:
+- name: Shipments
+  x-displayName: Shipments
+  description: 'The Shipments resource allows a user to create, update, retrieve, and delete shipments. Only test shipments and shipments without labels can be deleted. Shipments with uncancelled or processed labels cannot be updated. All shipments require address verification on the shipping address. Cancelling a label will refund the cost. Test shipments and shipments without labels are routinely purged from the system.
+
+
+    There are some weight and volumetric constraints for shipments that is dependant on the route. For example, if a Shipment''s length + girth is greater than a certain size then the user is charged an additional fee per KG. The length is the measurement of the longest dimension, and girth is the distance around the thickest part (perpendicular to the length). If the Shipment''s weight or volume exceeds the limit for a route an error will be returned.
+
+
+    **Note:** Set the `overpack_id` to null when unassigning it from an overpack. You won''t be allowed to update a labelled shipment beyond that.
+
+    '
+paths:
+  /shipments:
+    get:
+      tags:
+      - Shipments
+      summary: GET /shipments
+      description: Retrieves a paginated list of shipments.
+      operationId: getShipments
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - read_shipments
+      parameters:
+      - in: query
+        name: created_min
+        description: The inclusive date to begin the search.
+        format: YYYY-MM-DD
+        required: false
+        type: string
+        default: null
+      - in: query
+        name: created_max
+        description: The inclusive date to end the search.
+        format: YYYY-MM-DD
+        required: false
+        type: string
+        default: null
+      - in: query
+        name: labeled
+        description: Filter to return only shipments that have labels.
+        enum:
+        - 'yes'
+        - 'no'
+        - both
+        required: false
+        type: string
+        default: both
+      - in: query
+        name: limit
+        description: The number of results to return.
+        required: false
+        type: integer
+        default: 50
+        minimum: 50
+        maximum: 100
+      - in: query
+        name: order
+        description: The sort order of the results.
+        enum:
+        - asc
+        - desc
+        required: false
+        type: string
+        default: desc
+      - in: query
+        name: order_number
+        description: Filter that searches for shipments by the order_number.
+        required: false
+        type: string
+        default: null
+      - in: query
+        name: overpack_id
+        description: Filter that searches for shipments by their overpack ID.
+        required: false
+        type: integer
+        default: null
+      - in: query
+        name: packed
+        description: Filter to return only shipments that are in an overpack.
+        enum:
+        - 'yes'
+        - 'no'
+        - both
+        required: false
+        type: string
+        default: both
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        default: null
+        type: string
+      - in: query
+        name: processed
+        description: Filter to return only shipments that are processed.
+        enum:
+        - 'yes'
+        - 'no'
+        - both
+        required: false
+        type: string
+        default: both
+      - in: query
+        name: tracking_number
+        maxLength: 40
+        description: Filter that searches for shipments by tracking number. Date filters are ignored if this is provided.
+        required: false
+        type: string
+        default: null
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/shipments\\?limit=50\\&order=desc\\&labeled=both\\&packed=both\\&processed=both\\&comments=1+phone+case\\&tracking_number=\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipments:
+                    type: array
+                    items:
+                      $ref: '#/definitions/Shipment'
+                  next_page:
+                    type: string
+                    description: Page token
+                    example: ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request Page Token
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+                invalidParameter:
+                  summary: Bad Request Query Parameter
+                  description: Query parameter is invalid
+                  value:
+                    code: 1031
+                    message: Invalid query parameter
+                    errors:
+                    - Invalid query parameter
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+    post:
+      tags:
+      - Shipments
+      summary: POST /shipments
+      description: Creates a shipment.
+      operationId: addShipment
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      x-codeSamples:
+      - lang: cURL
+        label: cURL Example 1
+        source: "curl -X POST https://api.boxc.com/v1/shipments \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shipment\": {\n      \"carrier\": null,\n      \"carrier_params\": null,\n      \"comments\": [\n        \"Test comment\"\n      ],\n      \"cod\": {\n        \"amount\": 0\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"phone\": \"555-987-7890\",\n        \"email\": null,\n        \"id\": null,\n        \"street1\": \"2959 ANCHOR DR\",\n        \"street2\": null,\n        \"city\": \"MESQUITE\",\n        \"province\": \"TX\",\n        \"postal_code\": \"75150\",\n        \"country\": \"US\"\n      },\n      \"consignor\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"street2\": \"\",\n        \"city\": \"LOS ANGELES\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\",\n        \"country\": \"US\"\n      },\n      \"create_label\": false,\n      \"currency\": \"USD\",\n      \"entry_point\": \"TEST01\",\n      \"exit_point\": \"ORD\",\n      \"freight_charge\": {\n        \"amount\": 12.26,\n        \"currency\": \"USD\"\n      },\n      \"from\": null,\n      \"height\": 3.9,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"irregular\": false,\n      \"is_return\": false,\n      \"length\": 10,\n      \"line_items\": [\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"dg_code\": null,\n          \"hts_code\": null,\n          \"origin_description\": \"手机外壳\",\n          \"product_id\": null,\n          \"quantity\": 1,\n          \"url\": null,\n          \"supplier\": \"US23123131\",\n          \"value\": 9.95,\n          \"weight\": 0.276\n        }\n      ],\n      \"nature_type\": null,\n      \"service\": \"BoxC Parcel\",\n      \"signature_confirmation\": false,\n      \"terms\": \"DDU\",\n      \"test\": true,\n      \"to\": {\n        \"company_name\": null,\n        \"name\": \"John Smith\",\n        \"phone\": \"555-123-456\",\n        \"email\": \"john@example.com\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"street2\": null,\n        \"city\": \"Wylie\",\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\",\n        \"country\": \"US\"\n      },\n      \"weight\": 0.4,\n      \"width\": 5\n    }\n  }'\n"
+      - lang: cURL
+        label: cURL Example 2
+        source: "curl -X POST https://api.boxc.com/v1/shipments \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shipment\": {\n      \"carrier\": \"PostPlus\",\n      \"comments\": [\n        \"SKU #10292301\"\n      ],\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"phone\": \"555-987-6543\",\n        \"email\": null,\n        \"id\": null,\n        \"street1\": \"123 Main Ave.\",\n        \"street2\": null,\n        \"city\": \"Amsterdam\",\n        \"province\": null,\n        \"postal_code\": \"1234 AB\",\n        \"country\": \"NL\"\n      },\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"email\": null,\n        \"id\": null,\n        \"street1\": \"1 WORLD WAY\",\n        \"street2\": \"\",\n        \"city\": \"Indianapolis\",\n        \"province\": \"IN\",\n        \"postal_code\": 60601,\n        \"country\": \"US\"\n      },\n      \"create_label\": false,\n      \"currency\": \"USD\",\n      \"entry_point\": \"TEST01\",\n      \"exit_point\": \"AMS\",\n      \"from\": null,\n      \"height\": 16.00,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"irregular\": false,\n      \"is_return\": false,\n      \"length\": 13,\n      \"line_items\": [\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"dg_code\": null,\n          \"hts_code\": null,\n          \"origin_description\": \"手机外壳\",\n          \"product_id\": null,\n          \"quantity\": 1,\n          \"supplier\": \"US23123131\",\n          \"url\": null,\n          \"value\": 19.95,\n          \"weight\": 0.276\n        }\n      ],\n      \"nature_type\": null,\n      \"order_number\": \"23018721-ABC\",\n      \"overpack_id\": 1291028,\n      \"service\": \"BoxC Parcel\",\n      \"signature_confirmation\": false,\n      \"terms\": \"DDP\",\n      \"test\": true,\n      \"to\": {\n        \"company_name\": null,\n        \"name\": \"John Smith\",\n        \"phone\": \"555-888-4444\",\n        \"email\": \"john@example.com\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"street2\": null,\n        \"city\": \"Amsterdam\",\n        \"province\": null,\n        \"postal_code\": \"1234 AB\",\n        \"country\": \"NL\"\n      },\n      \"weight\": 0.276,\n      \"width\": 10,\n      \"zonos_customer_id\": \"<YOUR ZONOS ID>\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment:
+                  $ref: '#/definitions/Shipment'
+              required:
+              - shipment
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipment:
+                    $ref: '#/definitions/Shipment'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: Request is malformed.
+                    status: error
+                    errors:
+                    - Request is malformed.
+                notFound:
+                  summary: Not Found
+                  description: Credential not found
+                  value:
+                    code: 1450
+                    message: Credential not found
+                    errors:
+                    - Credential not found
+                languageError:
+                  summary: Entry Point Language
+                  description: Origin description must be in the entry point's language
+                  value:
+                    code: 1222
+                    message: Origin description must be in the entry point's language
+                    errors:
+                    - Origin description must be in the entry point's language
+                descriptionError:
+                  summary: Description Unacceptable
+                  description: Description isn't acceptable
+                  value:
+                    code: 1223
+                    message: Description isn't acceptable
+                    errors:
+                    - Description isn't acceptable
+                htsCode:
+                  summary: HTS Code Error
+                  description: Line item HTS code error with a reason
+                  value:
+                    code: 1224
+                    message: 'HTS Code error: code is too long after validation (''0102294064220'')'
+                    errors:
+                    - 'HTS Code error: code is too long after validation (''0102294064220'')'
+                noRoutes:
+                  summary: Bad Routes Request
+                  description: No routes found
+                  value:
+                    code: 1050
+                    message: No routes found
+                    errors:
+                    - No routes found
+                addressError:
+                  summary: Bad Address Request
+                  description: Address Error
+                  value:
+                    code: 1012
+                    message: Address Error
+                    errors:
+                    - Address Error
+                hsCodeMissing:
+                  summary: Missing Requirements
+                  description: An HS Code and description are required for all products.
+                  value:
+                    code: 1215
+                    message: Shipment requires an HS Code and description for all line items
+                    errors:
+                    - Shipment requires an HS Code and description for all line items
+                dutyRates:
+                  summary: Duty Rates
+                  description: Unable to get tax and/or duty rates for this shipment
+                  value:
+                    code: 1243
+                    message: Unable to get tax and/or duty rates for this shipment
+                    errors:
+                    - Unable to get tax and/or duty rates for this shipment
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Error while checking for denied parties
+                  value:
+                    code: 1010
+                    message: Error while checking for denied parties
+                    errors:
+                    - Error while checking for denied parties
+                labelError:
+                  summary: Server Error Creating Label
+                  description: Label could not be created.
+                  value:
+                    code: 1203
+                    message: Label could not be created.
+                    errors:
+                    - Label could not be created.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ServiceUnavailable'
+              examples:
+                internalServerError:
+                  summary: Service Unavailable
+                  description: Address resolution service unavailable at this time.
+                  value:
+                    code: 503
+                    message: Address resolution service unavailable at this time.
+                    errors:
+                    - Address resolution service unavailable at this time.
+  /shipments/{id}:
+    get:
+      tags:
+      - Shipments
+      summary: GET /shipments/{id}
+      description: Gets a shipment by its `id`. Clients can print a generic BoxC shipment label by changing the `Accept` header to <em>application/pdf</em> or providing `type=PDF` in the query parameters. The label is not a carrier label and should only be used for internal operations.
+      operationId: getShipmentsById
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      - application/pdf
+      security:
+      - JWT:
+        - read_shipments
+      parameters:
+      - name: Accept
+        in: header
+        required: false
+        schema:
+          type: string
+          example: application/pdf
+          enum:
+          - application/json
+          - application/pdf
+        description: Optionally download the generic shipment label.
+      - in: query
+        name: type
+        description: Allows a client to print the BoxC generic shipment label.
+        required: false
+        deprecated: true
+        type: string
+        example: PDF
+        enum:
+        - PDF
+      - name: id
+        in: path
+        description: The shipment ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL JSON
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/shipments/{id}\n"
+      - lang: cURL
+        label: cURL PDF
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/pdf\" \\\n  https://api.boxc.com/v1/shipments/{id}\n"
+      responses:
+        '200':
+          description: Returns application/json or a PDF depending on the Accept request header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipment:
+                    $ref: '#/definitions/Shipment'
+            application/pdf:
+              type: string
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shipment not found
+                  value:
+                    code: 1210
+                    message: Shipment not found
+                    errors:
+                    - Shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+    put:
+      tags:
+      - Shipments
+      summary: PUT /shipments/{id}
+      description: Updates a shipment. Only shipments with no labels or cancelled labels can be updated.
+      operationId: updateShipment
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      parameters:
+      - name: id
+        in: path
+        description: The shipment ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/shipments/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shipment\": {\n      \"carrier\": \"PostPlus\",\n      \"carrier_params\": null,\n      \"comments\": [\n        \"SKU #10292301\"\n      ],\n      \"cod: {\n        \"amount\": 0\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"phone\": \"555-987-6543\",\n        \"email\": null,\n        \"id\": null,\n        \"street1\": \"2959 ANCHOR DR\",\n        \"street2\": null,\n        \"city\": \"Amsterdam\",\n        \"province\": null,\n        \"postal_code\": \"1234 AB\",\n        \"country\": \"NL\"\n      },\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"email\": null,\n        \"id\": null,\n        \"street1\": \"1 WORLD WAY\",\n        \"street2\": \"\",\n        \"city\": \"Indianapolis\",\n        \"province\": \"IN\",\n        \"postal_code\": 60601,\n        \"country\": \"US\"\n      },\n      \"create_label\": false,\n      \"currency\": \"USD\",\n      \"entry_point\": \"TEST01\",\n      \"exit_point\": \"AMS\",\n      \"freight_charge\": {\n        \"amount\": 12.26,\n        \"currency\": \"USD\"\n      },\n      \"from\": null,\n      \"height\": 16.00,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"irregular\": false,\n      \"is_return\": false,\n      \"length\": 13,\n      \"line_items\": [\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"dg_code\": null,\n          \"hts_code\": null,\n          \"origin_description\": \"手机外壳\",\n          \"product_id\": null,\n          \"quantity\": 1,\n          \"supplier\": \"US23123131\",\n          \"url\": null,\n          \"value\": 19.95,\n          \"weight\": 0.276\n        }\n      ],\n      \"order_number\": \"23018721-ABC\",\n      \"overpack_id\": 1291028,\n      \"service\": \"BoxC Parcel\",\n      \"signature_confirmation\": false,\n      \"terms\": \"DDP\",\n      \"test\": false,\n      \"to\": {\n        \"company_name\": null,\n        \"name\": \"John Smith\",\n        \"phone\": \"555-888-4444\",\n        \"email\": \"john@example.com\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"street2\": null,\n        \"city\": \"Amsterdam\",\n        \"province\": null,\n        \"postal_code\": \"1234 AB\",\n        \"country\": \"NL\"\n      },\n      \"weight\": 0.276,\n      \"width\": 10,\n      \"zonos_customer_id\": \"<YOUR ZONOS ID>\"\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                shipment:
+                  $ref: '#/definitions/Shipment'
+              required:
+              - shipment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipment:
+                    $ref: '#/definitions/Shipment'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: Request is malformed.
+                    status: error
+                    errors:
+                    - Request is malformed.
+                badRequest:
+                  summary: Bad Request
+                  description: Shipment has uncancelled or processed labels
+                  value:
+                    code: 1201
+                    message: Shipment has uncancelled or processed labels
+                    errors:
+                    - Shipment has uncancelled or processed labels
+                notFound:
+                  summary: Not Found
+                  description: Credential not found
+                  value:
+                    code: 1450
+                    message: Credential not found
+                    errors:
+                    - Credential not found
+                languageError:
+                  summary: Entry Point Language
+                  description: Origin description must be in the entry point's language
+                  value:
+                    code: 1222
+                    message: Origin description must be in the entry point's language
+                    errors:
+                    - Origin description must be in the entry point's language
+                descriptionError:
+                  summary: Description Unacceptable
+                  description: Description isn't acceptable
+                  value:
+                    code: 1223
+                    message: Description isn't acceptable
+                    errors:
+                    - Description isn't acceptable
+                noRoutes:
+                  summary: Bad Routes Request
+                  description: No routes found
+                  value:
+                    code: 1050
+                    message: No routes found
+                    errors:
+                    - No routes found
+                addressError:
+                  summary: Bad Address Request
+                  description: Address Error
+                  value:
+                    code: 1012
+                    message: Address Error
+                    errors:
+                    - Address Error
+                hsCode:
+                  summary: Missing Requirements
+                  description: An HS Code and description are required for all products.
+                  value:
+                    code: 1215
+                    message: Shipment requires an HS Code and description for all line items
+                    errors:
+                    - Shipment requires an HS Code and description for all line items
+                dutyRates:
+                  summary: Duty Rates
+                  description: Unable to get tax and/or duty rates for this shipment
+                  value:
+                    code: 1243
+                    message: Unable to get tax and/or duty rates for this shipment
+                    errors:
+                    - Unable to get tax and/or duty rates for this shipment
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shipment not found
+                  value:
+                    code: 1210
+                    message: Shipment not found
+                    errors:
+                    - Shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Error while checking for denied parties
+                  value:
+                    code: 1010
+                    message: Error while checking for denied parties
+                    errors:
+                    - Error while checking for denied parties
+                labelError:
+                  summary: Server Error Creating Label
+                  description: Label could not be created.
+                  value:
+                    code: 1203
+                    message: Label could not be created.
+                    errors:
+                    - Label could not be created.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/ServiceUnavailable'
+              examples:
+                ServerError:
+                  summary: Service Unavailable
+                  description: Address resolution service unavailable at this time.
+                  value:
+                    code: 503
+                    message: Address resolution service unavailable at this time.
+                    errors:
+                    - Address resolution service unavailable at this time.
+    delete:
+      tags:
+      - Shipments
+      summary: DELETE /shipments/{id}
+      description: Deletes a shipment.
+      operationId: deleteShipment
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+      parameters:
+      - name: id
+        in: path
+        description: The shipment ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/shipments/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                cannotDelete:
+                  summary: Bad Request
+                  description: Shipment can't be deleted
+                  value:
+                    code: 1212
+                    message: Shipment can't be deleted
+                    errors:
+                    - Shipment can't be deleted
+                cannotDeleteOverpack:
+                  summary: Bad Request Overpack
+                  description: Shipments that are linked to an overpack can't be deleted
+                  value:
+                    code: 1218
+                    message: Shipments that are linked to an overpack can't be deleted
+                    errors:
+                    - Shipments that are linked to an overpack can't be deleted
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shipment not found
+                  value:
+                    code: 1210
+                    message: Shipment not found
+                    errors:
+                    - Shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Shipment can't be deleted
+                  value:
+                    code: 1212
+                    message: Shipment can't be deleted
+                    errors:
+                    - Shipment can't be deleted
+  /shipments/{id}/process:
+    put:
+      tags:
+      - Shipments
+      summary: PUT /shipments/{id}/process
+      description: Process a shipment with the final measured weight and dimensions. Useful for clients that process shipments at their own facilities. Only select clients are authorized to perform this action. This changes shipment status to <em>Processed</em> and can't be reversed.<p><strong>Note:</strong> Multi-package shipments can't be processed this way as of now.</p>
+      operationId: processShipment
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      security:
+      - JWT:
+        - write_shipments
+        PrivilegedClient: []
+      parameters:
+      - name: id
+        in: path
+        description: The shipment ID
+        required: true
+        type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/shipments/{id}/process \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"shipment\": {\n      \"datetime\": \"2024-11-02 11:12:13\",\n      \"fulfillment_id\": null,\n      \"height\": 1.00,\n      \"length\": 15,\n      \"weight\": 0.088,\n      \"width\": 8,\n      \"irregular\": false\n    }\n  }'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/ShipmentProcessRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipment:
+                    properties:
+                      status:
+                        type: string
+                        description: The updated shipment status.
+                        example: Processed
+                        enum:
+                        - Processed
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /shipment: The required properties (weight) are missing'
+                    status: error
+                    errors:
+                    - '/shipment: The required properties (weight) are missing'
+                badRequest:
+                  summary: Bad Request
+                  description: Shipment has no labels
+                  value:
+                    code: 1202
+                    message: Shipment has no labels
+                    errors:
+                    - Shipment has no labels
+                noRoutes:
+                  summary: Bad Routes Request
+                  description: No routes found
+                  value:
+                    code: 1050
+                    message: No routes found
+                    errors:
+                    - No routes found
+        '401':
+          $ref: '#/definitions/Unauthorized'
+        '403':
+          $ref: '#/definitions/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Shipment not found
+                  value:
+                    code: 1210
+                    message: Shipment not found
+                    errors:
+                    - Shipment not found
+        '429':
+          $ref: '#/definitions/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: There was an error while charging the account balance
+                  value:
+                    code: 1082
+                    message: There was an error while charging the account balance
+                    errors:
+                    - There was an error while charging the account balance
+definitions:
+  bad-request:
+    type: object
+    summary: Bad Request
+    description: Validation error with the request
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Lists validation errors with the schema or the resource being operated on.
+        type: array
+        minItems: 1
+        maxItems: 5
+        items:
+          type: string
+  From:
+    $ref: '#/definitions/from'
+  Shipment:
+    $ref: '#/definitions/shipment'
+  to:
+    description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
+    title: ShippingAddress
+    type: object
+    properties:
+      company_name:
+        description: The company name.
+        type: string
+        maxLength: 40
+        default: null
+        example: null
+      name:
+        description: The recipient's name.
+        type: string
+        maxLength: 40
+        example: John Smith
+      phone:
+        description: The recipient's phone number. Conditional.
+        type: string
+        default: null
+        maxLength: 20
+        format: phone
+        example: 555-123-4562
+      email:
+        description: The recipient's e-mail address. Conditional.
+        type: string
+        default: null
+        maxLength: 64
+        format: email
+        example: john@example.com
+      street1:
+        description: The recipient's street address.
+        type: string
+        maxLength: 50
+        minLength: 1
+        example: 108 N WESTGATE WAY
+      street2:
+        description: Additional space for the recipient's street address.
+        type: string
+        maxLength: 50
+        default: null
+        example: null
+      city:
+        description: The recipient's city.
+        type: string
+        maxLength: 40
+        example: WYLIE
+      province:
+        description: The recipient's province or state. Conditional.
+        type: string
+        maxLength: 40
+        default: null
+        example: TX
+      postal_code:
+        description: The recipient's postal code or ZIP Code. Conditional.
+        type: string
+        maxLength: 10
+        default: null
+        example: '75098'
+      country:
+        description: The recipient's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        pattern:
+        - A-Z
+        maxLength: 2
+        minLength: 2
+        example: US
+    required:
+    - name
+    - street1
+    - city
+    - country
+  ShipmentProcessRequest:
+    $ref: '#/definitions/shipment-process-request'
+  NotFound:
+    $ref: '#/definitions/not-found'
+  Event:
+    $ref: '#/definitions/event'
+  To:
+    $ref: '#/definitions/to'
+  package:
+    type: object
+    title: Package
+    properties:
+      contents:
+        description: Contents in this package.
+        type: array
+        minItems: 0
+        default: []
+        items:
+          $ref: '#/definitions/PackageContents'
+      height:
+        description: The height of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        example: 1
+      length:
+        description: The length of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        example: 15
+      weight:
+        description: The weight of the package in kg.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        example: 15
+      width:
+        description: The width of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        example: 10
+    required:
+    - height
+    - length
+    - weight
+    - width
+  Consignee:
+    $ref: '#/definitions/consignee'
+  Label:
+    $ref: '#/definitions/label'
+  RateLimit:
+    $ref: '#/definitions/rate-limit'
+  event:
+    type: object
+    description: The tracking history for this label in descending order. Set by the system.
+    properties:
+      carrier:
+        description: The carrier that provided this event.
+        type: string
+        example: USPS
+        readOnly: true
+      city:
+        description: The city the event took place in.
+        type: string
+        maxLength: 40
+        example: New York City
+        readOnly: true
+      code:
+        description: A code matching the description and to help identify the event.
+        type: integer
+        example: 200
+        readOnly: true
+      country:
+        description: The country code the event took place in.
+        type: string
+        maxLength: 2
+        minLength: 2
+        pattern:
+        - A-Z
+        example: US
+        readOnly: true
+      description:
+        description: A description of the event.
+        type: string
+        example: DELIVERED
+        readOnly: true
+      latitude:
+        description: Latitude coordinate of the event.
+        type:
+        - number
+        - 'null'
+        minimum: -90
+        maximum: 90
+        example: null
+        readOnly: true
+      longitude:
+        description: Longitude coordinate of the event.
+        type:
+        - number
+        - 'null'
+        minimum: -180
+        maximum: 180
+        example: null
+        readOnly: true
+      postal_code:
+        description: The postal code the event took place in.
+        type: string
+        maxLength: 10
+        example: '10001'
+        readOnly: true
+      province:
+        description: The province the event took place in.
+        type: string
+        maxLength: 40
+        example: NY
+        readOnly: true
+      time:
+        description: The local date and time the event occurred.
+        type: string
+        format: datetime
+        default: null
+        example: '2024-05-26 07:11:45'
+        readOnly: true
+  consignee:
+    description: Details about the consignee / buyer. The system will use the shipping address as the consignee address if one isn't provided. Some countries require a tax / passport ID from the buyer.
+    type: object
+    properties:
+      name:
+        description: The consignee's name.
+        type: string
+        maxLength: 40
+        example: Addressee John
+      phone:
+        description: The consignee's phone number. Conditional.
+        type: string
+        maxLength: 20
+        example: 555-456-7890
+      email:
+        description: The consignee's email address. Conditional.
+        type: string
+        maxLength: 64
+        example: null
+      id:
+        description: The consignee's Tax ID, GSTIN, Passport, ABN, Vendor ID, etc. Conditional.
+        type: string
+        maxLength: 20
+        example: null
+      street1:
+        description: The consignee's street address.
+        type: string
+        maxLength: 50
+        example: 2959 ANCHOR DR
+      street2:
+        description: Additional space for the consignee's street address such as apartment, condo, or unit number.
+        type: string
+        maxLength: 50
+        example: null
+      city:
+        description: The consignee's city.
+        type: string
+        maxLength: 40
+        example: MESQUITE
+      province:
+        description: The consignee's province or state code. Conditional.
+        type: string
+        maxLength: 40
+        example: TX
+      postal_code:
+        description: The consignee's postal code. Conditional.
+        type: string
+        maxLength: 10
+        example: 75150
+      country:
+        description: The consignee's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        maxLength: 2
+        example: US
+    required:
+    - name
+    - city
+    - country
+    - street1
+  line-item-compliance:
+    type: object
+    description: Additional compliance elements for the line item.
+    properties:
+      cpsc:
+        type: object
+        description: Consumer Product Safety Commission (US) - either the product details or a `disclaim` must be provided.
+        properties:
+          product_id:
+            type:
+            - string
+            - 'null'
+            description: The product id that is used in the CPSC Registry.
+            default: null
+            pattern: ^[A-Za-z0-9./_-]+$
+            maxLength: 19
+          product_version:
+            type:
+            - string
+            - 'null'
+            description: The product id certificate version used in the CPSC Registry.
+            default: null
+            pattern: ^[A-Za-z0-9./_-]+$
+            maxLength: 19
+          certifier_id:
+            type:
+            - string
+            - 'null'
+            description: The certifier id for the product registry (LPCO number).
+            pattern: ^[A-Za-z0-9./_-]+$
+            maxLength: 23
+            default: null
+          disclaim:
+            type:
+            - object
+            - 'null'
+            description: A disclaim is required if you don't provide the `product_id`, `product_version`, and `certifier_id`.
+            default: null
+            properties:
+              code:
+                type: string
+                description: Disclaim code
+                enum:
+                - A
+                - B
+              iuc:
+                type: string
+                description: IUC
+                minLength: 7
+                maxLength: 7
+              iuc_description:
+                type: string
+                description: IUC description
+                maxLength: 64
+            required:
+            - code
+            - iuc
+            - iuc_description
+  Consignor:
+    $ref: '#/definitions/consignor'
+  package-contents:
+    type: object
+    title: PackageContents
+    properties:
+      description:
+        description: A description of this item.
+        type: string
+        minLength: 3
+        maxLength: 64
+        example: Dayman figurines
+      value:
+        description: The total value of this item.
+        type: decimal
+        exclusiveMinimum: 0
+        example: 200.25
+      quantity:
+        description: The number of units of this item.
+        type: integer
+        exclusiveMinimum: 0
+        example: 10
+    required:
+    - description
+    - value
+    - quantity
+  from:
+    description: This will appear as the return address on labels. A default return address will be used if one isn't provided in the request. The country code must match ```to.country```.
+    type: object
+    title: ReturnAddress
+    properties:
+      name:
+        description: Can be a sender's name or company name.
+        type: string
+        maxLength: 40
+        example: My Company Name
+      street1:
+        description: The sender's street address
+        type: string
+        maxLength: 50
+        example: 113 INTL BROADWAY
+      street2:
+        description: Additional space for the sender's street address.
+        type: string
+        maxLength: 50
+        default: null
+        example: ''
+      city:
+        description: The sender's city.
+        type: string
+        maxLength: 40
+        example: LOS ANGELES
+      province:
+        description: The sender's province or state. Conditional.
+        type: string
+        maxLength: 40
+        example: CA
+        default: null
+      postal_code:
+        description: The sender's postal code. Conditional.
+        type: string
+        maxLength: 10
+        example: '91013'
+        default: null
+      country:
+        description: The senders's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        pattern:
+        - A-Z
+        maxLength: 2
+        minLength: 2
+        example: US
+    required:
+    - name
+    - street1
+    - city
+    - country
+  BadRequest:
+    $ref: '#/definitions/bad-request'
+  rate-limit:
+    description: Too Many Requests
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Too Many Requests
+          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          rateLimit:
+            summary: Too Many Requests
+            description: Too many requests. Please wait before trying again.
+            value:
+              code: 1015
+              message: Too many requests. Please wait before trying again.
+              errors:
+              - Too many requests. Please wait before trying again.
+  shipment-process-request:
+    type: object
+    properties:
+      shipment:
+        type: object
+        properties:
+          datetime:
+            description: Datetime
+            type: string
+            example: '2024-06-02 11:12:13'
+          fulfillment_id:
+            description: Fulfillment id
+            type: integer
+            example: null
+          height:
+            description: The height of the shipment in cm.
+            type: decimal
+            default: 1
+            example: '1.00'
+          length:
+            description: The length of the shipment in cm.
+            type: decimal
+            default: 15
+            example: 15
+          weight:
+            description: The weight of the shipment in KG.
+            type: decimal
+            example: 0.088
+          width:
+            description: The width of the shipment in cm.
+            type: decimal
+            default: 10
+            example: 8
+          irregular:
+            description: Indicates this shipment was packaged in irregular shaped polybag or soft packaging to assist in calculating the volumetric weight.
+            type: boolean
+            default: false
+            example: false
+        additionalProperties: false
+  ShipmentImages:
+    $ref: '#/definitions/shipment-images'
+  consignor:
+    description: Address and other details for the consignor (sender) which is used for customs clearance.
+    type: object
+    properties:
+      name:
+        description: The consignor's name.
+        type: string
+        maxLength: 40
+        example: Generic Company, LLC
+      phone:
+        description: The consignor's phone number.
+        type: string
+        maxLength: 20
+        example: 555-123-4567
+      email:
+        description: The consignor's email address. Conditional.
+        type: string
+        maxLength: 64
+        default: null
+        example: null
+      id:
+        description: The consignor's Tax ID, GSTIN, Passport, ABN, Vendor ID, etc. Conditional.
+        type: string
+        maxLength: 20
+        example: null
+      street1:
+        description: The consignor's street address.
+        type: string
+        maxLength: 50
+        example: 1 WORLD WAY
+      street2:
+        description: Additional space for the consignor's street address such as apartment, condo, or unit number.
+        type: string
+        maxLength: 50
+        example: ''
+      city:
+        description: The consignor's city.
+        type: string
+        maxLength: 40
+        example: SHENZHEN
+      province:
+        description: The consignor's province or state code. Conditional.
+        type: string
+        maxLength: 40
+        example: GUANGDONG
+      postal_code:
+        description: The consignor's postal code. Conditional.
+        type: string
+        maxLength: 10
+        example: 518000
+      country:
+        description: The consignor's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        maxLength: 2
+        example: CN
+    required:
+    - name
+    - phone
+    - street1
+    - city
+    - country
+  shipment-images:
+    description: Lists URLs of images taken during transit and categorized by type of photo. URLs expire after a period of time so refer to the `expires` query parameter.
+    type: object
+    readOnly: true
+    properties:
+      pod:
+        type: array
+        default: []
+        readOnly: true
+        example:
+        - https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271
+        items:
+          type: string
+      scans:
+        type: array
+        default: []
+        readOnly: true
+        example:
+        - https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271
+        items:
+          type: string
+  ServiceUnavailable:
+    $ref: '#/definitions/service-unavailable'
+  Unauthorized:
+    $ref: '#/definitions/unauthorized'
+  Forbidden:
+    $ref: '#/definitions/forbidden'
+  forbidden:
+    description: Forbidden
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Forbidden
+          description: Error relating to insufficient permissions for a resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          revoked:
+            summary: Forbidden Authorization Revoked
+            description: 'Forbidden: Authorization revoked'
+            value:
+              code: 1008
+              message: 'Forbidden: Authorization revoked'
+              errors:
+              - 'Forbidden: Authorization revoked'
+          scope:
+            summary: Forbidden Scope
+            description: 'Forbidden: Missing required scope'
+            value:
+              code: 1009
+              message: 'Forbidden: Missing required scope'
+              errors:
+              - 'Forbidden: Missing required scope'
+  InternalServerError:
+    $ref: '#/definitions/internal-server-error'
+  label:
+    type: object
+    properties:
+      cancelled:
+        description: Whether or not the label was cancelled.
+        type: boolean
+        default: false
+        example: false
+      carrier:
+        description: The final mile carrier for this label.
+        type: string
+        example: USPS
+        readOnly: true
+      chargeable_weight:
+        description: The chargeable weight for this shipment which is the greater of gross weight and volumetric weight.
+        type: decimal
+        example: 0.3
+        readOnly: true
+      contents:
+        type: array
+        readOnly: true
+        description: List of contents in this package.
+        default: []
+        minItems: 0
+        items:
+          $ref: '#/definitions/PackageContents'
+      cost:
+        description: The shipping cost for the label.
+        type: decimal
+        example: 3.15
+        readOnly: true
+      created:
+        description: The date and time the label was created.
+        type: string
+        default: null
+        example: '2024-05-17 15:43:03'
+        readOnly: true
+      delivery_date:
+        description: The date the shipment was delivered.
+        type: string
+        default: null
+        example: '2024-05-26 12:05:09'
+        readOnly: true
+      exit_point:
+        description: The exit port for this shipment determined by the system. This value is null for shipments where exit port is determined irrelevant for the destination.
+        type: string
+        example: LAX
+        readOnly: true
+      events:
+        description: The tracking history for this package in descending order.
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/Event'
+      height:
+        description: The height of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 1
+        example: 1.5
+      id:
+        description: The unique ID of the label in the system.
+        type: integer
+        example: 2382131
+        readOnly: true
+      insurance_fee:
+        description: The cost of insurance for this shipment if requested.
+        type: decimal
+        default: 0
+        example: 0
+        readOnly: true
+      is_master:
+        description: Indicates this package is the master label. Default is true for single package shipments.
+        type: boolean
+        readOnly: true
+        example: true
+      is_ready:
+        description: Indicates the label file is ready for download. This is true for most cases during shipment creation. Some carriers provide labels asynchronously.
+        type: boolean
+        example: true
+        readOnly: true
+      length:
+        description: The length of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 15
+        example: 15
+      overpack_id:
+        description: The overpack ID assigned to this package.
+        default: null
+        type:
+        - integer
+        - 'null'
+        example: 1501231
+      processed:
+        description: Whether or not the label was processed at our facility.
+        type: boolean
+        default: false
+        example: false
+        readOnly: true
+      processed_date:
+        description: The date the label was first processed at a facility.
+        type: string
+        default: null
+        example: '2024-05-27 19:14:55'
+        readOnly: true
+      processed_weight:
+        description: The processed weight of the shipment at a facility.
+        type: decimal
+        default: null
+        example: 0.284
+        readOnly: true
+      service:
+        type: string
+        description: The type of shipping service this label is billed for.
+        example: BoxC Parcel
+        readOnly: true
+      shipment_id:
+        description: The ID of the shipment you want to create a label for, or is associated with the label.
+        type: integer
+        example: 1014
+      status:
+        description: The latest status of the shipment.
+        type: string
+        enum:
+        - Pending
+        - Processed
+        - Cancelled
+        - Customs
+        - En Route
+        - Exception
+        - Delivered
+        example: Processed
+        readOnly: true
+      surcharge:
+        description: Additional cost for this shipment based on the route and chargeable weight.
+        type: decimal
+        default: 0
+        example: 0
+        readOnly: true
+      tracking_number:
+        type: string
+        description: The tracking number for the label.
+        example: '9261299991753900000290'
+        readOnly: true
+      weight:
+        description: The weight of the package in kg.
+        type: decimal
+        example: 0.202
+        exclusiveMinimum: 0
+        exclusiveMaximum: 10000
+      width:
+        description: The width of the package in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 10
+        example: 8
+  PackageContents:
+    $ref: '#/definitions/package-contents'
+  unauthorized:
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          summary: Unauthorized
+          description: Lack of valid authentication credentials for the resource
+          properties:
+            code:
+              description: Error code. Refer to the list of [Errors](/#tag/Errors).
+              type: integer
+            message:
+              description: Error message explaining the code.
+              type: string
+            status:
+              type: string
+              enum:
+              - error
+              example: error
+            errors:
+              description: Displays processing error.
+              type: array
+              minItems: 1
+              maxItems: 1
+              items:
+                type: string
+        examples:
+          accessToken:
+            summary: Invalid access token
+            description: Invalid access token
+            value:
+              code: 1005
+              message: Invalid access token
+              errors:
+              - Invalid access token
+  service-unavailable:
+    type: object
+    summary: Service Unavailable
+    description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  not-found:
+    type: object
+    summary: Not Found
+    description: Object not found or not owned by the user
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Duplicate of the error message
+        type: array
+        items:
+          type: string
+  LineItemCompliance:
+    $ref: '#/definitions/line-item-compliance'
+  Package:
+    $ref: '#/definitions/package'
+  shipment:
+    description: Shipment
+    type: object
+    properties:
+      carrier:
+        description: This grants clients the ability to select the last mile carrier when creating and updating a shipment. An error is returned if no routes exist given the combination of parameters provided by the client. For example, the chosen carrier might be available for some services, weight ranges, exit points, countries, etc. but not necessarily all at once.
+        type: string
+        default: null
+        example: DeutschePost
+      carrier_params:
+        type:
+        - object
+        - 'null'
+        default: null
+        description: The carrier parameters for customizing a request. Supported parameters can be found on the [Carrier Parameters](/#tag/CarrierParameters) page.
+        example:
+          ppi_number: PMK9999
+      claim_url:
+        description: The claim URL if this shipment is covered by insurance. Only available when the shipment is eligible for a claim.
+        type:
+        - string
+        - 'null'
+        default: null
+        example: https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS
+        readOnly: true
+      cod:
+        description: Request Cash on Delivery from the recipient. Not all routes support this option.
+        type: object
+        properties:
+          amount:
+            description: The amount to collect in the destination currency.
+            type: decimal
+            example: 13.37
+            minimum: 0
+          currency:
+            description: The currency code for the destination country.
+            type:
+            - string
+            - 'null'
+            default: null
+            example: AUD
+            readOnly: true
+      comments:
+        description: Comments for the bottom of the label.
+        type: array
+        maxItems: 3
+        maxLength: 80
+        items:
+          type: string
+          example: 'SKU #10292301'
+      compliance:
+        type:
+        - object
+        - 'null'
+        writeOnly: true
+        description: Toggle compliance related flags. This is available for qualified parties only.
+        default:
+          address: true
+          classify: true
+          descriptions: true
+          denied_party: true
+          pga: true
+        example:
+          address: true
+          classify: true
+          descriptions: true
+          denied_party: true
+          pga: true
+        properties:
+          address:
+            type: boolean
+            description: Toggles most address formatting and validation, and third party verification if applicable.
+            default: true
+          classify:
+            type: boolean
+            description: Toggles HS Code and description classification for line items. Required for `pga`.
+            default: true
+          descriptions:
+            type: boolean
+            description: Toggles description validation checks for line items.
+            default: true
+          denied_party:
+            type: boolean
+            description: Toggles denied party screening for the consignee.
+            default: true
+          pga:
+            type: boolean
+            description: Toggles screening line items for goods that are PGA. Requires `classify`.
+            default: true
+      consignee:
+        $ref: '#/definitions/Consignee'
+      consignor:
+        $ref: '#/definitions/Consignor'
+      create_label:
+        description: Tells the API to create the shipment and label in one request.
+        type: boolean
+        default: false
+        example: true
+        writeOnly: true
+      created:
+        description: The date and time the shipment was created.
+        type: string
+        example: '2024-11-17 15:43:03'
+        readOnly: true
+      credentials_id:
+        description: The Credential ID to use for this shipment. Refer to [Credentials](/#tag/Credentials) for details.
+        type:
+        - integer
+        - 'null'
+        default: null
+      currency:
+        description: The ISO 4217 currency code for payment. Useful for paying from a separate account balance other than USD. Costs and fees will be shown in the requested currency.
+        type: string
+        default: USD
+        example: USD
+        enum:
+        - AUD
+        - CAD
+        - EUR
+        - GBP
+        - HKD
+        - JPY
+        - MYR
+        - USD
+      duty:
+        description: The total duty owed/paid for this shipment.
+        type: decimal
+        readOnly: true
+        example: 2.23
+      entry_point:
+        description: The drop off location for this shipment. Determines the shipping rates and routing. See [Entry Points](/#tag/EntryPoints) for a list of codes.
+        type: string
+        example: TEST01
+      errors:
+        description: This property is returned if and only if create_label is true and there was an error attempting to create the label.
+        type: object
+        readOnly: true
+        properties:
+          code:
+            description: Code
+            type: integer
+            example: 1080
+          http_status:
+            description: HTTP Status Code
+            type: integer
+            example: 402
+          message:
+            description: Message
+            type: string
+            example: Insufficient funds
+          status:
+            description: Status - Success or Error
+            type: string
+            example: error
+      events:
+        description: The tracking history for this shipment in descending order.
+        type: array
+        readOnly: true
+        items:
+          $ref: '#/definitions/Event'
+      exit_point:
+        description: The requested IATA port the shipment should be transported to for last mile delivery. Routing will select the port to use if not provided. If a port is provided but not supported then a "No routes found" error is returned.
+        type: string
+        default: null
+        example: LAX
+      freight_charge:
+        description: Declare the total cost of freight for this shipment.
+        type: object
+        properties:
+          amount:
+            description: The total amount of the freight.
+            type: decimal
+            example: 13.37
+            minimum: 0
+          currency:
+            description: The currency code for the freight amount.
+            pattern: ^[A-Z]{3}$
+            type: string
+            example: MXN
+      from:
+        $ref: '#/definitions/From'
+      height:
+        description: The height of the shipment in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 1
+        example: 1.5
+      id:
+        description: The ID of the shipment.
+        type: integer
+        example: 42001
+        readOnly: true
+      ignore_bad_address:
+        description: Ignore shipping address verification errors. Setting this to true automatically declines insurance coverage unless the shipping address was valid, in which case the system will change this back to false. BoxC Priority addresses can't be ignored.
+        type: boolean
+        default: false
+        example: false
+      images:
+        $ref: '#/definitions/ShipmentImages'
+      insurance:
+        description: Adds more insurance to the shipment for a fee based on a percentage of the total value (including shipping cost) of the items. By default shipments include insurance that covers up to $30 in total value even when insurance is false. Insurance is not available for some services.
+        type: boolean
+        default: false
+        example: false
+      insured_value:
+        description: The total value (USD) of the shipment that can be claimed.
+        type: decimal
+        example: 35.95
+        readOnly: true
+      irregular:
+        description: Indicates this shipment was packaged in irregular shaped polybag or soft packaging to assist in calculating the volumetric weight.
+        type: boolean
+        default: false
+        example: false
+      is_return:
+        description: Indicates this shipment is a return and will select the correct carrier product if any are available.
+        type: boolean
+        default: false
+        example: false
+      label:
+        description: The active label for this shipment. Only available when listing shipments.
+        readOnly: true
+        type: object
+        allOf:
+        - $ref: '#/definitions/Label'
+      labels:
+        description: A list of all labels created for this shipment. Only present when requesting a single shipment.
+        readOnly: true
+        type: array
+        items:
+          $ref: '#/definitions/Label'
+      length:
+        description: The length of the shipment in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 15
+        example: 15
+      line_items:
+        description: Contents of the shipment.
+        type: array
+        items:
+          $ref: '#/definitions/LineItem'
+      nature_type:
+        type:
+        - string
+        - 'null'
+        description: The nature type of the shipment. This is only relevant for postal shipments.
+        default: null
+        enum:
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+        - '6'
+        - '7'
+        - '8'
+        - '9'
+        - '11'
+        - '12'
+        - '21'
+        - '31'
+        - '32'
+        - '61'
+        - '62'
+        - '91'
+        - '99'
+        - '111'
+        - '212'
+        - '213'
+        - '214'
+        - '390'
+        - '391'
+        - '991'
+        - '999'
+        example: '11'
+      order_number:
+        description: This can be used as a searchable reference for this shipment. Zonos customers should place their Order ID here. It does not have to be a unique value.
+        type: string
+        maxLength: 40
+        default: null
+        example: 23018721-ABC
+      overpack_id:
+        description: The overpack this shipment is assigned to. Set to null when removing a shipment from an overpack.
+        type: integer
+        deprecated: true
+        default: null
+        example: 1291028
+      packages:
+        description: Packages for multi-package shipments. Each package will create a label.
+        type: array
+        writeOnly: true
+        items:
+          $ref: '#/definitions/Package'
+      pga:
+        description: Indicates this shipment contains sensitive materials based on the HTS code(s) and destination country.
+        type: boolean
+        example: false
+        default: false
+        readOnly: true
+      service:
+        description: 'The type of shipping service you want to use for this shipment. Some services include: BoxC Post, BoxC Parcel, BoxC Plus, BoxC Priority. More services are available and can be found in [Carrier Services](/#tag/Carrier-Services).'
+        type: string
+        default: BoxC Parcel
+        example: BoxC Priority
+      signature_confirmation:
+        description: Request signature confirmation from the recipient upon delivery. Not available for all services or routes. An additional fee may apply.
+        type: boolean
+        default: false
+        example: false
+      tax:
+        description: The total tax owed/paid for this shipment in USD. Applies to DDP shipments. Read only.
+        type: decimal
+        readOnly: true
+        example: 10.15
+      terms:
+        description: The [Incoterms](https://en.wikipedia.org/wiki/Incoterms) for this shipment that affects which routes are available. If terms is not provided then the system will pick DDU or DDP if DDU is not available. DDP shipments will include tax and duty.
+        type: string
+        enum:
+        - DAP
+        - DDU
+        - DDP
+        default: DDU
+        example: DDU
+      test:
+        description: Whether or not this is a test shipment that will generate test labels. Default is false. This property is [immutable](https://en.wikipedia.org/wiki/Immutable_object).
+        type: boolean
+        default: false
+        example: false
+      to:
+        $ref: '#/definitions/To'
+      total_cost:
+        description: The total shipping cost in USD.
+        type: decimal
+        example: 3.58
+        readOnly: true
+      tracking_number:
+        description: Qualified parties may use their own tracking number for the shipment. The `carrier` must be one of "AIR", "UPU", or "MKT".
+        writeOnly: true
+        type: string
+        pattern: '[A-Za-z0-9]'
+        maxLength: 40
+        minLength: 8
+      updated:
+        description: The date and time the shipment was last updated.
+        type: string
+        example: '2024-11-20 02:32:48'
+        readOnly: true
+      volumetric_weight:
+        description: The volumetric / dimensional weight of the shipment based on the route's divisor.
+        type: decimal
+        example: 0.088
+        readOnly: true
+      weight:
+        description: The weight of the shipment in KG.
+        type: decimal
+        example: 0.088
+        exclusiveMinimum: 0
+        exclusiveMaximum: 10000
+      width:
+        description: The width of the shipment in cm.
+        type: decimal
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1000
+        default: 10
+        example: 8
+      zonos_customer_id:
+        description: Optionally provide a Zonos Customer ID. This overrides the Zonos Customer ID in account settings.
+        type: string
+        default: null
+        example: Z123456789
+    required:
+    - line_items
+    - service
+    - entry_point
+    - consignor
+    - to
+    - weight
+  internal-server-error:
+    type: object
+    summary: Internal Server Error
+    description: Processing Error
+    properties:
+      code:
+        description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        type: integer
+      message:
+        description: Error message explaining the code.
+        type: string
+      status:
+        type: string
+        enum:
+        - error
+        example: error
+      errors:
+        description: Displays processing error.
+        type: array
+        minItems: 1
+        maxItems: 1
+        items:
+          type: string
+  LineItem:
+    $ref: '#/definitions/line-item'
+  line-item:
+    type: object
+    description: Contents of the shipment.
+    properties:
+      compliance:
+        $ref: '#/definitions/LineItemCompliance'
+      coo:
+        description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+        type: string
+        example: CN
+      currency:
+        description: The ISO 4217 currency code of this line item's total declared value.
+        type: string
+        minLength: 3
+        maxLength: 3
+        example: USD
+      description:
+        description: A concise description of the line item in English.
+        type: string
+        maxLength: 64
+        example: Phone case
+      dg_code:
+        description: A code that identifies dangerous goods. Required if shipping lithium batteries, ORM-D, or other dangerous goods. Refer to [this page](/#tag/DangerousGoods) for a list of codes and further information.
+        type: string
+        default: null
+        example: null
+      duty:
+        description: The duty owed for this line item in the `shipment.currency`.
+        type: decimal
+        readOnly: true
+        example: 2.23
+      user_hts_code:
+        description: The Harmonized Tariff System classification number for customs clearance based on the destination country provided by the user.
+        type: string
+        minLength: 8
+        maxLength: 13
+        default: null
+        example: null
+        readOnly: true
+      hts_code:
+        description: The Harmonized Tariff System classification number for customs clearance based on the destination country.
+        type: string
+        minLength: 8
+        maxLength: 13
+        default: null
+        example: null
+      origin_description:
+        description: A concise description of the line item in the entry point country's language.
+        type: string
+        maxLength: 64
+        example: 手机外壳
+      product_id:
+        description: The [Customs Product](/#tag/CustomsProducts) `id` which is required for international PGA shipments. This number is assigned when creating the product.
+        type: integer
+        example: 121009
+        default: null
+      tax:
+        description: The tax owed for this line item in the `shipment.currency`.
+        type: decimal
+        readOnly: true
+        example: 2.23
+      quantity:
+        description: The number of units in this line item.
+        type: integer
+        maxValue: 9999
+        example: 2
+      supplier:
+        description: The product supplier or manufacturer. This is known as the Manufacturer Identification code (MID) in the US. It's required for most international shipments.
+        type: string
+        maxLength: 32
+        default: null
+      url:
+        description: A URL to the product listing online.
+        type: string
+        format: uri
+        maxLength: 128
+        default: null
+        example: null
+      value:
+        description: The total declared value of all units in this line item.
+        type: decimal
+        example: 9.95
+      weight:
+        description: The weight for a single unit of this line item.
+        type: decimal
+        example: 0.235
+    required:
+    - coo
+    - currency
+    - description
+    - origin_description
+    - quantity
+    - value
+    - weight
+securityDefinitions:
+  JWT:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    in: header
+    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+  PrivilegedClient:
+    type: http
+    scheme: bearer
+    bearerScheme: JWT
+    description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents
