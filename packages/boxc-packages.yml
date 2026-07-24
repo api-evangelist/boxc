@@ -1,0 +1,21 @@
+generated: '2026-07-18'
+method: searched
+source: https://github.com/boxc
+packages:
+- language: javascript
+  registry: npm
+  name: boxc
+  url: https://www.npmjs.com/package/boxc
+  install: npm install boxc
+  official: false
+  repository: https://github.com/iamdimka/boxc
+  author: Dmitry Sushilov
+  note: >-
+    Community NodeJS library for the BoxC API ("An Unofficial NodeJS Library for BoxC API").
+    Not published or maintained by BoxC.
+notes: >-
+  BoxC does not publish a first-party SDK. The BoxC GitHub organization (github.com/boxc)
+  hosts only forks/utilities (TCPDF, a tracking-events helper, and unofficial DHL/VIPparcel
+  PHP clients), none of which is an official BoxC-API client library. The only client
+  library found is the community npm package `boxc`. No `SDKs` pointer is emitted because no
+  official client library exists.

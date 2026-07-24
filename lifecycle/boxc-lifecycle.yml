@@ -1,0 +1,33 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/
+versioning:
+  scheme: uri-path
+  current_major: v1
+  current_version: '1.123'
+  docs: https://docs.boxc.com/#tag/Introduction
+  note: >-
+    Major version is carried in the URL path (v1). Minor feature versions are published
+    in the dated changelog; changes to date have been additive.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: >-
+    BoxC does not publish a formal deprecation policy or advertise RFC 8594 Sunset/Deprecation
+    headers. The changelog records additive changes and occasional field/behavior changes
+    (e.g. webhook key max length, error code 1401 semantics).
+sla:
+  url: null
+  uptime_target: null
+status_page: null
+data_retention:
+  note: >-
+    Documented ephemeral-data routines: test shipments/labels >30 days, label-less shipments
+    >30 days, empty cartons >30 days, unfulfilled orders >1 year, inbound shipments >=3 years
+    are purged; fulfilled orders archive after 90 days.
+changelog: changelog/boxc-changelog.yml
+deprecated_operations: []
+notes: >-
+  No dedicated status page (status.boxc.com does not resolve) and no published deprecation
+  policy or SLA were found as of this pass; recorded as absent. Lifecycle signal is carried
+  by the versioning scheme and the actively maintained changelog.

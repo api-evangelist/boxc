@@ -1,0 +1,69 @@
+{
+    "issuer": "https://accounts.boxc.com",
+    "authorization_endpoint": "https://accounts.boxc.com/auth/v1/authorize",
+    "token_endpoint": "https://accounts.boxc.com/auth/v1/token",
+    "revocation_endpoint": "https://accounts.boxc.com/auth/v1/revoke",
+    "registration_endpoint": "https://accounts.boxc.com/auth/v1/register",
+    "request_uri_parameter_supported": false,
+    "request_parameter_supported": false,
+    "claims_parameter_supported": false,
+    "response_types_supported": [
+        "code",
+        "token",
+        "id_token",
+        "id_token token",
+        "none"
+    ],
+    "response_modes_supported": [
+        "query",
+        "fragment"
+    ],
+    "subject_types_supported": [
+        "public"
+    ],
+    "id_token_signing_alg_values_supported": [
+        "RS256"
+    ],
+    "token_endpoint_auth_methods_supported": [
+        "client_secret_basic"
+    ],
+    "scopes_supported": [
+        "openid",
+        "email",
+        "profile",
+        "read_shipments",
+        "write_shipments",
+        "read_orders",
+        "write_orders",
+        "read_products",
+        "write_products",
+        "classify",
+        "read_shops",
+        "write_shops",
+        "read_webhooks",
+        "write_webhooks",
+        "returns",
+        "billing",
+        "validate",
+        "read_credentials",
+        "write_credentials"
+    ],
+    "claims_supported": [
+        "aud",
+        "email",
+        "exp",
+        "family_name",
+        "given_name",
+        "iat",
+        "iss",
+        "locale",
+        "name",
+        "sub",
+        "zoneinfo"
+    ],
+    "grant_types_supported": [
+        "authorization_code",
+        "client_credentials",
+        "implicit"
+    ]
+}

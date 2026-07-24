@@ -1,0 +1,426 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+server:
+  name: boxc
+  transport: http
+note: No official BoxC MCP server was found. Candidate tool list derived one-per-operation from the OpenAPI
+  (83 operations) as a starting point for an MCP server.
+source: openapi/boxc-openapi-original.yml
+tool_count: 83
+tools:
+- name: calculateDuty
+  description: POST /calculate-duty
+  source_operation: openapi/boxc-openapi-original.yml#calculateDuty
+  method: POST
+  path: /calculate-duty
+- name: addClassify
+  description: POST /classify
+  source_operation: openapi/boxc-openapi-original.yml#addClassify
+  method: POST
+  path: /classify
+- name: getCredentials
+  description: GET /credentials
+  source_operation: openapi/boxc-openapi-original.yml#getCredentials
+  method: GET
+  path: /credentials
+- name: addCredential
+  description: POST /credentials
+  source_operation: openapi/boxc-openapi-original.yml#addCredential
+  method: POST
+  path: /credentials
+- name: getCredentialsById
+  description: GET /credentials/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getCredentialsById
+  method: GET
+  path: /credentials/{id}
+- name: updateCredential
+  description: PUT /credentials/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateCredential
+  method: PUT
+  path: /credentials/{id}
+- name: deleteCredential
+  description: DELETE /credentials/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteCredential
+  method: DELETE
+  path: /credentials/{id}
+- name: getCustomsProducts
+  description: GET /customs/products
+  source_operation: openapi/boxc-openapi-original.yml#getCustomsProducts
+  method: GET
+  path: /customs/products
+- name: addCustomsProduct
+  description: POST /customs/products
+  source_operation: openapi/boxc-openapi-original.yml#addCustomsProduct
+  method: POST
+  path: /customs/products
+- name: getCustomsProductById
+  description: GET /customs/products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getCustomsProductById
+  method: GET
+  path: /customs/products/{id}
+- name: updateCustomsProduct
+  description: PUT /customs/products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateCustomsProduct
+  method: PUT
+  path: /customs/products/{id}
+- name: deleteCustomsProduct
+  description: DELETE /customs/products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteCustomsProduct
+  method: DELETE
+  path: /customs/products/{id}
+- name: getEntryPoints
+  description: GET /entry-points
+  source_operation: openapi/boxc-openapi-original.yml#getEntryPoints
+  method: GET
+  path: /entry-points
+- name: getEntryPointsById
+  description: GET /entry-points/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getEntryPointsById
+  method: GET
+  path: /entry-points/{id}
+- name: getEstimate
+  description: GET /estimate
+  source_operation: openapi/boxc-openapi-original.yml#getEstimate
+  method: GET
+  path: /estimate
+- name: getInboundList
+  description: GET /inbound
+  source_operation: openapi/boxc-openapi-original.yml#getInboundList
+  method: GET
+  path: /inbound
+- name: addInbound
+  description: POST /inbound
+  source_operation: openapi/boxc-openapi-original.yml#addInbound
+  method: POST
+  path: /inbound
+- name: getInboundById
+  description: GET /inbound/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getInboundById
+  method: GET
+  path: /inbound/{id}
+- name: updateInbound
+  description: PUT /inbound/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateInbound
+  method: PUT
+  path: /inbound/{id}
+- name: deleteInbound
+  description: DELETE /inbound/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteInbound
+  method: DELETE
+  path: /inbound/{id}
+- name: getInvoices
+  description: GET /invoices
+  source_operation: openapi/boxc-openapi-original.yml#getInvoices
+  method: GET
+  path: /invoices
+- name: getInvoicesById
+  description: GET /invoices/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getInvoicesById
+  method: GET
+  path: /invoices/{id}
+- name: getLabelsById
+  description: GET /labels/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getLabelsById
+  method: GET
+  path: /labels/{id}
+- name: patchLabel
+  description: PATCH /labels/{id}
+  source_operation: openapi/boxc-openapi-original.yml#patchLabel
+  method: PATCH
+  path: /labels/{id}
+- name: addLabel
+  description: POST /labels
+  source_operation: openapi/boxc-openapi-original.yml#addLabel
+  method: POST
+  path: /labels
+- name: bulkAddLabel
+  description: POST /labels/bulk
+  source_operation: openapi/boxc-openapi-original.yml#bulkAddLabel
+  method: POST
+  path: /labels/bulk
+- name: cancelLabel
+  description: PUT /labels/{id}/cancel
+  source_operation: openapi/boxc-openapi-original.yml#cancelLabel
+  method: PUT
+  path: /labels/{id}/cancel
+- name: getManifests
+  description: GET /manifests
+  source_operation: openapi/boxc-openapi-original.yml#getManifests
+  method: GET
+  path: /manifests
+- name: addManifest
+  description: POST /manifests
+  source_operation: openapi/boxc-openapi-original.yml#addManifest
+  method: POST
+  path: /manifests
+- name: getManifestsById
+  description: GET /manifests/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getManifestsById
+  method: GET
+  path: /manifests/{id}
+- name: getOrders
+  description: GET /orders
+  source_operation: openapi/boxc-openapi-original.yml#getOrders
+  method: GET
+  path: /orders
+- name: addOrder
+  description: POST /orders
+  source_operation: openapi/boxc-openapi-original.yml#addOrder
+  method: POST
+  path: /orders
+- name: getOrdersById
+  description: GET /orders/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getOrdersById
+  method: GET
+  path: /orders/{id}
+- name: updateOrder
+  description: PUT /orders/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateOrder
+  method: PUT
+  path: /orders/{id}
+- name: deleteOrder
+  description: DELETE /orders/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteOrder
+  method: DELETE
+  path: /orders/{id}
+- name: updateOrderStatus
+  description: POST /orders/status
+  source_operation: openapi/boxc-openapi-original.yml#updateOrderStatus
+  method: POST
+  path: /orders/status
+- name: getOverpacks
+  description: GET /overpacks
+  source_operation: openapi/boxc-openapi-original.yml#getOverpacks
+  method: GET
+  path: /overpacks
+- name: addOverpack
+  description: POST /overpacks
+  source_operation: openapi/boxc-openapi-original.yml#addOverpack
+  method: POST
+  path: /overpacks
+- name: getOverpacksById
+  description: GET /overpacks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getOverpacksById
+  method: GET
+  path: /overpacks/{id}
+- name: updateOverpack
+  description: PUT /overpacks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateOverpack
+  method: PUT
+  path: /overpacks/{id}
+- name: deleteOverpack
+  description: DELETE /overpacks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteOverpack
+  method: DELETE
+  path: /overpacks/{id}
+- name: getProducts
+  description: GET /products
+  source_operation: openapi/boxc-openapi-original.yml#getProducts
+  method: GET
+  path: /products
+- name: addProduct
+  description: POST /products
+  source_operation: openapi/boxc-openapi-original.yml#addProduct
+  method: POST
+  path: /products
+- name: getProductsById
+  description: GET /products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getProductsById
+  method: GET
+  path: /products/{id}
+- name: updateProduct
+  description: PUT /products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateProduct
+  method: PUT
+  path: /products/{id}
+- name: deleteProduct
+  description: DELETE /products/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteProduct
+  method: DELETE
+  path: /products/{id}
+- name: addProductSku
+  description: POST /products/{id}/skus
+  source_operation: openapi/boxc-openapi-original.yml#addProductSku
+  method: POST
+  path: /products/{id}/skus
+- name: updateProductSku
+  description: PUT /products/{id}/shop/{shopId}/sku/{sku}
+  source_operation: openapi/boxc-openapi-original.yml#updateProductSku
+  method: PUT
+  path: /products/{id}/shop/{shopId}/sku/{sku}
+- name: deleteProductSku
+  description: DELETE /products/{id}/shop/{shopId}/sku/{sku}
+  source_operation: openapi/boxc-openapi-original.yml#deleteProductSku
+  method: DELETE
+  path: /products/{id}/shop/{shopId}/sku/{sku}
+- name: getReshipments
+  description: GET /reshipments
+  source_operation: openapi/boxc-openapi-original.yml#getReshipments
+  method: GET
+  path: /reshipments
+- name: addReshipment
+  description: POST /reshipments
+  source_operation: openapi/boxc-openapi-original.yml#addReshipment
+  method: POST
+  path: /reshipments
+- name: getReshipmentsById
+  description: GET /reshipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getReshipmentsById
+  method: GET
+  path: /reshipments/{id}
+- name: updateReshipment
+  description: PUT /reshipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateReshipment
+  method: PUT
+  path: /reshipments/{id}
+- name: deleteReshipment
+  description: DELETE /reshipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteReshipment
+  method: DELETE
+  path: /reshipments/{id}
+- name: getReturns
+  description: GET /returns
+  source_operation: openapi/boxc-openapi-original.yml#getReturns
+  method: GET
+  path: /returns
+- name: getReturnsById
+  description: GET /returns/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getReturnsById
+  method: GET
+  path: /returns/{id}
+- name: updateReturn
+  description: PUT /returns/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateReturn
+  method: PUT
+  path: /returns/{id}
+- name: deleteReturn
+  description: DELETE /returns/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteReturn
+  method: DELETE
+  path: /returns/{id}
+- name: addReturn
+  description: POST /returns/{id}/messages
+  source_operation: openapi/boxc-openapi-original.yml#addReturn
+  method: POST
+  path: /returns/{id}/messages
+- name: getShipments
+  description: GET /shipments
+  source_operation: openapi/boxc-openapi-original.yml#getShipments
+  method: GET
+  path: /shipments
+- name: addShipment
+  description: POST /shipments
+  source_operation: openapi/boxc-openapi-original.yml#addShipment
+  method: POST
+  path: /shipments
+- name: getShipmentsById
+  description: GET /shipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getShipmentsById
+  method: GET
+  path: /shipments/{id}
+- name: updateShipment
+  description: PUT /shipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateShipment
+  method: PUT
+  path: /shipments/{id}
+- name: deleteShipment
+  description: DELETE /shipments/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteShipment
+  method: DELETE
+  path: /shipments/{id}
+- name: processShipment
+  description: PUT /shipments/{id}/process
+  source_operation: openapi/boxc-openapi-original.yml#processShipment
+  method: PUT
+  path: /shipments/{id}/process
+- name: getShops
+  description: GET /shops
+  source_operation: openapi/boxc-openapi-original.yml#getShops
+  method: GET
+  path: /shops
+- name: addShop
+  description: POST /shops
+  source_operation: openapi/boxc-openapi-original.yml#addShop
+  method: POST
+  path: /shops
+- name: getShopsById
+  description: GET /shops/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getShopsById
+  method: GET
+  path: /shops/{id}
+- name: updateShop
+  description: PUT /shops/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateShop
+  method: PUT
+  path: /shops/{id}
+- name: deleteShop
+  description: DELETE /shops/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteShop
+  method: DELETE
+  path: /shops/{id}
+- name: addTrackingEvents
+  description: POST /track
+  source_operation: openapi/boxc-openapi-original.yml#addTrackingEvents
+  method: POST
+  path: /track
+- name: getTrackingEvents
+  description: GET /track/{trackingNumber}
+  source_operation: openapi/boxc-openapi-original.yml#getTrackingEvents
+  method: GET
+  path: /track/{trackingNumber}
+- name: getThisUser
+  description: GET /users/me
+  source_operation: openapi/boxc-openapi-original.yml#getThisUser
+  method: GET
+  path: /users/me
+- name: updateUser
+  description: PUT /users/me
+  source_operation: openapi/boxc-openapi-original.yml#updateUser
+  method: PUT
+  path: /users/me
+- name: validateAddress
+  description: POST /validate-address
+  source_operation: openapi/boxc-openapi-original.yml#validateAddress
+  method: POST
+  path: /validate-address
+- name: getWarehouses
+  description: GET /warehouses
+  source_operation: openapi/boxc-openapi-original.yml#getWarehouses
+  method: GET
+  path: /warehouses
+- name: getWarehousesById
+  description: GET /warehouses/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getWarehousesById
+  method: GET
+  path: /warehouses/{id}
+- name: getWebhooks
+  description: GET /webhooks
+  source_operation: openapi/boxc-openapi-original.yml#getWebhooks
+  method: GET
+  path: /webhooks
+- name: addWebhook
+  description: POST /webhooks
+  source_operation: openapi/boxc-openapi-original.yml#addWebhook
+  method: POST
+  path: /webhooks
+- name: getWebhooksById
+  description: GET /webhooks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#getWebhooksById
+  method: GET
+  path: /webhooks/{id}
+- name: updateWebhook
+  description: PUT /webhooks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#updateWebhook
+  method: PUT
+  path: /webhooks/{id}
+- name: deleteWebhook
+  description: DELETE /webhooks/{id}
+  source_operation: openapi/boxc-openapi-original.yml#deleteWebhook
+  method: DELETE
+  path: /webhooks/{id}
+- name: addWebhookEvent
+  description: POST /webhooks/{id}/queue
+  source_operation: openapi/boxc-openapi-original.yml#addWebhookEvent
+  method: POST
+  path: /webhooks/{id}/queue

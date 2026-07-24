@@ -1,0 +1,76 @@
+generated: '2026-07-18'
+method: searched
+source: https://accounts.boxc.com/.well-known/openid-configuration
+docs: https://support.boxc.com/support/solutions/articles/65000182700-configuring-the-oauth-2-0-client-permissions
+schemes:
+- name: OAuth2
+  type: oauth2
+  source: https://accounts.boxc.com/.well-known/openid-configuration
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://accounts.boxc.com/auth/v1/authorize
+    tokenUrl: https://accounts.boxc.com/auth/v1/token
+scopes:
+- scope: openid
+  description: OpenID Connect sign-in; enables issuance of an ID token.
+  flows: [authorizationCode]
+- scope: email
+  description: Access the authorized user's email address claim.
+  flows: [authorizationCode]
+- scope: profile
+  description: Access the authorized user's profile claims (name, locale, zoneinfo).
+  flows: [authorizationCode]
+- scope: read_shipments
+  description: Read access to shipments, labels, estimates and tracking.
+  flows: [authorizationCode]
+- scope: write_shipments
+  description: Create, update, process and cancel shipments and labels.
+  flows: [authorizationCode]
+- scope: read_orders
+  description: Read access to orders and fulfillments.
+  flows: [authorizationCode]
+- scope: write_orders
+  description: Create, update, delete orders and change order status.
+  flows: [authorizationCode]
+- scope: read_products
+  description: Read access to products and SKUs.
+  flows: [authorizationCode]
+- scope: write_products
+  description: Create, update, delete products and SKUs.
+  flows: [authorizationCode]
+- scope: classify
+  description: Classify products for HS codes / customs (Classify resource).
+  flows: [authorizationCode]
+- scope: read_shops
+  description: Read access to connected shops.
+  flows: [authorizationCode]
+- scope: write_shops
+  description: Create, update, delete shop connections.
+  flows: [authorizationCode]
+- scope: read_webhooks
+  description: Read access to webhook subscriptions.
+  flows: [authorizationCode]
+- scope: write_webhooks
+  description: Create, update, delete webhook subscriptions and queue events.
+  flows: [authorizationCode]
+- scope: returns
+  description: Access the Returns and Reshipments resources.
+  flows: [authorizationCode]
+- scope: billing
+  description: Access invoices and account balance / billing operations.
+  flows: [authorizationCode]
+- scope: validate
+  description: Validate addresses (ValidateAddress resource).
+  flows: [authorizationCode]
+- scope: read_credentials
+  description: Read access to stored carrier credentials.
+  flows: [authorizationCode]
+- scope: write_credentials
+  description: Create, update, delete carrier credentials.
+  flows: [authorizationCode]
+notes: >-
+  Scopes are taken verbatim from the BoxC OIDC discovery document's scopes_supported.
+  A client's effective scope is configured in the BoxC account (OAuth 2.0 Client
+  Permissions) and inherited into issued tokens. The Calculate Duty resource additionally
+  requires a token minted with the documented `calculate` scope per the changelog
+  (v1.118); descriptions here are derived from the resource each scope governs.

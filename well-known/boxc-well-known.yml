@@ -1,0 +1,36 @@
+generated: '2026-07-18'
+method: searched
+source: https://accounts.boxc.com/.well-known/openid-configuration
+hosts:
+- host: https://accounts.boxc.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: boxc-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+- host: https://api.boxc.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: https://boxc.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    note: soft-404 (SPA shell returned, not a real security.txt)
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    note: soft-404 (SPA shell returned, not a real ai-plugin.json)
+notes: >-
+  The BoxC OAuth 2.0 / OpenID Connect authorization server publishes a real RFC 8414 /
+  OIDC discovery document at accounts.boxc.com/.well-known/openid-configuration. The
+  boxc.com marketing site is a single-page app that returns HTTP 200 (the app shell)
+  for every path, so security.txt / ai-plugin.json 200s there are soft-404s, not real
+  documents.

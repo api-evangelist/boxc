@@ -1,0 +1,95 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/#tag/Changelog
+scheme: date-and-minor-version
+current_version: '1.123'
+current_date: '2026-07-11'
+window: recent
+entries:
+- version: '1.123'
+  date: '2026-07-11'
+  added:
+  - freight_charge to Shipments.
+  breaking: false
+- version: '1.122'
+  date: '2026-06-30'
+  changed:
+  - Webhook key max length to 40.
+  breaking: true
+- version: '1.121'
+  date: '2026-06-26'
+  added:
+  - 'CPSC: compliance to shipment.line_items[] for supporting additional fields for customs compliance.'
+  - 'Webhooks: clients may now subscribe multiple addresses to the same topic and user.'
+  changed:
+  - Error code 1401
+  breaking: true
+- version: '1.120'
+  date: '2026-06-15'
+  added:
+  - longitude and latitude to Tracking Events.
+  - images[] to the shipments_status Webhook.
+  - Event code 250 for PROOF OF DELIVERY.
+  breaking: false
+- version: '1.119'
+  date: '2026-06-01'
+  added:
+  - Janio credentials support.
+  breaking: false
+- version: '1.118'
+  date: '2026-05-12'
+  added:
+  - A new resource Calculate Duty for calculating the landed cost of a shipment. Clients must generate
+    a new token with the calculate scope included in order to use the new resource.
+  breaking: false
+- version: '1.117'
+  date: '2026-04-11'
+  added:
+  - packages[] to Shipments for creating multi-package shipments.
+  - packages[] to Estimate.
+  - PATCH /labels/{id} for overpacking and cancelling labels (packages).
+  - length, width, height, weight, overpack_id, is_master, and contents[] to Labels.
+  - Error codes 1208, 1230, 1276, 1277
+  deprecated:
+  - The PUT /labels/{id}/cancel endpoint.
+  - The ability to remove a shipment from an overpack using the PUT /shipments/{id} endpoint.
+  breaking: true
+- version: '1.116'
+  date: '2026-03-29'
+  added:
+  - nature_type to Shipments for post.
+  breaking: false
+- version: '1.115'
+  date: '2026-03-26'
+  added:
+  - Error Code 1463
+  changed:
+  - The Customs Product type is now immutable.
+  breaking: true
+- version: '1.114'
+  date: '2026-03-18'
+  added:
+  - fsvp_importer to Customs Products.
+  - FSX as an option to affirmation_of_compliance in Customs Products.
+  breaking: false
+- version: '1.113'
+  date: '2026-03-12'
+  added:
+  - Certified Accounts may inject up to 100 tracking events at once using the /track endpoint.
+  - Error code 1211
+  breaking: false
+- version: '1.112'
+  date: '2026-02-25'
+  added:
+  - cod property to Shipments for optional Cash on Delivery (COD).
+  breaking: false
+- version: '1.111'
+  date: '2026-02-11'
+  changed:
+  - Requests no longer require the `X-BoxC-Client-Id` header.
+  breaking: true
+- version: '1.110'
+  date: '2026-02-01'
+  changed:
+  - The contact property is required for Customs Products.
+  breaking: true

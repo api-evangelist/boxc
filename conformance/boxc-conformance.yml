@@ -1,0 +1,42 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/boxc-openapi-original.yml
+standards:
+- id: oauth2
+  conforms: true
+  evidence: >-
+    OAuth 2.0 authorization-code, implicit and client_credentials grants documented in the
+    Authentication tag and confirmed by the accounts.boxc.com OIDC discovery document.
+- id: oidc
+  conforms: true
+  evidence: >-
+    OpenID Connect discovery document published at
+    accounts.boxc.com/.well-known/openid-configuration with openid/email/profile scopes,
+    id_token (RS256) issuance, and standard claims.
+- id: jwt-rfc7519
+  conforms: true
+  evidence: Access tokens are RS256-signed JSON Web Tokens presented as bearer tokens.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use the native BoxC envelope {status, code, message, errors}, not
+    application/problem+json.
+- id: pagination
+  conforms: true
+  evidence: Cursor/token pagination via `page_token` request param and `next_page` response field.
+- id: rate-limiting
+  conforms: true
+  evidence: Leaky-bucket rate limiting with X-Rate-Limit / X-Rate-Requests headers and 429 responses.
+- id: idempotency
+  conforms: false
+  evidence: No idempotency-key mechanism documented.
+- id: webhooks-hmac
+  conforms: true
+  evidence: >-
+    Webhook payloads signed with an HMAC-SHA256 digest in the X-BoxC-Hmac-SHA256 header for
+    verification.
+compliance_programs: []
+notes: >-
+  Cross-cutting standards asserted from the OpenAPI, the OIDC discovery document, and the
+  documented conventions. No published security/compliance certification program (SOC 2,
+  ISO 27001, PCI DSS, etc.) was found, so no `Compliance` pointer is emitted.

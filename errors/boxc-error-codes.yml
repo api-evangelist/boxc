@@ -1,0 +1,393 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/#tag/Errors
+format: boxc-error-envelope
+envelope:
+  description: Error responses carry a JSON object with four properties.
+  fields:
+  - status
+  - code
+  - message
+  - errors
+  example:
+    status: error
+    code: 1200
+    message: Label could not be created
+    errors:
+      shipments/to/postal_code: Invalid value
+notes: Numeric application error codes returned in the `code` field, independent of the HTTP status. Code
+  1000 (Validation Error) may include a per-field `errors` map. Messages containing %s are interpolated
+  at runtime. Error messages can be localized via the Accept-Language header. Rate-limit rejections surface
+  as code 1015 (some docs also reference upstream code 1015 as "error code 1015"). Areas are derived from
+  the documented code ranges.
+error_count: 123
+errors:
+- code: 1000
+  message: Validation Error. %s
+  area: authentication-and-limits
+- code: 1001
+  message: Server error. Try again later.
+  area: authentication-and-limits
+- code: 1002
+  message: Requested language is not supported
+  area: authentication-and-limits
+- code: 1003
+  message: Client is deleted
+  area: authentication-and-limits
+- code: 1004
+  message: Client was deactivated by BoxC
+  area: authentication-and-limits
+- code: 1005
+  message: Invalid access token
+  area: authentication-and-limits
+- code: 1007
+  message: Client with that ID doesn't exist
+  area: authentication-and-limits
+- code: 1008
+  message: 'Forbidden: Authorization revoked'
+  area: authentication-and-limits
+- code: 1009
+  message: 'Forbidden: Missing required scope ''%s'''
+  area: authentication-and-limits
+- code: 1010
+  message: 'Service Unavailable: %s'
+  area: authentication-and-limits
+- code: 1012
+  message: 'Address Error: %s'
+  area: authentication-and-limits
+- code: 1015
+  message: Too many requests. Please wait before trying again.
+  area: authentication-and-limits
+- code: 1025
+  message: Invalid page token
+  area: pagination-and-query
+- code: 1031
+  message: Query parameter '%s' is invalid
+  area: pagination-and-query
+- code: 1040
+  message: Entry point not found
+  area: routing-and-rates
+- code: 1050
+  message: No routes found
+  area: routing-and-rates
+- code: 1051
+  message: There was an error while fetching exchange rates
+  area: routing-and-rates
+- code: 1080
+  message: Insufficient funds
+  area: billing
+- code: 1081
+  message: There was an error while fetching the account balance
+  area: billing
+- code: 1082
+  message: There was an error while charging the account balance
+  area: billing
+- code: 1090
+  message: Invoice not found
+  area: billing
+- code: 1120
+  message: Return not found
+  area: returns-and-reshipments
+- code: 1121
+  message: Return must be processed before verifying
+  area: returns-and-reshipments
+- code: 1122
+  message: Return can't be discarded
+  area: returns-and-reshipments
+- code: 1140
+  message: Reshipment not found
+  area: returns-and-reshipments
+- code: 1141
+  message: Reshipment can't be updated
+  area: returns-and-reshipments
+- code: 1142
+  message: Reshipment can't be deleted
+  area: returns-and-reshipments
+- code: 1143
+  message: One or more returns can't be reshipped
+  area: returns-and-reshipments
+- code: 1144
+  message: 'Return can''t be reshipped: %s'
+  area: returns-and-reshipments
+- code: 1145
+  message: All returns must ship from the same warehouse
+  area: returns-and-reshipments
+- code: 1200
+  message: Shipping address not found
+  area: shipments-and-labels
+- code: 1201
+  message: Shipment has uncancelled or processed labels
+  area: shipments-and-labels
+- code: 1202
+  message: Shipment has no labels
+  area: shipments-and-labels
+- code: 1203
+  message: 'Label could not be created: %s'
+  area: shipments-and-labels
+- code: 1204
+  message: Label was previously cancelled
+  area: shipments-and-labels
+- code: 1205
+  message: Label not found
+  area: shipments-and-labels
+- code: 1206
+  message: Label can't be cancelled
+  area: shipments-and-labels
+- code: 1207
+  message: Label isn't ready for download yet
+  area: shipments-and-labels
+- code: 1208
+  message: Use the master tracking number '%s' to cancel multi-package shipments
+  area: shipments-and-labels
+- code: 1210
+  message: Shipment not found
+  area: shipments-and-labels
+- code: 1211
+  message: 'Shipment not found or doesn''t belong to user: %s'
+  area: shipments-and-labels
+- code: 1212
+  message: Shipment can't be deleted
+  area: shipments-and-labels
+- code: 1213
+  message: Shipment can't be updated
+  area: shipments-and-labels
+- code: 1215
+  message: Shipment requires an HS Code and description for all line items
+  area: shipments-and-labels
+- code: 1216
+  message: Shipment entry point doesn't match the overpack
+  area: shipments-and-labels
+- code: 1217
+  message: Shipment and overpack must use the same service
+  area: shipments-and-labels
+- code: 1218
+  message: Shipments that are linked to an overpack can't be deleted
+  area: shipments-and-labels
+- code: 1219
+  message: Duplicate shipment in overpack
+  area: shipments-and-labels
+- code: 1220
+  message: Shipments to '%s' don't require a manifest
+  area: shipments-and-labels
+- code: 1221
+  message: DG and non-DG shipments can't be mixed
+  area: shipments-and-labels
+- code: 1222
+  message: Origin description for '%s' must be in the entry point's language
+  area: shipments-and-labels
+- code: 1223
+  message: Description for '%s' isn't acceptable
+  area: shipments-and-labels
+- code: 1224
+  message: 'HTS Code error: %s'
+  area: shipments-and-labels
+- code: 1225
+  message: Shipment was flagged as %s but no routes were found
+  area: shipments-and-labels
+- code: 1226
+  message: Total line item weight is greater than the shipment weight
+  area: shipments-and-labels
+- code: 1227
+  message: Supplier is required for %s
+  area: shipments-and-labels
+- code: 1228
+  message: Item is PGA so a product_id is required for %s
+  area: shipments-and-labels
+- code: 1230
+  message: Multi-package shipments can't be processed
+  area: shipments-and-labels
+- code: 1240
+  message: Recipient is a denied party and can't be shipped to
+  area: shipments-and-labels
+- code: 1242
+  message: Shipment contains prohibited/restricted goods
+  area: shipments-and-labels
+- code: 1243
+  message: Unable to get tax and/or duty rates for this shipment
+  area: shipments-and-labels
+- code: 1250
+  message: 'Overpack not found: %s'
+  area: overpacks-and-manifests
+- code: 1251
+  message: Overpack is locked
+  area: overpacks-and-manifests
+- code: 1252
+  message: Overpack can't be created
+  area: overpacks-and-manifests
+- code: 1253
+  message: Overpack can't be deleted
+  area: overpacks-and-manifests
+- code: 1254
+  message: Overpack can't be updated
+  area: overpacks-and-manifests
+- code: 1270
+  message: Overpack %s is empty
+  area: overpacks-and-manifests
+- code: 1271
+  message: All overpacks must have the same entry point
+  area: overpacks-and-manifests
+- code: 1272
+  message: Overpack %s was already used in another manifest
+  area: overpacks-and-manifests
+- code: 1273
+  message: Overpack %s is missing weight or dimensions
+  area: overpacks-and-manifests
+- code: 1274
+  message: Manifest could not be created
+  area: overpacks-and-manifests
+- code: 1275
+  message: Manifest not found
+  area: overpacks-and-manifests
+- code: 1276
+  message: All packages in shipment %s must be overpacked before manifesting
+  area: overpacks-and-manifests
+- code: 1277
+  message: All packages in shipment %s must be manifested together
+  area: overpacks-and-manifests
+- code: 1320
+  message: Order not found
+  area: orders-and-products
+- code: 1321
+  message: Order can't be modified in its current state
+  area: orders-and-products
+- code: 1322
+  message: Order can't be deleted
+  area: orders-and-products
+- code: 1323
+  message: Order could not be created
+  area: orders-and-products
+- code: 1324
+  message: Order could not be updated
+  area: orders-and-products
+- code: 1325
+  message: Line items in the order must be unique
+  area: orders-and-products
+- code: 1326
+  message: Duplicate shop.order_id '%s'
+  area: orders-and-products
+- code: 1330
+  message: SKU '%s' does not exist in Shop '%s'
+  area: orders-and-products
+- code: 1331
+  message: 'SKU is inactive: %s'
+  area: orders-and-products
+- code: 1332
+  message: Product not found
+  area: orders-and-products
+- code: 1333
+  message: Product can't be deleted because it's being used
+  area: orders-and-products
+- code: 1334
+  message: SKU '%s' for Shop '%s' is already in use
+  area: orders-and-products
+- code: 1335
+  message: SKU can't be deleted
+  area: orders-and-products
+- code: 1337
+  message: Only one SKU can be active for Product '%s' in Shop '%s'
+  area: orders-and-products
+- code: 1338
+  message: Contact support to update barcode for Product '%s'
+  area: orders-and-products
+- code: 1339
+  message: Product '%s' is missing warehouse description in the local language
+  area: orders-and-products
+- code: 1340
+  message: Packing slip is required for a gift message
+  area: orders-and-products
+- code: 1341
+  message: Packaging is not allowed in orders
+  area: orders-and-products
+- code: 1350
+  message: Inbound shipment not found
+  area: inbound
+- code: 1351
+  message: Inbound shipment can't be deleted
+  area: inbound
+- code: 1352
+  message: Product '%s' can't be added
+  area: inbound
+- code: 1353
+  message: Inbound shipment can't be updated
+  area: inbound
+- code: 1354
+  message: 'Duplicate products in the shipment: %s'
+  area: inbound
+- code: 1360
+  message: Warehouse not found
+  area: warehouses
+- code: 1370
+  message: Shop not found
+  area: shops
+- code: 1371
+  message: Shop can't be deleted
+  area: shops
+- code: 1372
+  message: Shop can't be created
+  area: shops
+- code: 1373
+  message: Shop ID is already in use
+  area: shops
+- code: 1374
+  message: Shop %s is inactive
+  area: shops
+- code: 1400
+  message: Webhook not found
+  area: webhooks
+- code: 1401
+  message: Webhook with that address already exists
+  area: webhooks
+- code: 1402
+  message: Webhook can't be created
+  area: webhooks
+- code: 1403
+  message: Webhook can't be updated
+  area: webhooks
+- code: 1404
+  message: Webhook can't be deleted
+  area: webhooks
+- code: 1405
+  message: Webhook event can't be enqueued due to an error
+  area: webhooks
+- code: 1425
+  message: Unable to validate address due to an error
+  area: address-validation
+- code: 1450
+  message: Credential not found
+  area: credentials
+- code: 1451
+  message: Credential can't be updated
+  area: credentials
+- code: 1452
+  message: Credential can't be deleted
+  area: credentials
+- code: 1453
+  message: Credential could not be created
+  area: credentials
+- code: 1454
+  message: The carrier can't be changed
+  area: credentials
+- code: 1460
+  message: Customs Product not found
+  area: customs-products
+- code: 1461
+  message: The product_id in %s was not found or may have been deleted
+  area: customs-products
+- code: 1462
+  message: Product could not be added to the catalog
+  area: customs-products
+- code: 1463
+  message: Product type can't be changed
+  area: customs-products
+- code: 1500
+  message: Return address country must match shipping address country
+  area: customs-and-address
+- code: 1501
+  message: Consignee country must match shipping address country
+  area: customs-and-address
+- code: 1502
+  message: '%s.name will not be accepted'
+  area: customs-and-address
+- code: 1503
+  message: '%s.id is required for the country or service'
+  area: customs-and-address

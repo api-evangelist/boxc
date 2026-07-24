@@ -1,0 +1,26 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/
+model: shared-endpoint-test-flag
+detail: >-
+  BoxC does not run a separate sandbox host. Production and test resources share the same
+  endpoint, https://api.boxc.com/v1. Test mode is opted into per shipment via an immutable
+  boolean flag rather than a distinct key or base URL.
+test_flag:
+  field: test
+  applies_to: shipment
+  type: boolean
+  default: false
+  immutable: true
+  effect: Generates test labels instead of live carrier labels for the shipment.
+retention:
+  note: Test shipments and their labels older than 30 days are automatically purged.
+carrier_credentials_placeholder:
+  note: >-
+    Carrier credential examples in the docs use the literal placeholder value "TEST" for
+    fields such as dp_api_key / dp_api_secret; these are documentation placeholders, not
+    working credentials.
+notes: >-
+  No test API keys, magic identifiers, or fixture/trigger tooling are published. The only
+  documented sandbox mechanism is the per-shipment `test: true` flag against the production
+  endpoint. Values captured verbatim from the docs; none invented.

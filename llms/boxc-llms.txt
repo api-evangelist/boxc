@@ -1,0 +1,43 @@
+# BoxC
+
+> BoxC is an international e-commerce logistics management platform. A single RESTful API drives cross-border ecommerce by integrating dozens of carriers, customs clearance, duties and taxes, warehousing/fulfillment, and returns through one integration with a routing engine that can complete every leg or only select steps of a shipment's journey.
+
+Base URL: https://api.boxc.com/v1 (production and test share this endpoint)
+Authentication: OAuth 2.0 / OpenID Connect (RS256 JWT bearer tokens); authorization server at https://accounts.boxc.com
+API version: 1.123
+
+## APIs
+
+- [BoxC API (Swagger 2.0)](https://docs.boxc.com/swagger.yaml): 83 operations across 34 resources (Shipments, Labels, Orders, Products, Shops, Warehouses, Manifests, Overpacks, Inbound, Returns, Reshipments, Webhooks, Credentials, Customs Products, Entry Points, Track, Calculate Duty, Validate Address, Classify)
+- [API Documentation (ReDoc)](https://docs.boxc.com/)
+
+## Specs & Artifacts
+
+- [OpenAPI/Swagger spec](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/openapi/boxc-openapi-original.yml)
+- [Authentication profile](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/authentication/boxc-authentication.yml)
+- [OAuth scopes](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/scopes/boxc-scopes.yml)
+- [API conventions](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/conventions/boxc-conventions.yml)
+- [Error code registry (123 codes)](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/errors/boxc-error-codes.yml)
+- [Webhook catalog](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/asyncapi/boxc-webhooks.yml)
+- [Changelog](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/changelog/boxc-changelog.yml)
+- [Data model / ERD](https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/data-model/boxc-data-model.yml)
+- [OpenID Connect discovery](https://accounts.boxc.com/.well-known/openid-configuration)
+
+## Docs
+
+- [Introduction](https://docs.boxc.com/#tag/Introduction)
+- [Authentication](https://docs.boxc.com/#tag/Authentication)
+- [Rate limits](https://docs.boxc.com/#tag/RateLimit)
+- [Pagination](https://docs.boxc.com/#tag/Paginate)
+- [Errors](https://docs.boxc.com/#tag/Errors)
+- [Webhooks](https://docs.boxc.com/#tag/Webhooks)
+- [Support Center](https://support.boxc.com/support/solutions)
+- [Setting up an OAuth 2.0 Client](https://support.boxc.com/support/solutions/articles/65000182698-setting-up-an-oauth-2-0-client)
+
+## Notes
+
+- Pagination is cursor-based: pass the `next_page` value back as `page_token`.
+- Rate limiting uses a leaky bucket (default 30 bucket, +2/sec); see X-Rate-Limit and X-Rate-Requests headers; code 1015 on 429.
+- Errors use a native envelope {status, code, message, errors} (not RFC 9457); messages can be localized via Accept-Language.
+- Test mode: set `test: true` on a shipment to generate test labels against the production endpoint.
+- Webhooks are verified via a Base64 HMAC-SHA256 digest in the X-BoxC-Hmac-SHA256 header.

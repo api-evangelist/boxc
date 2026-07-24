@@ -1,0 +1,53 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/#tag/Webhooks
+spec_type: Webhooks
+transport: http-post
+detail: >-
+  Applications subscribe to topics and receive events for a user. BoxC pushes each event as
+  an HTTP POST to the subscription's `address`. Subscriptions are scoped to the registering
+  application only. Managed via the Webhooks resource (GET/POST/PUT/DELETE /webhooks and
+  POST /webhooks/{id}/queue).
+topics:
+- topic: shipments_status
+  description: Fired when a shipment's status changes (includes images[] since v1.120).
+- topic: shipments_label
+  description: Fired when a shipment's label is ready.
+- topic: orders_status
+  description: Fired when an order's status changes.
+- topic: manifests_complete
+  description: Fired when a manifest completes.
+- topic: fulfillments_complete
+  description: Fired when a fulfillment completes.
+- topic: fulfillments_update
+  description: Fired when a fulfillment is updated.
+security:
+  verification: hmac-sha256
+  header: X-BoxC-Hmac-SHA256
+  detail: >-
+    Base64-encoded HMAC-SHA256 digest of the payload computed with the webhook `key`
+    (16-40 chars, application-provided). Recompute and compare to verify authenticity.
+headers:
+- name: User-Agent
+  value: BoxC/1.0 Webhook
+- name: X-BoxC-Hmac-SHA256
+  value: Base64 HMAC digest for verification
+- name: X-BoxC-Topic
+  value: The event topic (e.g. shipments_status)
+- name: X-BoxC-Account
+  value: The affected user ID
+delivery:
+  success: HTTP 2xx from the address
+  retries: 3 additional attempts within one hour on failure, then evicted
+  connect_timeout_seconds: 2
+  redirects_followed: false
+  address_rules:
+  - Must be RFC-compliant and include http/https
+  - Must include a valid hostname and a path (not just a domain or IP)
+  - Cannot include localhost
+  - Must be <= 128 characters
+asyncapi_spec: null
+notes: >-
+  BoxC documents webhooks but does not publish an AsyncAPI document, so this captures the
+  webhook catalog as a Webhooks surface. Multiple addresses may subscribe to the same
+  topic+user since v1.121.

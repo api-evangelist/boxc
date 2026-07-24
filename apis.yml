@@ -1,20 +1,976 @@
 aid: boxc
 name: Boxc
-description: Boxc is a company surfaced as a portfolio company of 500-global and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  BoxC (BoxC Logistics, Inc.) is an international e-commerce logistics management platform.
+  Its single RESTful API drives cross-border ecommerce by integrating dozens of carriers,
+  customs clearance, duties and taxes, warehousing and fulfillment, and returns through one
+  integration. A routing engine can complete every leg of a shipment's journey or only
+  selected steps on the merchant's behalf. The v1 API (currently 1.123) exposes 83
+  operations across 34 resources including Shipments, Labels, Orders, Products, Shops,
+  Warehouses, Manifests, Overpacks, Inbound, Returns, Reshipments, Webhooks, Carrier
+  Credentials, Customs Products, Entry Points, Tracking, Calculate Duty, Validate Address,
+  and Classify. Authentication is OAuth 2.0 / OpenID Connect with RS256 JWT bearer tokens.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
 url: https://raw.githubusercontent.com/api-evangelist/boxc/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - 500-global
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: enriched-2026-07-18
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
-apis: []
+- Logistics
+- Shipping
+- Ecommerce
+- Cross-Border
+- Fulfillment
+- Customs
+- Tracking
+- Webhooks
+apis:
+- aid: boxc:boxc-calculateduty-api
+  name: Boxc CalculateDuty API
+  description: >-
+    Calculate the landed cost of a shipment. This is a quick way to calculate the duties and taxes owed
+    for a shipment without having to create one.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - CalculateDuty
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-calculateduty-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-classify-api
+  name: Boxc Classify API
+  description: >-
+    The Classify resource permits a user to retrieve the <em>most likely</em> HS code and description
+    for one or more products. Each successful request costs $0.05 (USD) regardless of the number of products.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Classify
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-classify-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-credentials-api
+  name: Boxc Credentials API
+  description: >-
+    The Credentials resource allows users to store their own carrier account secrets securely. This gives
+    users the ability to reuse their credentials without providing actual secret values in every single
+    shipment request. There can be multiple secret values stored in a single credential resource. Supported
+    carriers and parameters can be found in the [Carrier Credentials](/#tag/CarrierCredentials) section.
+
+
+    **Note:** All secret params that are stored by BoxC are encrypted at the storage layer using the Advanced
+    Encryption Standard (AES) algorithm — AES-256.
+
+
+    **Important:** Once a credential resource is created, it is not possible to see the secret values
+    for security reasons.
+
+
+    **Important:** If the secret values have to be updated for any reason, we recommend updating your
+    existing Credential resource instead of creating a new one. Doing so will ensure that secret values
+    are always up to date for previously created labels with the same Credential resource and event tracking
+    is not affected adversely.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-credentials-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-customsproducts-api
+  name: Boxc CustomsProducts API
+  description: >-
+    Not to be confused with Fulfillment [Products](/#tag/Products), Customs Products are for clearing
+    shipments containing regulated items like Food and Cosmetics (PGA). Customs Products contain information
+    about the item including the manufacturer, seller, importer, etc. Shipments that are determined to
+    be PGA must provide the `product_id` in the line item. Manifesting PGA shipments will notify the relevant
+    agencies.
+
+
+    Several properties are conditional and offer different options based on the `coi` and `type` of product.
+
+
+    **Important:** This resource and its operations are in Beta and subject to change without notice.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - CustomsProducts
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-customsproducts-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-entrypoints-api
+  name: Boxc EntryPoints API
+  description: >-
+    An entry point is the drop off location / origin for your shipments which affects your rates and the
+    routes available. The `entry_point.id` is required when creating a shipment. You must query this endpoint
+    to get an active list of entry points as some of added, changed, or removed.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - EntryPoints
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-entrypoints-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-estimate-api
+  name: Boxc Estimate API
+  description: >-
+    The Estimate resource allows a user to retrieve the estimated cost of shipping a package based on
+    weight, dimensions, entry point, destination, and other parameters. No services will be returned if
+    a route can't be matched against the provided parameters.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Estimate
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-estimate-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-inbound-api
+  name: Boxc Inbound API
+  description: >-
+    The Inbound resource is part of the fulfillment component and allows customers to restock their products
+    at warehouses operated by BoxC. An inbound shipment's products can't be modified after creation, but
+    the warehouse, carrier, tracking number, and notes can be modified.
+
+
+    ### Inbound Status
+
+    The following table lists all possible states of an inbound shipment indicated by its `status` property.
+    Only the system or warehouse can modify a shipment's status.
+
+
+    | Status | Description |
+
+    |--------|-------------|
+
+    | Pending | The inbound shipment was created and may be en route to the warehouse. Default state.
+    |
+
+    | Received | The inbound shipment arrived at the warehouse. It can no longer be updated or deleted.
+    |
+
+    | Processed | The inbound shipment was processed and inventoried by the warehouse. |
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Inbound
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-inbound-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-invoices-api
+  name: Boxc Invoices API
+  description: >-
+    Invoices and statements are generated weekly and include a summary of all transactions between the
+    invoice's `start_date` and `end_date`. Users can export an itemized list of all transactions for a
+    billing period in their account.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-invoices-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-labels-api
+  name: Boxc Labels API
+  description: >-
+    The Labels resource allows a user to create, cancel, retrieve, and track labels for shipments. A label
+    can't be created if there is already an uncancelled or processed label for the shipment. Labels that
+    have been processed can't be cancelled. The user is responsible for paying the shipping costs if a
+    label is cancelled but still processed at a facility. Test labels are routinely purged from the system.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Labels
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-labels-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-manifests-api
+  name: Boxc Manifests API
+  description: >-
+    The Manifests resource is used for generating the paperwork required for dropping off Overpacks at
+    a [collection center](/#tag/EntryPoints) or carrier facility at the end of the day. It also transmits
+    the shipment data to the carrier(s) electronically. In order to create a manifest you must provide
+    a list of the Overpacks that will be dropped off together. A manifest consists of all Shipments that
+    are linked to each Overpack.
+
+
+    **Note:** All overpacks in a manifest must have the same ```entry_point```, can't be empty, or missing
+    weight and dimensions.
+
+
+    Some manifests may have separate forms or no forms at all for the different carriers depending on
+    the routes utilized by the affected shipments. Shipments should be sorted into Overpacks based on
+    the carrier and other details prior to manifesting. Multiple copies of a form may exist for the driver
+    and facility.
+
+
+    **Note:** It can take up to several minutes before forms are available for download after manifesting
+    because the required background tasks run asynchronously.
+
+
+    **Important:** Once a manifest is created the associated overpacks and shipments can't be modified.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Manifests
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-manifests-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-orders-api
+  name: Boxc Orders API
+  description: >-
+    The Orders resource allows you to create, read, update, and delete orders that are meant to be fulfilled
+    by BoxC. If you wish to manually create an order for a third party shop you must provide the `shop.id`
+    and `shop.order_id`. Neither property can be updated. The system will push tracking information to
+    the shop when the order is fulfilled if both properties are set. Clients can force which warehouse
+    is used for order fulfillment by setting the `warehouse.id` property.
+
+    ### Order Status
+
+
+    The following table lists all possible states of an order indicated by its `status` property. Updating
+    an order that is 'Ready' will reset its status to 'Processing' and restore product quantities until
+    it's processed by the system again.
+
+
+    | Status | Description |
+
+    |--------|-------------|
+
+    | Backordered | There is insufficient quantity for one or more line items. The system will change
+    the status once more inventory is added. |
+
+    | Exception | There is a problem with the order such as missing or invalid information. The user must
+    correct the problem before the order can be processed by the system. |
+
+    | Holding | The order is being delayed from processing by the user. |
+
+    | Processing | The order is waiting for the system to process it. Default state. |
+
+    | Ready | The order is assigned to a warehouse for packing and quantities were deducted. |
+
+    | Packing | One or more line items are being packed. <em>It can't be edited in this state</em>. |
+
+    | Partial | The order was partially fulfilled. The remaining line items will be fulfilled when more
+    inventory arrives. |
+
+    | Fulfilled | The order was completely fulfilled. |
+
+    | Archived | The system archives orders that were fulfilled at least 90 days in the past. |
+
+
+    ### Pruning Orders
+
+
+    The system routinely prunes or closes out orders in the system more than **365 days** ago. The start
+    time is based on the `placed_at` and not the `created` datetime. What happens to the order depends
+    on its current state at the time of pruning.
+
+
+    - Unfulfilled (not Packing, Partial, Fulfilled) orders are deleted.
+
+    - Partially fulfilled orders (Holding, Packing, Partial) are bumped to Fulfilled.
+
+    - Orders in Packing have their unfulfilled line items and fulfillment objects deleted, and are bumped
+    to Fulfilled.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-orders-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-overpacks-api
+  name: Boxc Overpacks API
+  description: >-
+    The Overpacks resource allows a user to combine many Shipments into one object for faster clearance
+    with BoxC and Customs. An overpack can be a carton, container, pallet, or bag. Regardless, it must
+    contain an overpack label on the outside. Empty overpacks are routinely purged from the system.
+
+
+    When creating an overpack it's recommended to provide one or more shipment ID, label ID, or tracking
+    numbers in the request. The overpack will inherit the first shipment's (`n`) attributes like the `entry_point`,
+    `service`, `terms`, etc. All shipments require identical attributes to be a part of the same overpack.
+    Errors will be returned if the `n + 1` shipments do not match the first one. An error message will
+    be present in the `shipments` array for each shipment that fails while creating or updating overpacks.
+    Shipments that pass validation will still be added in the same request.
+
+
+    The system will calculate the routing and other applicable carrier logic to determine the physical
+    appearance of the label. Some carriers require custom messaging on the labels while others require
+    a completely different label altogether. The system handles this logic on your behalf.
+
+
+    **Note:** Shipments without labels and cancelled shipments can't be added to overpacks.
+
+
+    The overpack(s) must be dropped off at the BoxC collection center indicated by the `entry_point`.
+    Some entry points do not require overpacking and the system will prevent you from creating one. Deleting
+    an overpack unassigns all shipments from it.
+
+
+    **Note:** A client won't be able to print an overpack label until at least one shipment is assigned
+    to it.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Overpacks
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-overpacks-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-products-api
+  name: Boxc Products API
+  description: >-
+    The Products resource allows users to add their products to the BoxC system. A product can have one
+    or more Stock Keeping Units (SKUs). This gives users the ability to link their different shops' SKUs
+    to the same product. There can only be one active SKU per shop per product. Orders won't be fulfilled
+    until the warehouse accepts and processes your products. This includes measuring the weight and dimensions,
+    and updating the quantity.
+
+
+    **Note:** Products and SKUs linked to orders can't be deleted. Existing SKUs can't be assigned to
+    a different shop.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-products-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-reshipments-api
+  name: Boxc Reshipments API
+  description: >-
+    The Reshipments resource allows you to reship one or more returned packages at a time from a BoxC
+    warehouse. When a reshipment is created the `status` of all included returns will change to "Reshipping".
+    Only returns with the following status can be reshipped: Processed, Verifying, and Verified. If reshipping
+    more than one return at a time then you must wait for a facility operator to provide an `estimated_reship_fee`.
+    If reshipping one return then the estimate will be instantaneous. In both cases you must approve the
+    estimate before the reshipment is sent and your account is charged.
+
+
+    **Note:** All returns in a bulk reshipment (> 1 return) must reside in the same warehouse.
+
+    ### Status
+
+    When a reshipment is created its status is set to "Pending" by default. It will remain that way until
+    the `estimated_reship_fee` is populated by the system or facility operator. Afterwards, you have the
+    option to approve or decline the amount by [updating](/#tag/Reshipments/operation/updateReshipment)
+    the status accordingly. If "Declined", it will not be reshipped. If "Approved" it will be reshipped,
+    tracking information will be made available, and a final reship_fee will be provided. Reshipments
+    with the status "Approved" cannot be deleted.
+
+
+    **Important:** Reshipments that are "Pending" or "Declined" longer than 15 days will be deleted by
+    the system.
+
+
+    **Note:** The final reshipping fee may differ from the estimated reshipping fee.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Reshipments
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-reshipments-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-returns-api
+  name: Boxc Returns API
+  description: >-
+    The Returns resource allows a user to retrieve a list of returned shipments processed at a BoxC warehouse.
+    Users may verify, [reship](/#tag/Reshipments), or discard their returns. Discarding a return is irreversible.
+
+    ### Verify
+
+    Users have the option to verify a return before reshipping it. The facility operator will take additional
+    pictures of the contents inside the return and add messages if necessary. To verify a return the user
+    should <strong>PUT</strong> a `status` of "Verify". This will change the status of the return to "Verifying"
+    which cannot be reversed. Only returns in the "Processed" state can be verified.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Returns
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-returns-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-shipments-api
+  name: Boxc Shipments API
+  description: >-
+    The Shipments resource allows a user to create, update, retrieve, and delete shipments. Only test
+    shipments and shipments without labels can be deleted. Shipments with uncancelled or processed labels
+    cannot be updated. All shipments require address verification on the shipping address. Cancelling
+    a label will refund the cost. Test shipments and shipments without labels are routinely purged from
+    the system.
+
+
+    There are some weight and volumetric constraints for shipments that is dependant on the route. For
+    example, if a Shipment's length + girth is greater than a certain size then the user is charged an
+    additional fee per KG. The length is the measurement of the longest dimension, and girth is the distance
+    around the thickest part (perpendicular to the length). If the Shipment's weight or volume exceeds
+    the limit for a route an error will be returned.
+
+
+    **Note:** Set the `overpack_id` to null when unassigning it from an overpack. You won't be allowed
+    to update a labelled shipment beyond that.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Shipments
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-shipments-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-shops-api
+  name: Boxc Shops API
+  description: >-
+    The Shops resource allows a user to manage their fulfillment shop. A shop with orders or SKUs cannot
+    be deleted. Clients should use a third party platform for integrating their ecommerce marketplaces
+    with the BoxC API.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Shops
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-shops-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-track-api
+  name: Boxc Track API
+  description: >-
+    The Track resource allows clients to retrieve tracking events for shipments by their tracking number.
+    You may only track one shipment per request. This endpoint is rate limited.
+
+
+    Some shipments may have <code>images</code> attached to them during transit such as processing scans
+    and proof of delivery. To reveal these images in the response the client must either:
+
+      A. Be the owner of the shipment;<br>
+      B. Provide the shipping email address in the query;<br>
+      C. Provide the postal code in the query if it's not revealed in the event history.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Track
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-track-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-users-api
+  name: Boxc Users API
+  description: >-
+    The Users resources allows an application to retrieve information about the tokenized user such as
+    balances, personal/company address, and subscriptions. Only the addresses can be updated by applications
+
+
+    ### Subscriptions
+
+
+    A subscription is a recurring payment for a provided service. The specified `amount` is deducted from
+    the user's BoxC balance at the start of each `interval` - also known as `current_period_start`.
+
+
+    - Applications can only view subscriptions that belong to them.
+
+    - Subscriptions automatically renew each interval until cancelled.
+
+    - Cancelling a subscription will flag it to be deleted after `current_period_end`. To save a subscription
+    it must be renewed before `current_period_end`.
+
+    - Subscriptions are automatically removed from the list if their `current_period_end` is less than
+    the current time.
+
+    - A subscription cannot be modified after creation - only renewed.
+
+    - A subscription will not be renewed if the user has insufficient funds.
+
+    - A subscription can only be cancelled by the user from their account's dashboard.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-users-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-validateaddress-api
+  name: Boxc ValidateAddress API
+  description: >-
+    The Validate Address resource permits a user to validate and retrieve the most likely matches of provided
+    postal addresses. Each successful validation costs $0.03 (USD).
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - ValidateAddress
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-validateaddress-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-warehouses-api
+  name: Boxc Warehouses API
+  description: >-
+    The Warehouses resource allows you to retrieve location and identity information for a single warehouse
+    or all warehouses. You should query this endpoint to retrieve an active list of fulfillment warehouses
+    that customers can send their products to restock their inventory. The ```warehouse.id``` is used
+    for selecting the warehouse while creating an inbound shipment or an order.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Warehouses
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-warehouses-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-webhooks-api
+  name: Boxc Webhooks API
+  description: >-
+    The Webhooks resource allows applications to subscribe to topics and receive events for users. Events
+    are pushed to the webhook's `address` with a payload by issuing an HTTP POST request each time.
+
+
+    **Note:** Webhook subscriptions are scoped only to the application that they're registered to which
+    means other applications can't read, modify, or delete them.
+
+    ### Address Rules
+
+    To create a webhook you register a valid HTTP address for consuming the events. It can be updated
+    at any time. An address is considered valid if it meets the following conditions:
+
+
+    - Must be RFC compliant (include HTTP/S).
+
+    - Must include a valid hostname (example: www.boxc.com).
+
+    - Must include a path and can't be just a domain or IP address (example: <span>http://</span>boxc.com/path/to/script).
+
+    - Can't include localhost in the hostname.
+
+    - Must be less than or equal to 128 characters in length.
+
+
+    ### HTTP Headers
+
+    There are four additional HTTP headers added to the webhook event to aid applications in processing
+    them.
+
+
+    - **User-Agent** - Always "BoxC/1.0 Webhook" for filtering webhook requests.
+
+    - **X-BoxC-Hmac-SHA256** - Base64 encoded HMAC digest. Useful for verifying the event is authentic
+    (example: Ikaxp9lMrkNXb6kxVhYxxiYDZplIN1kQcHV6gK3duFk=).
+
+    - **X-BoxC-Topic** - The subject of the event (example: shipments_status).
+
+    - **X-BoxC-Account** - The user ID affected by the event (example: 9512).
+
+    ### Verifying Events
+
+    A `key` is required when creating a webhook. Every webhook has a `key` that is used to calculate the
+    **X-BoxC-Hmac-SHA256** HTTP header by using the payload sent in the request. To verify the request
+    came from BoxC, compute the HMAC digest using the SHA-256 hash function, encode it to [Base64](https://en.wikipedia.org/wiki/Base64),
+    and compare it to the X-BoxC-Hmac-SHA256 header.
+
+
+    Keys are provided by the application and must be between 16 and 32 characters long. They're not unique
+    or immutable.
+
+    ### Payloads
+
+    The payload contains a JSON object with the data for the webhook event. The contents and structure
+    of each payload varies depending on the topic.
+
+    ### Responding to Webhooks
+
+    The configured webhook `address` must respond with an HTTP Status between 200 and 299 (inclusive)
+    to be considered successful. Any response outside the 200 range will result in a failed attempt and
+    will be queued for three additional attempts within an hour before it's evicted. Requests made to
+    the webhook address will not follow any redirects.
+
+
+    The `address` must connect within 2 seconds and respond within 4 seconds overall or it will be considered
+    a failed attempt. If you believe it will take longer than 4 seconds to respond then you should process
+    the request asynchronously after responding with 200 OK.
+
+
+    BoxC uses an exponential backoff timer for calculating the next attempt and will continue to retry
+    three more times. Webhook addresses that don't respond with a successful status 1000 consecutive times
+    are deactivated until the client updates the malfunctioning webhook. An email is sent to the OAuth
+    client when a webhook is deactivated.
+
+    ### Testing Webhooks
+
+    Applications can test their integration by POSTing an event to a webhook they manage. The same event
+    will be injected into the queue and subsequently POSTed to the webhook's configured address without
+    any alterations. A fake payload from one of the topics below can be used as a template and modified
+    to test the different stages of an object's lifecycle. The event's payload must match the topic's
+    schema the webhook is subscribed to.
+
+    ### Topics
+
+    Listed below are the current topics and their respective event structures that users may subscribe
+    to.
+
+
+    #### fulfillments_complete
+
+
+    This event is triggered when a fulfillment is fulfilled and finalized at a warehouse. Tracking numbers
+    will be provided in most cases, but sometimes there's a delay from the carrier - users should subscribe
+    to `fulfillments_update` to handle this scenario.
+
+    ```json
+
+    {
+      "fulfillment": {
+        "id": 619231,
+        "line_items": [
+            {
+                "product_id": 121000,
+                "quantity": 2,
+                "sku": "MYSKU123"
+            }
+        ],
+        "order_id": 600001,
+        "service": "BoxC Parcel",
+        "shipment_id": 1521231,
+        "shop": {
+            "id": "my-test-shop",
+            "order_id": "#1002"
+        },
+        "tracking_number": null,
+        "tracking_url": null,
+        "warehouse_id": "WH0HKG01"
+      }
+    }
+
+    ```
+
+
+    #### fulfillments_update
+
+
+    This event is triggered when a fulfillment's tracking information is updated by the carrier after
+    it was already completed. Some carriers don't provide a tracking number immediately.
+
+    ```json
+
+    {
+      "fulfillment": {
+          "id": 619231,
+          "order_id": 600001,
+          "service": "BoxC Parcel",
+          "shipment_id": 1521231,
+          "shop": {
+              "id": "my-test-shop",
+              "order_id": "#1002"
+          },
+          "tracking_number": "9261290185965500000103",
+          "tracking_url": "https:\/\/track.boxc.com\/?id=9261290185965500000103",
+          "warehouse_id": "WH0HKG01"
+      }
+    }
+
+    ```
+
+
+    #### manifests_complete
+
+
+    This event is triggered when a manifest finished processing and any related PDF documents are available
+    for download.
+
+    ```json
+
+    {
+      "manifest": {
+          "created": "2022-08-02 12:12:12",
+          "entry_point": "LAXI01",
+          "exit_point": "SYD",
+          "id": 909447,
+          "forms": [
+              "Toll_IPEC.pdf"
+          ],
+          "mawb_id": null,
+          "overpacks": [
+            {
+              "carrier": "Toll",
+              "created": "2021-08-01 00:26:05",
+              "height": 10,
+              "id": 1002730,
+              "length": 10,
+              "service": "BoxC Parcel",
+              "terms": "DDU",
+              "type86": false,
+              "weight": 5,
+              "width": 10
+            }
+          ],
+          "total_shipments": 4,
+          "warehouse_no": "02599225803"
+      }
+    }
+
+    ```
+
+
+    #### orders_status
+
+
+    This event is triggered when an order's status changes. Only orders updated to "Exception" will trigger
+    this event.
+
+    ```json
+
+    {
+      "order": {
+          "created": "2020-02-27 12:12:12",
+          "id": 1831488,
+          "line_items": [
+              {
+                  "product_id": 123456,
+                  "sku": "sku123",
+                  "quantity": 1
+              }
+          ],
+          "placed_at": "2020-02-27 15:15:15",
+          "service": "BoxC Priority",
+          "status": "Exception",
+          "shipping_address": {
+              "company_name": null,
+              "phone": null,
+              "email": null,
+              "name": "John Smith",
+              "street1": "555 5TH AVE",
+              "street2": null,
+              "city": "NEW YORK",
+              "province": "NY",
+              "postal_code": "10001",
+              "country": "US"
+          },
+          "shop": {
+              "id": "my-test-shop",
+              "order_id": "123456"
+          }
+      }
+    }
+
+    ```
+
+
+    #### shipments_label
+
+
+    This event is triggered when a label is generated in the BoxC system. In most cases this webhook will
+    immediately fire off during shipment creation. However, some carriers provide shipping labels asynchronously
+    so they won't be available after creating a shipment. They make take anywhere from a few seconds to
+    a few minutes to be ingested into our system. The `shipment.data` is a base 64 encoded string that
+    must be decoded before saving as the indicated `content_type`. All label data will be sent as "application/pdf".
+
+    ```json
+
+    {
+      "shipment": {
+          "carrier": "Janio",
+          "content_type": "application\/pdf",
+          "data": "aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g\/dj1kUXc0dzlXZ1hjUQ==",
+          "id": 1521231,
+          "tracking_number": "9261290185965500000103"
+      }
+    }
+
+    ```
+
+
+    #### shipments_status
+
+
+    This event is triggered when a new tracking event is injected. The tracking event along with some
+    shipment details is sent to the subscribed webhooks.
+
+    ```json
+
+    {
+      "shipment": {
+          "chargeable_weight": 0.4,
+          "comments": [
+              "Order123456"
+          ],
+          "entry_point": "TEST01",
+          "event": {
+              "carrier": "USPS",
+              "code": 200,
+              "city": "AUSTIN",
+              "province": "TX",
+              "postal_code": "78701",
+              "country": "US",
+              "time": "2019-10-10 12:12:12",
+              "longitude": null,
+              "latitude": null
+          },
+          "exit_point": "DFW",
+          "gross_weight": 0.235,
+          "id": 1521231,
+          "images": {
+            "pod": [],
+            "scans": []
+          },
+          "order_number": null,
+          "service": "BoxC Parcel",
+          "status": "Delivered",
+          "tracking_number": "9261290185965500000103",
+          "volumetric_weight": 0.4
+      }
+    }
+
+    ```
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-webhooks-api-openapi.yml
+  - type: Swagger
+    url: openapi/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -23,3 +979,64 @@ maintainers:
 common:
 - type: Website
   url: https://boxc.com
+- type: DeveloperPortal
+  url: https://docs.boxc.com/
+- type: Documentation
+  url: https://docs.boxc.com/
+- type: APIReference
+  url: https://docs.boxc.com/
+- type: GettingStarted
+  url: https://docs.boxc.com/#tag/Introduction
+- type: Support
+  url: https://support.boxc.com/support/solutions
+- type: GitHubOrganization
+  url: https://github.com/boxc
+- type: TermsOfService
+  url: https://boxc.com/terms-and-conditions
+- type: Login
+  url: https://accounts.boxc.com
+- type: OpenAPI
+  url: openapi/boxc-openapi-original.yml
+- type: Authentication
+  url: authentication/boxc-authentication.yml
+- type: OAuthScopes
+  url: scopes/boxc-scopes.yml
+- type: Conventions
+  url: conventions/boxc-conventions.yml
+- type: RateLimits
+  url: conventions/boxc-conventions.yml
+- type: ErrorCatalog
+  url: errors/boxc-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/boxc-lifecycle.yml
+- type: ChangeLog
+  url: changelog/boxc-changelog.yml
+- type: Webhooks
+  url: asyncapi/boxc-webhooks.yml
+- type: MCPServer
+  url: mcp/boxc-mcp.yml
+- type: WellKnown
+  url: well-known/boxc-well-known.yml
+- type: Packages
+  url: packages/boxc-packages.yml
+- type: Conformance
+  url: conformance/boxc-conformance.yml
+- type: DataModel
+  url: data-model/boxc-data-model.yml
+- type: Sandbox
+  url: sandbox/boxc-sandbox.yml
+- type: LLMsTxt
+  url: llms/boxc-llms.txt
+- type: Overlay
+  url: overlays/boxc-openapi-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DomainSecurity
+  url: security/boxc-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/boxc-agentic-access.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

@@ -1,0 +1,35 @@
+generated: '2026-07-18'
+method: derived
+source: openapi/boxc-openapi-original.yml
+format: boxc-error-envelope
+note: Derived from the HTTP status responses declared across the 83 OpenAPI operations. BoxC does NOT
+  use RFC 9457 application/problem+json; errors use the native BoxC envelope {status, code, message, errors}.
+  See errors/boxc-error-codes.yml for the numeric application-code registry.
+http_statuses:
+- status: 400
+  title: Bad Request — validation error (application code 1000) or malformed request.
+  operation_count: 59
+- status: 401
+  title: Unauthorized — missing, invalid, or revoked access token (application codes 1003-1008).
+  operation_count: 83
+- status: 402
+  title: Payment Required — insufficient account funds for a billable operation (application code 1080).
+  operation_count: 6
+- status: 403
+  title: Forbidden — the client lacks a required scope or privilege for the resource (application code
+    1009).
+  operation_count: 83
+- status: 404
+  title: Not Found — the requested resource does not exist or is not owned by the user.
+  operation_count: 49
+- status: 429
+  title: Too Many Requests — rate limit exceeded (application code 1015); see X-Rate-Limit / X-Rate-Requests
+    headers.
+  operation_count: 83
+- status: 500
+  title: Internal Server Error — an unexpected error on BoxC (application code 1001).
+  operation_count: 27
+- status: 503
+  title: Service Unavailable — an upstream/carrier service is temporarily unavailable (application code
+    1010).
+  operation_count: 3

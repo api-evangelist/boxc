@@ -1,0 +1,29 @@
+generated: '2026-07-18'
+method: generated
+api: openapi/boxc-openapi-original.yml
+note: >-
+  Packaged Agent Skills for BoxC marquee flows. Every step is grounded in a real
+  operationId verified in openapi/boxc-openapi-original.yml. Auth is OAuth 2.0 bearer JWT
+  against https://api.boxc.com/v1; conventions (pagination, rate limits, error envelope) are
+  captured in conventions/boxc-conventions.yml.
+skills:
+- file: boxc-create-and-label-shipment.md
+  name: Create and label an international shipment
+  api: openapi/boxc-openapi-original.yml
+  operations: [getEntryPoints, getEstimate, addShipment, addLabel, getLabelsById]
+- file: boxc-track-shipment.md
+  name: Track a shipment
+  api: openapi/boxc-openapi-original.yml
+  operations: [getTrackingEvents]
+- file: boxc-subscribe-webhooks.md
+  name: Subscribe to and verify webhooks
+  api: openapi/boxc-openapi-original.yml
+  operations: [addWebhook, getWebhooks]
+- file: boxc-fulfill-order.md
+  name: Import and fulfill an order
+  api: openapi/boxc-openapi-original.yml
+  operations: [addOrder, getOrders, updateOrderStatus]
+- file: boxc-calculate-landed-cost.md
+  name: Calculate landed cost (duties and taxes)
+  api: openapi/boxc-openapi-original.yml
+  operations: [validateAddress, calculateDuty]

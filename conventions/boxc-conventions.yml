@@ -1,0 +1,62 @@
+generated: '2026-07-18'
+method: searched
+source: https://docs.boxc.com/
+api: openapi/boxc-openapi-original.yml
+base_url: https://api.boxc.com/v1
+content_type: application/json
+authentication:
+  style: oauth2-bearer-jwt
+  header: 'Authorization: Bearer <jwt>'
+  detail: authentication/boxc-authentication.yml
+versioning:
+  scheme: uri-path
+  current_major: v1
+  detail: >-
+    The API endpoint embeds the major version (v1). Feature-level changes are additive
+    and tracked by a minor version (currently 1.123) published in the changelog rather
+    than the URL.
+  changelog: changelog/boxc-changelog.yml
+idempotency:
+  supported: false
+  note: >-
+    BoxC does not document an idempotency-key header. Safety is provided instead through
+    resource state guards (e.g. a shipment with processed labels cannot be recreated or
+    deleted, error 1201) and the immutable `test` flag on shipments.
+pagination:
+  style: cursor-token
+  request_param: page_token
+  response_field: next_page
+  detail: >-
+    List/search endpoints return a root-level `next_page` property. Pass it back as the
+    `page_token` query parameter to fetch the next page; the token encodes all original
+    query parameters. `next_page` is null on the last page.
+rate_limiting:
+  algorithm: leaky-bucket
+  scope: per-user (across all applications)
+  default_bucket: 30
+  refill_per_second: 2
+  response_headers:
+  - X-Rate-Limit
+  - X-Rate-Requests
+  exceeded_code: 1015
+  exceeded_status: 429
+  detail: 'Remaining requests = X-Rate-Limit (bucket size) minus X-Rate-Requests (current).'
+error_envelope:
+  format: boxc-error-envelope
+  fields: [status, code, message, errors]
+  detail: errors/boxc-error-codes.yml
+localization:
+  header: Accept-Language
+  default: en
+  note: Error messages can be localized; carrier-origin messages may remain in the carrier language.
+timezone:
+  default: UTC
+  note: All response datetimes are UTC unless specified; tracking events use the scan location's local timezone.
+test_mode:
+  detail: sandbox/boxc-sandbox.yml
+  note: 'A `test: true` boolean on a shipment generates test labels against the same production endpoint.'
+data_retention:
+  note: >-
+    Ephemeral objects are purged automatically — test shipments/labels older than 30 days,
+    label-less shipments older than 30 days, empty cartons older than 30 days, unfulfilled
+    orders older than 1 year, inbound shipments 3+ years old; fulfilled orders archive after 90 days.
