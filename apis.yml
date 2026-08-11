@@ -57,7 +57,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-calculateduty-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -75,7 +75,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-classify-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -109,7 +109,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-credentials-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -136,7 +136,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-customsproducts-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -155,7 +155,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-entrypoints-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -174,7 +174,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-estimate-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -212,7 +212,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-inbound-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -231,7 +231,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-invoices-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -251,7 +251,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-labels-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -289,7 +289,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-manifests-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -359,7 +359,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-orders-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -403,7 +403,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-overpacks-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -428,7 +428,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-products-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -469,7 +469,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-reshipments-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -494,7 +494,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-returns-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -526,7 +526,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-shipments-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -545,7 +545,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-shops-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -571,7 +571,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-track-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -613,7 +613,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-users-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -631,7 +631,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-validateaddress-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -651,7 +651,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-warehouses-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -966,7 +966,7 @@ apis:
   - type: OpenAPI
     url: openapi/boxc-webhooks-api-openapi.yml
   - type: Swagger
-    url: openapi/boxc-openapi-original.yml
+    url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
     url: https://docs.boxc.com/
   - type: APIReference
@@ -996,7 +996,7 @@ common:
 - type: Login
   url: https://accounts.boxc.com
 - type: OpenAPI
-  url: openapi/boxc-openapi-original.yml
+  url: openapi/_original/boxc-openapi-original.yml
 - type: Authentication
   url: authentication/boxc-authentication.yml
 - type: OAuthScopes
