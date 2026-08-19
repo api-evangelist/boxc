@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Classify API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Classify",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "POST /classify",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/classify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get HS codes and descriptions for products. Accurate HS codes are required for customs clearance."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

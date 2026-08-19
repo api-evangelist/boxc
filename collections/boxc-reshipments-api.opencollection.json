@@ -1,0 +1,125 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Reshipments API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Reshipments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /reshipments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reshipments",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of reshipments."
+        },
+        {
+          "info": {
+            "name": "POST /reshipments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/reshipments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a reshipment."
+        },
+        {
+          "info": {
+            "name": "GET /reshipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reshipments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The reshipment ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a reshipment."
+        },
+        {
+          "info": {
+            "name": "PUT /reshipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/reshipments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The reshipment ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a reshipment."
+        },
+        {
+          "info": {
+            "name": "DELETE /reshipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/reshipments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The reshipment ID"
+              }
+            ]
+          },
+          "docs": "Deletes a reshipment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1762 @@
+{
+  "item": [
+    {
+      "id": "2763da2e-ae8a-4548-b9b3-fe50acfb5a3f",
+      "name": "Inbound",
+      "description": {
+        "content": "The Inbound resource is part of the fulfillment component and allows customers to restock their products at warehouses operated by BoxC. An inbound shipment's products can't be modified after creation, but the warehouse, carrier, tracking number, and notes can be modified.\n\n### Inbound Status\nThe following table lists all possible states of an inbound shipment indicated by its `status` property. Only the system or warehouse can modify a shipment's status.\n\n| Status | Description |\n|--------|-------------|\n| Pending | The inbound shipment was created and may be en route to the warehouse. Default state. |\n| Received | The inbound shipment arrived at the warehouse. It can no longer be updated or deleted. |\n| Processed | The inbound shipment was processed and inventoried by the warehouse. |\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7019dc7a-ce68-46dd-9a7e-1fbf8626755a",
+          "name": "GET /inbound",
+          "request": {
+            "name": "GET /inbound",
+            "description": {
+              "content": "Retrieves a list of inbound shipments.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inbound"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Used for selecting the page after the initial query."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a393f0cd-6c06-4894-a10c-d9c1847e40ab",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"inbound\": [\n    {\n      \"carrier\": \"DHL\",\n      \"created\": \"2024-05-17 14:00:00\",\n      \"id\": 10000,\n      \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n      \"processed_at\": \"2024-06-03 18:20:54\",\n      \"received\": null,\n      \"status\": \"Pending\",\n      \"tracking_number\": \"9261299991753900000290\",\n      \"warehouse\": {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    },\n    {\n      \"carrier\": \"DHL\",\n      \"created\": \"2024-05-17 14:00:00\",\n      \"id\": 10000,\n      \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n      \"processed_at\": \"2024-06-03 18:20:54\",\n      \"received\": null,\n      \"status\": \"Pending\",\n      \"tracking_number\": \"9261299991753900000290\",\n      \"warehouse\": {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    }\n  ],\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24d24d56-ff22-4e87-8f98-830659cef84d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b1d3f049-3523-4654-8fdc-115f3a872692",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3eacf3a3-546f-4b0d-aa2f-eab70809f5c8",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afd5355d-62a3-4fce-913c-7b31d9763c01",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "202c3c91-a303-4a54-897c-d6b3348e5660",
+          "name": "POST /inbound",
+          "request": {
+            "name": "POST /inbound",
+            "description": {
+              "content": "Creates an inbound shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inbound"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inbound\": {\n    \"carrier\": null,\n    \"notes\": null,\n    \"products\": [\n      {\n        \"cost\": \"<decimal>\",\n        \"id\": \"<integer>\",\n        \"quantity\": \"<integer>\"\n      },\n      {\n        \"cost\": \"<decimal>\",\n        \"id\": \"<integer>\",\n        \"quantity\": \"<integer>\"\n      }\n    ],\n    \"tracking_number\": null,\n    \"warehouse\": {\n      \"id\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "da1e25b8-5f78-41a4-bdb8-7bfeb97e91f3",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      }\n    ],\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"created\": \"2024-05-17 14:00:00\",\n    \"id\": 10000,\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"processed_at\": \"2024-06-03 18:20:54\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    ],\n    \"received\": \"2024-05-24 11:21:33\",\n    \"status\": \"Pending\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\",\n      \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n      \"country\": \"HK\",\n      \"entry_point\": \"SZX002\",\n      \"language\": \"Chinese\",\n      \"language_code\": \"zh\",\n      \"name\": \"BoxC Shenzhen 1\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b5d1d28-0063-4543-b509-f4c88022b4c4",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      }\n    ],\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"inbound/warehouse/id: Warehouse is not valid\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Warehouse is not valid\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00ffd7d7-0316-4a23-8000-17201c16dd92",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      }\n    ],\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b40c817-c1db-4647-85c4-589320493b6a",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      }\n    ],\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f96929b7-d6fc-447c-8983-c803e679c0da",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"quantity\": 299\n      }\n    ],\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a1f3d64c-0857-48f9-9489-aa2588a2d9b0",
+          "name": "GET /inbound/{id}",
+          "request": {
+            "name": "GET /inbound/{id}",
+            "description": {
+              "content": "Retrieves an inbound shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inbound",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "The data stream type for downloading the inbound shipment label."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The inbound ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "648894c6-d155-4332-b5f3-9e327d363b05",
+              "name": "OK. Returns PDF blob if `type=PDF` parameter is used.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"created\": \"2024-05-17 14:00:00\",\n    \"id\": 10000,\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"processed_at\": \"2024-06-03 18:20:54\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    ],\n    \"received\": \"2024-05-24 11:21:33\",\n    \"status\": \"Pending\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\",\n      \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n      \"country\": \"HK\",\n      \"entry_point\": \"SZX002\",\n      \"language\": \"Chinese\",\n      \"language_code\": \"zh\",\n      \"name\": \"BoxC Shenzhen 1\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "43081d3f-9ecc-4d36-81ec-6df05e4189b4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c9b39df-cf0d-4151-9a13-c40728252c7d",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f653f7e-ff31-492a-b302-96f2cfb03a0d",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1350,\n  \"message\": \"Inbound shipment not found\",\n  \"errors\": [\n    \"Inbound shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3b0e386-8bce-45ff-9fd7-35a2ba54ad76",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a4fbde92-30c3-40c2-8e66-104c7e4416b0",
+          "name": "PUT /inbound/{id}",
+          "request": {
+            "name": "PUT /inbound/{id}",
+            "description": {
+              "content": "Updates an inbound shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inbound",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The inbound ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inbound\": {\n    \"carrier\": null,\n    \"notes\": null,\n    \"tracking_number\": null,\n    \"warehouse\": {\n      \"id\": \"<string>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2bc37b02-512f-42bc-892a-bdba9463ef3b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"created\": \"2024-05-17 14:00:00\",\n    \"id\": 10000,\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"processed_at\": \"2024-06-03 18:20:54\",\n    \"products\": [\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      {\n        \"cost\": 2.25,\n        \"id\": 20111,\n        \"is_packaging\": false,\n        \"name\": \"XL T-Shirt\",\n        \"processed\": 300,\n        \"quantity\": 299,\n        \"codes\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    ],\n    \"received\": \"2024-05-24 11:21:33\",\n    \"status\": \"Pending\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\",\n      \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n      \"country\": \"HK\",\n      \"entry_point\": \"SZX002\",\n      \"language\": \"Chinese\",\n      \"language_code\": \"zh\",\n      \"name\": \"BoxC Shenzhen 1\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03efda0b-690e-4e71-aaff-59d246168425",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"inbound/warehouse/id: Warehouse is not valid\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"inbound/warehouse/id: Warehouse is not valid\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50f5d952-8bc9-44fb-8171-aae809bff3f0",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f5db546-154e-4ca7-bbaf-6008a6322713",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ed1cbed3-29c8-4361-9c3d-1250ef79b615",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1350,\n  \"message\": \"Inbound shipment not found\",\n  \"errors\": [\n    \"Inbound shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea477d22-d34e-4e7c-8edd-c64a6ca46e99",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"inbound\": {\n    \"carrier\": \"DHL\",\n    \"notes\": \"Manufacturer: XYZ; Delivery: 9/2/24\",\n    \"tracking_number\": \"9261299991753900000290\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e37fa06b-7c77-4f2f-a493-1d0ee9b9dc14",
+          "name": "DELETE /inbound/{id}",
+          "request": {
+            "name": "DELETE /inbound/{id}",
+            "description": {
+              "content": "Deletes an inbound shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inbound",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The inbound ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "355c193a-ea61-4665-80eb-a4a79df2a0c0",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ccbe34d6-6f29-413d-9d7c-4adbc1d772a2",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f27c456-e621-4924-ba33-3361828756dc",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "746ddec1-40f2-4fb4-91c1-67febb5aaf50",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1350,\n  \"message\": \"Inbound shipment not found\",\n  \"errors\": [\n    \"Inbound shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bb69223b-d35a-4465-b756-a549b665f87c",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inbound",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The inbound ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "b83e1583-849c-43d1-b130-d35e6bcf71a8",
+    "name": "BoxC CalculateDuty Inbound API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

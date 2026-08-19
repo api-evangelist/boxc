@@ -1,0 +1,125 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Shops API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Shops",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /shops",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/shops",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for shops with a similar name."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of shops."
+        },
+        {
+          "info": {
+            "name": "POST /shops",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/shops",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new shop."
+        },
+        {
+          "info": {
+            "name": "GET /shops/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/shops/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shop ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a shop."
+        },
+        {
+          "info": {
+            "name": "PUT /shops/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/shops/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shop ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a shop."
+        },
+        {
+          "info": {
+            "name": "DELETE /shops/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/shops/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shop ID"
+              }
+            ]
+          },
+          "docs": "Deletes a shop."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

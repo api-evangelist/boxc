@@ -1,0 +1,1136 @@
+{
+  "item": [
+    {
+      "id": "d5750c3c-880a-4d22-ab83-73e0a29ea85e",
+      "name": "Manifests",
+      "description": {
+        "content": "The Manifests resource is used for generating the paperwork required for dropping off Overpacks at a [collection center](/#tag/EntryPoints) or carrier facility at the end of the day. It also transmits the shipment data to the carrier(s) electronically. In order to create a manifest you must provide a list of the Overpacks that will be dropped off together. A manifest consists of all Shipments that are linked to each Overpack.\n\n**Note:** All overpacks in a manifest must have the same ```entry_point```, can't be empty, or missing weight and dimensions.\n\nSome manifests may have separate forms or no forms at all for the different carriers depending on the routes utilized by the affected shipments. Shipments should be sorted into Overpacks based on the carrier and other details prior to manifesting. Multiple copies of a form may exist for the driver and facility.\n\n**Note:** It can take up to several minutes before forms are available for download after manifesting because the required background tasks run asynchronously.\n\n**Important:** Once a manifest is created the associated overpacks and shipments can't be modified.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f5160558-a40b-4cd1-af0f-c5eeea19aede",
+          "name": "GET /manifests",
+          "request": {
+            "name": "GET /manifests",
+            "description": {
+              "content": "Retrieves a paginated list of manifests.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "manifests"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "entry_point",
+                  "value": "<string>",
+                  "description": "Filter that returns manifests for a single entry point."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Used for selecting the page after the initial query."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9026b2a5-80c7-4224-af63-0efdb570edad",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "entry_point",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"manifests\": [\n    {\n      \"carrier\": \"DHL Express\",\n      \"created\": \"2024-05-27 15:43:03\",\n      \"entry_point\": \"TEST01\",\n      \"id\": 1002329,\n      \"mawb_id\": 1229,\n      \"total_overpacks\": 21,\n      \"total_shipments\": 432,\n      \"tracking_number\": \"9410293108\",\n      \"warehouse_no\": \"753906563638\"\n    },\n    {\n      \"carrier\": \"DHL Express\",\n      \"created\": \"2024-05-27 15:43:03\",\n      \"entry_point\": \"TEST01\",\n      \"id\": 1002329,\n      \"mawb_id\": 1229,\n      \"total_overpacks\": 21,\n      \"total_shipments\": 432,\n      \"tracking_number\": \"9410293108\",\n      \"warehouse_no\": \"753906563638\"\n    }\n  ],\n  \"next_page\": \"ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4777a9dd-71f3-4795-8d94-3c9aa1578686",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "entry_point",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd6d0e8f-752a-4f20-a134-42499f5da128",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "entry_point",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09ffd658-2d1d-4e07-9da7-9789d2bd5c6b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "entry_point",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aae0bc8a-cb71-4a67-902b-86f7f67fe500",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "entry_point",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "574918e2-006c-4620-a622-3287d79c0308",
+          "name": "POST /manifests",
+          "request": {
+            "name": "POST /manifests",
+            "description": {
+              "content": "Creates an manifest.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "manifests"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      \"<integer>\"\n    ],\n    \"carrier\": \"<string>\",\n    \"tracking_number\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "083ddb1d-fe34-49a9-87bb-0c6cf766ae33",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"manifest\": {\n    \"carrier\": \"DHL Express\",\n    \"created\": \"2024-05-27 15:43:03\",\n    \"entry_point\": \"TEST01\",\n    \"id\": 1002329,\n    \"mawb_id\": 1229,\n    \"overpack_details\": [\n      {\n        \"shipments\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      },\n      {\n        \"shipments\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      }\n    ],\n    \"total_shipments\": 432,\n    \"tracking_number\": \"9410293108\",\n    \"warehouse_no\": \"753906563638\",\n    \"overpacks\": [\n      {\n        \"shipments\": [\n          {\n            \"id\": 1212,\n            \"label_id\": 781028,\n            \"tracking_number\": \"9261299991753900000290\",\n            \"error\": \"Can't mix shipments with different terms\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      },\n      {\n        \"shipments\": [\n          {\n            \"id\": 1212,\n            \"label_id\": 781028,\n            \"tracking_number\": \"9261299991753900000290\",\n            \"error\": \"Can't mix shipments with different terms\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "49718dfa-8bc0-4be9-bb89-4330b5a906a4",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /manifest/overpacks: Array should have at least 1 items, 0 found\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Validation Error. /manifest/overpacks: Array should have at least 1 items, 0 found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a6373ca-9e1d-465b-82da-3838fbb89984",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00d77426-b0ac-4ee7-b52b-47cfaff60e30",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd79d77a-b1a8-4d78-a02b-4be2a726d674",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "20ed2815-5adb-4a61-a84d-743ff7fd5827",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"manifest\": {\n    \"overpacks\": [\n      1000001,\n      1000002\n    ],\n    \"carrier\": \"DHL Express\",\n    \"tracking_number\": \"9410293108\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1274,\n  \"message\": \"Manifest could not be created.\",\n  \"errors\": [\n    \"Manifest could not be created.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b2bf3cbb-df83-41e7-91f3-9365c9072fdf",
+          "name": "GET /manifests/{id}",
+          "request": {
+            "name": "GET /manifests/{id}",
+            "description": {
+              "content": "Retrieves a manifest.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "manifests",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "The data stream type if you don't want the manifest details, but need the paperwork or forms. Only **PDF** is accepted.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The manifest ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "defe810d-97bf-40e1-9e9e-8a987da40a6b",
+              "name": "OK. Returns PDF blob if `type=PDF` parameter is used. The PDF combines all carrier documents.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The manifest ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the manifest documents.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"manifest\": {\n    \"carrier\": \"DHL Express\",\n    \"created\": \"2024-05-27 15:43:03\",\n    \"entry_point\": \"TEST01\",\n    \"id\": 1002329,\n    \"mawb_id\": 1229,\n    \"overpack_details\": [\n      {\n        \"shipments\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      },\n      {\n        \"shipments\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      }\n    ],\n    \"total_shipments\": 432,\n    \"tracking_number\": \"9410293108\",\n    \"warehouse_no\": \"753906563638\",\n    \"overpacks\": [\n      {\n        \"shipments\": [\n          {\n            \"id\": 1212,\n            \"label_id\": 781028,\n            \"tracking_number\": \"9261299991753900000290\",\n            \"error\": \"Can't mix shipments with different terms\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      },\n      {\n        \"shipments\": [\n          {\n            \"id\": 1212,\n            \"label_id\": 781028,\n            \"tracking_number\": \"9261299991753900000290\",\n            \"error\": \"Can't mix shipments with different terms\"\n          }\n        ],\n        \"carrier\": \"USPS\",\n        \"contains_dg\": true,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"entry_point\": \"str\",\n        \"exit_point\": \"LAX\",\n        \"external_tracking\": null,\n        \"height\": 50,\n        \"id\": 12091,\n        \"length\": 91,\n        \"locked\": false,\n        \"manifest_id\": 1010023,\n        \"pga\": false,\n        \"route_heading\": \"string\",\n        \"route_subheading\": \"string\",\n        \"service\": \"BoxC Parcel\",\n        \"terms\": \"string\",\n        \"total_shipments\": 432,\n        \"type86\": false,\n        \"weight\": 87.5,\n        \"width\": 30\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d78f9dcb-0207-4208-82af-79dc744a5cb2",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The manifest ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the manifest documents.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8ede4973-ffe2-4df2-9dc7-8c71e9c76f40",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The manifest ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the manifest documents.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "83736902-14a7-48df-a26a-177b3b51ec6c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The manifest ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the manifest documents.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1275,\n  \"message\": \"Manifest not found\",\n  \"errors\": [\n    \"Manifest not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32aaf148-19ca-42a2-9630-83207ad5ff4a",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "manifests",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The manifest ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the manifest documents.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7f9af296-6580-4006-9965-ea8d666b9dab",
+    "name": "BoxC CalculateDuty Manifests API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

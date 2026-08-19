@@ -1,0 +1,80 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Invoices API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Invoices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /invoices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/invoices",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of invoices."
+        },
+        {
+          "info": {
+            "name": "GET /invoices/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/invoices/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "Download the invoice and receipt documents."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The invoice ID"
+              }
+            ]
+          },
+          "docs": "Retrieves an invoice. Invoices before 2021-10-31 will not have a PDF."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

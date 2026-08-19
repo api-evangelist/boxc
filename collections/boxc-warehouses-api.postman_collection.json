@@ -1,0 +1,559 @@
+{
+  "item": [
+    {
+      "id": "8dab7bd7-2aa0-41b6-93f2-d4dbdac258d1",
+      "name": "Warehouses",
+      "description": {
+        "content": "The Warehouses resource allows you to retrieve location and identity information for a single warehouse or all warehouses. You should query this endpoint to retrieve an active list of fulfillment warehouses that customers can send their products to restock their inventory. The ```warehouse.id``` is used for selecting the warehouse while creating an inbound shipment or an order.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "23282ab0-e085-451f-a8cf-59ddcdfb178f",
+          "name": "GET /warehouses",
+          "request": {
+            "name": "GET /warehouses",
+            "description": {
+              "content": "Retrieves a list of warehouses.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "warehouses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "026bbd4b-571a-4908-8827-ddc6c0296377",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"warehouses\": [\n    {\n      \"id\": \"WH0SZ001\",\n      \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n      \"country\": \"HK\",\n      \"entry_point\": \"SZX002\",\n      \"language\": \"Chinese\",\n      \"language_code\": \"zh\",\n      \"name\": \"BoxC Shenzhen 1\",\n      \"storage\": {\n        \"free_days\": 30,\n        \"large_cost\": 30,\n        \"medium_cost\": 0.03,\n        \"small_cost\": 0.01\n      }\n    },\n    {\n      \"id\": \"WH0SZ001\",\n      \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n      \"country\": \"HK\",\n      \"entry_point\": \"SZX002\",\n      \"language\": \"Chinese\",\n      \"language_code\": \"zh\",\n      \"name\": \"BoxC Shenzhen 1\",\n      \"storage\": {\n        \"free_days\": 30,\n        \"large_cost\": 30,\n        \"medium_cost\": 0.03,\n        \"small_cost\": 0.01\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b79a92a-52d0-4bc8-a4ea-6f89fde80969",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ea05a8b-065a-4ff1-87f8-3745c1eb065e",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "11b8c113-2dc0-4794-b69c-5a8fc2c35e91",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0c67a4a7-c87c-4ef8-b9b9-e8a46d4f081b",
+          "name": "GET /warehouses/{id}",
+          "request": {
+            "name": "GET /warehouses/{id}",
+            "description": {
+              "content": "Retrieves a warehouse.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "warehouses",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) The warehouse ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9d54292c-1b7c-4af7-8393-ba26416d14c4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The warehouse ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"warehouse\": {\n    \"id\": \"WH0SZ001\",\n    \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n    \"country\": \"HK\",\n    \"entry_point\": \"SZX002\",\n    \"language\": \"Chinese\",\n    \"language_code\": \"zh\",\n    \"name\": \"BoxC Shenzhen 1\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1561378f-42ad-4710-ac75-22330e9c4ecd",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The warehouse ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8aacae93-2116-40e7-9ee3-77fbf291063e",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The warehouse ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38937bd1-bea2-4fb7-9b31-6fccab133c5e",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The warehouse ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1360,\n  \"message\": \"Warehouse not found\",\n  \"errors\": [\n    \"Warehouse not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cae0015d-9439-4945-a2a1-655ba96b5fce",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "warehouses",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) The warehouse ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "9996fd62-e1a1-4fb2-8cc0-52e235809b48",
+    "name": "BoxC CalculateDuty Warehouses API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

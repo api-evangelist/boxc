@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty ValidateAddress API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "ValidateAddress",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "POST /validate-address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/validate-address",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get validated possible matches of provided postal addresses."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

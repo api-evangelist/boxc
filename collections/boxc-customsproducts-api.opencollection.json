@@ -1,0 +1,125 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty CustomsProducts API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "CustomsProducts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /customs/products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/customs/products",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of customs products."
+        },
+        {
+          "info": {
+            "name": "POST /customs/products",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/customs/products",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a customs product."
+        },
+        {
+          "info": {
+            "name": "GET /customs/products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/customs/products/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a customs product."
+        },
+        {
+          "info": {
+            "name": "PUT /customs/products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/customs/products/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product id."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a customs product."
+        },
+        {
+          "info": {
+            "name": "DELETE /customs/products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/customs/products/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ]
+          },
+          "docs": "Deletes a customs product. It is only a soft delete since products may still be referenced from shipments."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

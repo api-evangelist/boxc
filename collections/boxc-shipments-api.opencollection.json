@@ -1,0 +1,208 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Shipments API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Shipments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /shipments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/shipments",
+            "params": [
+              {
+                "name": "created_min",
+                "value": "",
+                "type": "query",
+                "description": "The inclusive date to begin the search."
+              },
+              {
+                "name": "created_max",
+                "value": "",
+                "type": "query",
+                "description": "The inclusive date to end the search."
+              },
+              {
+                "name": "labeled",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only shipments that have labels."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "order_number",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for shipments by the order_number."
+              },
+              {
+                "name": "overpack_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for shipments by their overpack ID."
+              },
+              {
+                "name": "packed",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only shipments that are in an overpack."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              },
+              {
+                "name": "processed",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only shipments that are processed."
+              },
+              {
+                "name": "tracking_number",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for shipments by tracking number. Date filters are ignored if this is provided."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of shipments."
+        },
+        {
+          "info": {
+            "name": "POST /shipments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/shipments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a shipment."
+        },
+        {
+          "info": {
+            "name": "GET /shipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/shipments/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "Allows a client to print the BoxC generic shipment label."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shipment ID"
+              }
+            ]
+          },
+          "docs": "Gets a shipment by its `id`. Clients can print a generic BoxC shipment label by changing the `Accept` header to <em>application/pdf</em> or providing `type=PDF` in the query parameters. The label is not a carrier label and should only be used for internal operations."
+        },
+        {
+          "info": {
+            "name": "PUT /shipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/shipments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shipment ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a shipment. Only shipments with no labels or cancelled labels can be updated."
+        },
+        {
+          "info": {
+            "name": "DELETE /shipments/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/shipments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shipment ID"
+              }
+            ]
+          },
+          "docs": "Deletes a shipment."
+        },
+        {
+          "info": {
+            "name": "PUT /shipments/{id}/process",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/shipments/:id/process",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The shipment ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Process a shipment with the final measured weight and dimensions. Useful for clients that process shipments at their own facilities. Only select clients are authorized to perform this action. This changes shipment status to <em>Processed</em> and can't be reversed.<p><strong>Note:</strong> Multi-package shipments can't be processed this way as of now.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

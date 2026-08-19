@@ -1,0 +1,121 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Labels API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Labels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /labels/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/labels/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "The data stream type if you don't want the label details and need the shipment label."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The label ID or tracking number"
+              }
+            ]
+          },
+          "docs": "Retrieves a label."
+        },
+        {
+          "info": {
+            "name": "PATCH /labels/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/labels/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The label ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a label / package."
+        },
+        {
+          "info": {
+            "name": "POST /labels",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/labels",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a label using an existing shipment with no label or cancelled labels."
+        },
+        {
+          "info": {
+            "name": "POST /labels/bulk",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/labels/bulk",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a PDF with up to 100 labels."
+        },
+        {
+          "info": {
+            "name": "PUT /labels/{id}/cancel",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/labels/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The label ID"
+              }
+            ]
+          },
+          "docs": "Cancels a label."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

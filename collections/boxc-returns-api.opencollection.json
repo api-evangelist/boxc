@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Returns API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Returns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /returns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/returns",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results"
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              },
+              {
+                "name": "tracking_number",
+                "value": "",
+                "type": "query",
+                "description": "Filter that selects returns with the given tracking_number. Default behavior is to return all returns."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter that selects returns with the given status. Default behavior is to return all returns."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of returns."
+        },
+        {
+          "info": {
+            "name": "GET /returns/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/returns/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The return ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a return."
+        },
+        {
+          "info": {
+            "name": "PUT /returns/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/returns/:id",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request verification of a return."
+        },
+        {
+          "info": {
+            "name": "DELETE /returns/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/returns/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The return ID"
+              }
+            ]
+          },
+          "docs": "Deletes a return."
+        },
+        {
+          "info": {
+            "name": "POST /returns/{id}/messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/returns/:id/messages",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a message to a return."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

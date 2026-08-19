@@ -424,3 +424,9 @@ tools:
   source_operation: openapi/boxc-openapi-original.yml#addWebhookEvent
   method: POST
   path: /webhooks/{id}/queue
+deployment:
+  mode: none
+  verified: derived
+  tools: 83
+  checked: '2026-08-12'
+  source: catalog MCP census

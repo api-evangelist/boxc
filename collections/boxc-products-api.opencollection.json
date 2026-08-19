@@ -1,0 +1,262 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Products API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for products with a similar name."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              },
+              {
+                "name": "shop.id",
+                "value": "",
+                "type": "query",
+                "description": "Filter that selects products for a shop with the matching Shop ID. Products for all shops are returned by default."
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "query",
+                "description": "Filter that searches for products with a matching SKU."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The property to sort the results by."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of products."
+        },
+        {
+          "info": {
+            "name": "POST /products",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a product."
+        },
+        {
+          "info": {
+            "name": "GET /products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "The data stream type for downloading the product barcode."
+              },
+              {
+                "name": "height",
+                "value": "",
+                "type": "query",
+                "description": "The height of the barcode in inches."
+              },
+              {
+                "name": "width",
+                "value": "",
+                "type": "query",
+                "description": "The width of the barcode in inches."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a product."
+        },
+        {
+          "info": {
+            "name": "PUT /products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/products/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a product."
+        },
+        {
+          "info": {
+            "name": "DELETE /products/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/products/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ]
+          },
+          "docs": "Deletes a product."
+        },
+        {
+          "info": {
+            "name": "POST /products/{id}/skus",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products/:id/skus",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a SKU to a product."
+        },
+        {
+          "info": {
+            "name": "PUT /products/{id}/shop/{shopId}/sku/{sku}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/products/:id/shop/:shopId/sku/:sku",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              },
+              {
+                "name": "shopId",
+                "value": "",
+                "type": "path",
+                "description": "The shop ID"
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "path",
+                "description": "The product SKU"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing SKU for a given product and shop."
+        },
+        {
+          "info": {
+            "name": "DELETE /products/{id}/shop/{shopId}/sku/{sku}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/products/:id/shop/:shopId/sku/:sku",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The product ID"
+              },
+              {
+                "name": "shopId",
+                "value": "",
+                "type": "path",
+                "description": "The shop ID"
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "path",
+                "description": "The product SKU"
+              }
+            ]
+          },
+          "docs": "Deletes a SKU if it's not being used by orders."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

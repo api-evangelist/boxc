@@ -1,0 +1,182 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Orders API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/orders",
+            "params": [
+              {
+                "name": "created_min",
+                "value": "",
+                "type": "query",
+                "description": "The inclusive date to begin the search in YYYY-MM-DD format."
+              },
+              {
+                "name": "created_max",
+                "value": "",
+                "type": "query",
+                "description": "The inclusive date to end the search in YYYY-MM-DD format."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              },
+              {
+                "name": "product.id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only orders containing the matching product."
+              },
+              {
+                "name": "shipping_address.name",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only orders matching the shipping addressee's name."
+              },
+              {
+                "name": "shop.id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only orders belonging to a particular shop you own."
+              },
+              {
+                "name": "shop.order_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only orders with a matching shop order ID."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter to return only orders with a particular status. Returns all by default."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of orders."
+        },
+        {
+          "info": {
+            "name": "POST /orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/orders",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an order."
+        },
+        {
+          "info": {
+            "name": "GET /orders/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/orders/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The order ID"
+              }
+            ]
+          },
+          "docs": "Retrieves an order."
+        },
+        {
+          "info": {
+            "name": "PUT /orders/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/orders/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The order ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an order."
+        },
+        {
+          "info": {
+            "name": "DELETE /orders/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/orders/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The order ID"
+              }
+            ]
+          },
+          "docs": "Deletes an order."
+        },
+        {
+          "info": {
+            "name": "POST /orders/status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/orders/status",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Change the status of up to 100 orders at once. Returns the affected orders with their new status including those that can't be changed. It omits orders that can't be found."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

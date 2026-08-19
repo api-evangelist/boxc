@@ -1,0 +1,144 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Webhooks API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /webhooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/webhooks",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results. Options are \"asc\" for ascending, or \"desc\" for descending."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of webhooks."
+        },
+        {
+          "info": {
+            "name": "POST /webhooks",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a webhook. Clients may create multiple webhooks for the same user and topic as long as the `address` is unique."
+        },
+        {
+          "info": {
+            "name": "GET /webhooks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/webhooks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The webhook ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a webhook."
+        },
+        {
+          "info": {
+            "name": "PUT /webhooks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/webhooks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The webhook ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a webhook."
+        },
+        {
+          "info": {
+            "name": "DELETE /webhooks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/webhooks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The webhook ID"
+              }
+            ]
+          },
+          "docs": "Deletes a webhook."
+        },
+        {
+          "info": {
+            "name": "POST /webhooks/{id}/queue",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/webhooks/:id/queue",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The webhook ID"
+              }
+            ]
+          },
+          "docs": "Adds an event to the webhook's queue for testing your subscriptions. Refer to [Webhooks](/#tag/Webhooks) for sample payloads."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,144 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Estimate API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Estimate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /estimate",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/estimate",
+            "params": [
+              {
+                "name": "carrier",
+                "value": "DHLeC",
+                "type": "query",
+                "description": "The preffered last mile carrier the shipment should use for delivery."
+              },
+              {
+                "name": "country",
+                "value": "US",
+                "type": "query",
+                "description": "The destination country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format."
+              },
+              {
+                "name": "currency",
+                "value": "USD",
+                "type": "query",
+                "description": "The ISO 4217 currency code for the **value** parameter and rates that are returned."
+              },
+              {
+                "name": "dg_codes",
+                "value": "965",
+                "type": "query",
+                "description": "A string or array of [dangerous good codes](/#tag/DangerousGoods) contained in the shipment."
+              },
+              {
+                "name": "entry_point",
+                "value": "LAXI01",
+                "type": "query",
+                "description": "The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes."
+              },
+              {
+                "name": "exit_point",
+                "value": "JFK",
+                "type": "query",
+                "description": "The IATA port where the shipment should enter for last mile delivery. Providing this limits results to only those routes with the matching port."
+              },
+              {
+                "name": "height",
+                "value": "10.5",
+                "type": "query",
+                "description": "The height of the shipment in CM."
+              },
+              {
+                "name": "insurance",
+                "value": "true",
+                "type": "query",
+                "description": "By default all shipments except for BoxC Post include insurance covering up to $30 of the total item value including shipping cost. Setting this to true will increase the insured value for an additional fee."
+              },
+              {
+                "name": "irregular",
+                "value": "true",
+                "type": "query",
+                "description": "Indicates this shipment was packaged in irregular shaped polybag or soft packaging to assist in calculating the volumetric weight."
+              },
+              {
+                "name": "is_return",
+                "value": "true",
+                "type": "query",
+                "description": "Indicates this shipment is a return."
+              },
+              {
+                "name": "length",
+                "value": "25",
+                "type": "query",
+                "description": "The length of the shipment in CM."
+              },
+              {
+                "name": "packages",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "postal_code",
+                "value": "10128",
+                "type": "query",
+                "description": "The destination Postal Code or ZIP Code. Conditional."
+              },
+              {
+                "name": "province",
+                "value": "NY",
+                "type": "query",
+                "description": "The destination province / state code. Conditional."
+              },
+              {
+                "name": "signature_confirmation",
+                "value": "true",
+                "type": "query",
+                "description": "The shipment requires signature confirmation."
+              },
+              {
+                "name": "terms",
+                "value": "DDU",
+                "type": "query",
+                "description": "The preferred incoterms."
+              },
+              {
+                "name": "value",
+                "value": "100",
+                "type": "query",
+                "description": "The total value of the items to calculate tax and insurance. Used with <i>currency</i>."
+              },
+              {
+                "name": "weight",
+                "value": "0.345",
+                "type": "query",
+                "description": "The weight of the shipment in KG."
+              },
+              {
+                "name": "width",
+                "value": "2",
+                "type": "query",
+                "description": "The width of the shipment in CM."
+              }
+            ]
+          },
+          "docs": "Retrieves an estimate."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

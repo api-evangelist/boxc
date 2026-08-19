@@ -1,0 +1,64 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Track API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Track",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "POST /track",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/track",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Certified Accounts may inject up to 100 events into BoxC's tracking history. Shipments must belong to the user; otherwise, the request will be aborted without events being added."
+        },
+        {
+          "info": {
+            "name": "GET /track/{trackingNumber}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/track/:trackingNumber",
+            "params": [
+              {
+                "name": "trackingNumber",
+                "value": "",
+                "type": "path",
+                "description": "The final tracking number or tracking number for a generic shipment label."
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "The email address of the shipping address. Provide this to reveal images if you're not the owner of the shipment."
+              },
+              {
+                "name": "postal_code",
+                "value": "",
+                "type": "query",
+                "description": "The postal code of the shipping address. Provide this to reveal images if you're not the owner of the shipment. It will only work if the postal code is not revealed in the event history."
+              }
+            ]
+          },
+          "docs": "Get events for a shipment using its tracking number."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

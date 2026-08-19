@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "CalculateDuty",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "POST /calculate-duty",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/calculate-duty",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Calculate the landed cost of a shipment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

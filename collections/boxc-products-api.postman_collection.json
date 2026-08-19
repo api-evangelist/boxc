@@ -1,0 +1,3521 @@
+{
+  "item": [
+    {
+      "id": "05361ea9-811c-403e-ae61-df1052801a8e",
+      "name": "Products",
+      "description": {
+        "content": "The Products resource allows users to add their products to the BoxC system. A product can have one or more Stock Keeping Units (SKUs). This gives users the ability to link their different shops' SKUs to the same product. There can only be one active SKU per shop per product. Orders won't be fulfilled until the warehouse accepts and processes your products. This includes measuring the weight and dimensions, and updating the quantity.\n\n**Note:** Products and SKUs linked to orders can't be deleted. Existing SKUs can't be assigned to a different shop.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "00f8cea8-65f2-4faa-b596-06fe17905e70",
+          "name": "GET /products",
+          "request": {
+            "name": "GET /products",
+            "description": {
+              "content": "Retrieves a paginated list of products.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "",
+                  "description": "Filter that searches for products with a similar name."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Used for selecting the page after the initial query."
+                },
+                {
+                  "disabled": false,
+                  "key": "shop.id",
+                  "value": "",
+                  "description": "Filter that selects products for a shop with the matching Shop ID. Products for all shops are returned by default."
+                },
+                {
+                  "disabled": false,
+                  "key": "sku",
+                  "value": "",
+                  "description": "Filter that searches for products with a matching SKU."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "id",
+                  "description": "The property to sort the results by."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "28ac7b98-a98d-4d13-9ee2-549cc1130ef2",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": ""
+                    },
+                    {
+                      "key": "sku",
+                      "value": ""
+                    },
+                    {
+                      "key": "sort",
+                      "value": "id"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"products\": [\n    {\n      \"coo\": \"CN\",\n      \"description\": \"100% Cotton Shirt\",\n      \"name\": \"XL Pink T-Shirt\",\n      \"value\": 19.99,\n      \"backordered\": 43,\n      \"barcode\": \"4011200296908\",\n      \"cost\": 2.25,\n      \"created\": \"2024-06-20 10:11:12\",\n      \"dg_code\": \"string\",\n      \"height\": 5,\n      \"hs_codes\": [\n        {\n          \"country\": \"US\",\n          \"hs_code\": \"619104734116\"\n        },\n        {\n          \"country\": \"US\",\n          \"hs_code\": \"119428448631\"\n        }\n      ],\n      \"id\": 20191,\n      \"length\": 12,\n      \"quantity\": 544,\n      \"supplier\": null,\n      \"url\": \"https://example.com/product/1234\",\n      \"weight\": 0.325,\n      \"width\": 10\n    },\n    {\n      \"coo\": \"CN\",\n      \"description\": \"100% Cotton Shirt\",\n      \"name\": \"XL Pink T-Shirt\",\n      \"value\": 19.99,\n      \"backordered\": 43,\n      \"barcode\": \"4011200296908\",\n      \"cost\": 2.25,\n      \"created\": \"2024-06-20 10:11:12\",\n      \"dg_code\": \"string\",\n      \"height\": 5,\n      \"hs_codes\": [\n        {\n          \"country\": \"US\",\n          \"hs_code\": \"87945063009\"\n        },\n        {\n          \"country\": \"US\",\n          \"hs_code\": \"68585375362\"\n        }\n      ],\n      \"id\": 20191,\n      \"length\": 12,\n      \"quantity\": 544,\n      \"supplier\": null,\n      \"url\": \"https://example.com/product/1234\",\n      \"weight\": 0.325,\n      \"width\": 10\n    }\n  ],\n  \"next_page\": \"ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af8a7702-4470-4f7a-92e2-ce61b1cfbc6a",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": ""
+                    },
+                    {
+                      "key": "sku",
+                      "value": ""
+                    },
+                    {
+                      "key": "sort",
+                      "value": "id"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ee7e32d-af7a-4cca-8826-31e6c6245fd4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": ""
+                    },
+                    {
+                      "key": "sku",
+                      "value": ""
+                    },
+                    {
+                      "key": "sort",
+                      "value": "id"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09884eab-276e-483f-8e5c-ba93b68a47df",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": ""
+                    },
+                    {
+                      "key": "sku",
+                      "value": ""
+                    },
+                    {
+                      "key": "sort",
+                      "value": "id"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46ff2a09-ad22-4b56-8c29-01ec40087a09",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": ""
+                    },
+                    {
+                      "key": "sku",
+                      "value": ""
+                    },
+                    {
+                      "key": "sort",
+                      "value": "id"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8293eb0c-5dc1-449e-8245-41b58b907ca2",
+          "name": "POST /products",
+          "request": {
+            "name": "POST /products",
+            "description": {
+              "content": "Creates a product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": {\n    \"coo\": \"<string>\",\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"value\": \"<decimal>\",\n    \"barcode\": null,\n    \"cost\": 0,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"<string>\",\n        \"language_code\": \"<string>\"\n      },\n      {\n        \"description\": \"<string>\",\n        \"language_code\": \"<string>\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"<uri>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2acadb3e-d71f-4bba-845c-689c9dc3d6bb",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"skus\": [\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      },\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      }\n    ],\n    \"value\": 19.99,\n    \"backordered\": 43,\n    \"barcode\": \"Product ID\",\n    \"cost\": 2.25,\n    \"created\": \"2024-06-20 10:11:12\",\n    \"dg_code\": \"string\",\n    \"height\": 5,\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      }\n    ],\n    \"id\": 20191,\n    \"is_packaging\": false,\n    \"length\": 12,\n    \"quantity\": 544,\n    \"supplier\": \"US1234567890\",\n    \"warehouses\": [\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      },\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    ],\n    \"weight\": 0.325,\n    \"width\": 10\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7bccaea3-04ae-49fd-9650-16752bf5a645",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /product: The required properties (coo) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/product: The required properties (coo) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd7ae9fe-45d2-4542-b35a-ee4285882d2c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1deb469-9c3f-43ed-9b32-c79898f645ee",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5fded297-183e-4588-b3a4-4d3d1c4f2c2e",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c58fa493-699a-44ff-8fb5-581b6a010452",
+          "name": "GET /products/{id}",
+          "request": {
+            "name": "GET /products/{id}",
+            "description": {
+              "content": "Retrieves a product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "The data stream type for downloading the product barcode."
+                },
+                {
+                  "disabled": false,
+                  "key": "height",
+                  "value": "1",
+                  "description": "The height of the barcode in inches."
+                },
+                {
+                  "disabled": false,
+                  "key": "width",
+                  "value": "2",
+                  "description": "The width of the barcode in inches."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "45303907-3ff4-43f1-ae8e-761c33563ddf",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1"
+                    },
+                    {
+                      "key": "width",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the product barcode.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"skus\": [\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      },\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      }\n    ],\n    \"value\": 19.99,\n    \"backordered\": 43,\n    \"barcode\": \"Product ID\",\n    \"cost\": 2.25,\n    \"created\": \"2024-06-20 10:11:12\",\n    \"dg_code\": \"string\",\n    \"height\": 5,\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      }\n    ],\n    \"id\": 20191,\n    \"is_packaging\": false,\n    \"length\": 12,\n    \"quantity\": 544,\n    \"supplier\": \"US1234567890\",\n    \"warehouses\": [\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      },\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    ],\n    \"weight\": 0.325,\n    \"width\": 10\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5a20c2f-ae02-4ac7-a3e3-aca122f5e5ea",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1"
+                    },
+                    {
+                      "key": "width",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the product barcode.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f729572c-4c12-43ba-b170-39014bdc2c63",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1"
+                    },
+                    {
+                      "key": "width",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the product barcode.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "64664094-4f25-46ea-8658-4872567656dc",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1"
+                    },
+                    {
+                      "key": "width",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the product barcode.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1332,\n  \"message\": \"Product not found\",\n  \"errors\": [\n    \"Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1aca1fc-573a-44df-b80f-5d0541e12a6d",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    },
+                    {
+                      "key": "height",
+                      "value": "1"
+                    },
+                    {
+                      "key": "width",
+                      "value": "2"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the product barcode.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "88ebd650-eeb5-457f-8b0d-9665cb846e8a",
+          "name": "PUT /products/{id}",
+          "request": {
+            "name": "PUT /products/{id}",
+            "description": {
+              "content": "Updates a product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": {\n    \"coo\": \"<string>\",\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"value\": \"<decimal>\",\n    \"barcode\": null,\n    \"cost\": 0,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"<string>\",\n        \"language_code\": \"<string>\"\n      },\n      {\n        \"description\": \"<string>\",\n        \"language_code\": \"<string>\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"<uri>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "61b3f8f0-6326-4530-a6fd-00a6d498c129",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"skus\": [\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      },\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"A-Za-z0-9-_ /\",\n        \"active\": true\n      }\n    ],\n    \"value\": 19.99,\n    \"backordered\": 43,\n    \"barcode\": \"Product ID\",\n    \"cost\": 2.25,\n    \"created\": \"2024-06-20 10:11:12\",\n    \"dg_code\": \"string\",\n    \"height\": 5,\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      }\n    ],\n    \"id\": 20191,\n    \"is_packaging\": false,\n    \"length\": 12,\n    \"quantity\": 544,\n    \"supplier\": \"US1234567890\",\n    \"warehouses\": [\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      },\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    ],\n    \"weight\": 0.325,\n    \"width\": 10\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0debde0c-b0fa-4808-a61b-2a5956908b29",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /product: The required properties (coo) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/product: The required properties (coo) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bffe2a3d-bcf1-4339-88b1-231ccbfc7dfb",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d83d45d4-b4df-4e50-94ee-9a9f71bd1af3",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2bfc23be-986d-4413-bb35-c88d0506b599",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1332,\n  \"message\": \"Product not found\",\n  \"errors\": [\n    \"Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afbbaeab-e14a-431c-b5de-86967d4220d9",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"value\": 19.99,\n    \"barcode\": \"4011200296908\",\n    \"cost\": 2.25,\n    \"dg_code\": \"<string>\",\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"<string>\"\n      }\n    ],\n    \"local_descriptions\": [\n      {\n        \"description\": \"100% Cotton T-Shirt\",\n        \"language_code\": \"en\"\n      },\n      {\n        \"description\": \"毛衣\",\n        \"language_code\": \"zh\"\n      }\n    ],\n    \"supplier\": null,\n    \"url\": \"https://example.com/product/1234\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7164643e-b178-4972-8e69-28a0697b9c24",
+          "name": "DELETE /products/{id}",
+          "request": {
+            "name": "DELETE /products/{id}",
+            "description": {
+              "content": "Deletes a product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "572b153b-61b0-4f2a-84c2-7f1ea10a4e0e",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "382966c9-cacf-4629-b38a-a3cb5576de16",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1333,\n  \"message\": \"Product can't be deleted because it's being used\",\n  \"errors\": [\n    \"Product can't be deleted because it's being used\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4acde559-6dd9-4671-8fa7-e69aabc037e6",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fb2c4d86-ee63-427c-a846-efd9909aa6f1",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de3b22d5-c066-40ac-b0eb-51bb7f45077f",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1332,\n  \"message\": \"Product not found\",\n  \"errors\": [\n    \"Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "27e2b965-44ed-4898-a521-af763a712d1d",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "782f3143-2985-4ff0-a1d2-8a120fa4e618",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1333,\n  \"message\": \"Product can't be deleted\",\n  \"errors\": [\n    \"Product can't be deleted\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2ec723ac-8e17-4f90-889c-878e3de38fcf",
+          "name": "POST /products/{id}/skus",
+          "request": {
+            "name": "POST /products/{id}/skus",
+            "description": {
+              "content": "Adds a SKU to a product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id",
+                "skus"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": {\n    \"shop_id\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e9647fb4-a6b6-4714-bf05-7b14609dba30",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"skus\": [\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"<string>\",\n        \"active\": true\n      },\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"<string>\",\n        \"active\": true\n      }\n    ],\n    \"value\": 19.99,\n    \"backordered\": 43,\n    \"barcode\": \"Product ID\",\n    \"cost\": 2.25,\n    \"created\": \"2024-06-20 10:11:12\",\n    \"dg_code\": \"string\",\n    \"height\": 5,\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      }\n    ],\n    \"id\": 20191,\n    \"is_packaging\": false,\n    \"length\": 12,\n    \"quantity\": 544,\n    \"supplier\": \"US1234567890\",\n    \"warehouses\": [\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      },\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    ],\n    \"weight\": 0.325,\n    \"width\": 10\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4201e393-1bcc-4184-b657-5380085632b8",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /sku: The required properties (shop_id) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/sku: The required properties (shop_id) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea28cc26-e5f1-4b90-84e4-aa97e5e07671",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a3518ce9-acbd-469f-a5e0-e9e7fad1ab6e",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a82ab2f4-7707-4a5d-aee0-cc67993a3c6b",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1332,\n  \"message\": \"Product not found\",\n  \"errors\": [\n    \"Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e8c5f2fd-fd79-4c25-9140-7322779dd7d6",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "skus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"shop_id\": \"my-shop\",\n    \"sku\": \"<string>\",\n    \"active\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "090655e0-e108-4d76-b31b-80dfd14a09ce",
+          "name": "PUT /products/{id}/shop/{shopId}/sku/{sku}",
+          "request": {
+            "name": "PUT /products/{id}/shop/{shopId}/sku/{sku}",
+            "description": {
+              "content": "Updates an existing SKU for a given product and shop.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id",
+                "shop",
+                ":shopId",
+                "sku",
+                ":sku"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "shopId",
+                  "description": "(Required) The shop ID"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) The product SKU"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cb2d1336-8dbe-4d33-b67e-c063f4d82944",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"coo\": \"CN\",\n    \"description\": \"100% Cotton Shirt\",\n    \"name\": \"XL Pink T-Shirt\",\n    \"skus\": [\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"<string>\",\n        \"active\": true\n      },\n      {\n        \"shop_id\": \"my-shop\",\n        \"sku\": \"<string>\",\n        \"active\": true\n      }\n    ],\n    \"value\": 19.99,\n    \"backordered\": 43,\n    \"barcode\": \"Product ID\",\n    \"cost\": 2.25,\n    \"created\": \"2024-06-20 10:11:12\",\n    \"dg_code\": \"string\",\n    \"height\": 5,\n    \"hs_codes\": [\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      },\n      {\n        \"country\": \"US\",\n        \"hs_code\": \"string\"\n      }\n    ],\n    \"id\": 20191,\n    \"is_packaging\": false,\n    \"length\": 12,\n    \"quantity\": 544,\n    \"supplier\": \"US1234567890\",\n    \"warehouses\": [\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      },\n      {\n        \"id\": \"WH0SZ001\",\n        \"address\": \"Unit 5b, 102 Jinfanghua Ecommerce District\\nShenzhen\\nGD 518000\\nChina\",\n        \"country\": \"HK\",\n        \"entry_point\": \"SZX002\",\n        \"language\": \"Chinese\",\n        \"language_code\": \"zh\",\n        \"name\": \"BoxC Shenzhen 1\"\n      }\n    ],\n    \"weight\": 0.325,\n    \"width\": 10\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96ead875-10ad-4b5a-897c-f38398d141ac",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /sku: The required properties (active) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/sku: The required properties (active) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0034178b-c3de-46f8-9074-29b53173234d",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b1f0b509-483d-43e6-a00c-75d1501c7744",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "275e7050-5ee9-4ab5-81e8-2e35a545a8e5",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1332,\n  \"message\": \"Product not found\",\n  \"errors\": [\n    \"Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28245f3f-8fc9-4092-a9d8-7bca1cb6021c",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sku\": {\n    \"active\": true,\n    \"sku\": \"SK10291\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2b1cb757-cca2-4306-88e1-0e8c045bd304",
+          "name": "DELETE /products/{id}/shop/{shopId}/sku/{sku}",
+          "request": {
+            "name": "DELETE /products/{id}/shop/{shopId}/sku/{sku}",
+            "description": {
+              "content": "Deletes a SKU if it's not being used by orders.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "products",
+                ":id",
+                "shop",
+                ":shopId",
+                "sku",
+                ":sku"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "shopId",
+                  "description": "(Required) The shop ID"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "sku",
+                  "description": "(Required) The product SKU"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7c5f1e38-a08f-4efc-90df-acd606aef192",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "340a6b14-b09d-4dc3-9773-5cab5cf5b939",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1335,\n  \"message\": \"SKU can't be deleted\",\n  \"errors\": [\n    \"SKU can't be deleted\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4d38ca5c-9175-498a-828d-41f144c0db49",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5172dd04-82c5-4b2e-898f-c9b87c58b4da",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "37f36c69-e33c-438f-a9fc-17ef996c6f8e",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1330,\n  \"message\": \"SKU does not exist in Shop\",\n  \"errors\": [\n    \"SKU does not exist in Shop\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9efdad54-8d1d-49b7-b17d-61259a6a1672",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "products",
+                    ":id",
+                    "shop",
+                    ":shopId",
+                    "sku",
+                    ":sku"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "shopId",
+                      "description": "(Required) The shop ID"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "sku",
+                      "description": "(Required) The product SKU"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d6a259c6-3303-4e14-9ee9-4067be55bac1",
+    "name": "BoxC CalculateDuty Products API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

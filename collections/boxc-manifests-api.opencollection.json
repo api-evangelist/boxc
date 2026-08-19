@@ -1,0 +1,101 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Manifests API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Manifests",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /manifests",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/manifests",
+            "params": [
+              {
+                "name": "entry_point",
+                "value": "",
+                "type": "query",
+                "description": "Filter that returns manifests for a single entry point."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of manifests."
+        },
+        {
+          "info": {
+            "name": "POST /manifests",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/manifests",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an manifest."
+        },
+        {
+          "info": {
+            "name": "GET /manifests/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/manifests/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "The data stream type if you don't want the manifest details, but need the paperwork or forms. Only **PDF** is accepted.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The manifest ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a manifest."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

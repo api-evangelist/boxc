@@ -1,0 +1,445 @@
+{
+  "item": [
+    {
+      "id": "a3bd682f-95a1-4e0b-9d1d-93e5ccce85e5",
+      "name": "ValidateAddress",
+      "description": {
+        "content": "The Validate Address resource permits a user to validate and retrieve the most likely matches of provided postal addresses. Each successful validation costs $0.03 (USD).",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d11b8bab-3b10-4c67-9ab1-dc6c8d802bf1",
+          "name": "POST /validate-address",
+          "request": {
+            "name": "POST /validate-address",
+            "description": {
+              "content": "Get validated possible matches of provided postal addresses.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "validate-address"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    {\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0c4a604e-384c-4a3d-998f-feef71bd0c4b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "null",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8ed4159-3d99-4bd7-8b28-b5bdc83f570c",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Request is malformed.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Request is malformed.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9cd09e67-c739-47f2-a07c-bc079c08d536",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec73da5a-cac2-48b7-8d87-664602c7913a",
+              "name": "Payment Required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1080,\n  \"message\": \"Insufficient funds\",\n  \"errors\": [\n    \"Insufficient funds\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9c06b728-5f0a-4b04-9edd-c230ff423f45",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "468947c0-b293-4afc-8719-a4c8d2f51ba6",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "47744a87-f45d-4cf8-a821-4cf0a397a477",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "validate-address"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"addresses\": [\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    {\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1081,\n  \"message\": \"There was an error while fetching the account balance\",\n  \"errors\": [\n    \"There was an error while fetching the account balance\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d885624a-93e4-42c5-9638-c552965d55dc",
+    "name": "BoxC CalculateDuty ValidateAddress API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

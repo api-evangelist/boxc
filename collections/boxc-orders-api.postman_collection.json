@@ -1,0 +1,2443 @@
+{
+  "item": [
+    {
+      "id": "de68af73-7d88-4225-8c83-e4cdc771edad",
+      "name": "Orders",
+      "description": {
+        "content": "The Orders resource allows you to create, read, update, and delete orders that are meant to be fulfilled by BoxC. If you wish to manually create an order for a third party shop you must provide the `shop.id` and `shop.order_id`. Neither property can be updated. The system will push tracking information to the shop when the order is fulfilled if both properties are set. Clients can force which warehouse is used for order fulfillment by setting the `warehouse.id` property.\n### Order Status\n\nThe following table lists all possible states of an order indicated by its `status` property. Updating an order that is 'Ready' will reset its status to 'Processing' and restore product quantities until it's processed by the system again.\n\n| Status | Description |\n|--------|-------------|\n| Backordered | There is insufficient quantity for one or more line items. The system will change the status once more inventory is added. |\n| Exception | There is a problem with the order such as missing or invalid information. The user must correct the problem before the order can be processed by the system. |\n| Holding | The order is being delayed from processing by the user. |\n| Processing | The order is waiting for the system to process it. Default state. |\n| Ready | The order is assigned to a warehouse for packing and quantities were deducted. |\n| Packing | One or more line items are being packed. <em>It can't be edited in this state</em>. |\n| Partial | The order was partially fulfilled. The remaining line items will be fulfilled when more inventory arrives. |\n| Fulfilled | The order was completely fulfilled. |\n| Archived | The system archives orders that were fulfilled at least 90 days in the past. |\n\n### Pruning Orders\n\nThe system routinely prunes or closes out orders in the system more than **365 days** ago. The start time is based on the `placed_at` and not the `created` datetime. What happens to the order depends on its current state at the time of pruning.\n\n- Unfulfilled (not Packing, Partial, Fulfilled) orders are deleted.\n- Partially fulfilled orders (Holding, Packing, Partial) are bumped to Fulfilled.\n- Orders in Packing have their unfulfilled line items and fulfillment objects deleted, and are bumped to Fulfilled.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9ef2afd9-0fb5-41bd-8e5e-4d8c1acc9df4",
+          "name": "GET /orders",
+          "request": {
+            "name": "GET /orders",
+            "description": {
+              "content": "Retrieves a paginated list of orders.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "created_min",
+                  "value": "",
+                  "description": "The inclusive date to begin the search in YYYY-MM-DD format."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_max",
+                  "value": "",
+                  "description": "The inclusive date to end the search in YYYY-MM-DD format."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "<string>",
+                  "description": "Used for selecting the page after the initial query."
+                },
+                {
+                  "disabled": false,
+                  "key": "product.id",
+                  "value": "<integer>",
+                  "description": "Filter to return only orders containing the matching product."
+                },
+                {
+                  "disabled": false,
+                  "key": "shipping_address.name",
+                  "value": "<string>",
+                  "description": "Filter to return only orders matching the shipping addressee's name."
+                },
+                {
+                  "disabled": false,
+                  "key": "shop.id",
+                  "value": "<string>",
+                  "description": "Filter to return only orders belonging to a particular shop you own."
+                },
+                {
+                  "disabled": false,
+                  "key": "shop.order_id",
+                  "value": "<string>",
+                  "description": "Filter to return only orders with a matching shop order ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter to return only orders with a particular status. Returns all by default."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3e97e2ff-414f-4269-8371-685624b3bfc4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product.id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "shipping_address.name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.order_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"shop\": {\n        \"id\": \"my-shop\",\n        \"name\": \"Appleseeds\",\n        \"order_id\": \"30338272\",\n        \"type\": \"BoxC\"\n      },\n      \"line_items\": [\n        {\n          \"quantity\": 1,\n          \"sku\": \"A-Za-z0-9-_　/\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        },\n        {\n          \"quantity\": 1,\n          \"sku\": \"A-Za-z0-9-_ /\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"string\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"string\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"string\",\n        \"id\": \"string\",\n        \"street2\": \"string\",\n        \"province\": \"TX\",\n        \"postal_code\": \"string\"\n      },\n      \"created\": \"2024-06-17 15:43:03\",\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"fulfillments\": [\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        },\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        }\n      ],\n      \"gift_message\": \"Thanks for the laughs. -Sansa\",\n      \"id\": 1029210,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"packing_slip\": true,\n      \"partial_fulfillment\": false,\n      \"placed_at\": \"2024-06-17 15:43:03\",\n      \"products\": 2,\n      \"quantity\": 3,\n      \"signature_confirmation\": false,\n      \"status\": \"Processing\",\n      \"terms\": \"DDU\",\n      \"wholesale\": true\n    },\n    {\n      \"shop\": {\n        \"id\": \"my-shop\",\n        \"name\": \"Appleseeds\",\n        \"order_id\": \"30338272\",\n        \"type\": \"BoxC\"\n      },\n      \"line_items\": [\n        {\n          \"quantity\": 1,\n          \"sku\": \"A-Za-z0-9-_ /\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        },\n        {\n          \"quantity\": 1,\n          \"sku\": \"A-Za-z0-9-_\\n/\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"string\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"string\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"string\",\n        \"id\": \"string\",\n        \"street2\": \"string\",\n        \"province\": \"TX\",\n        \"postal_code\": \"string\"\n      },\n      \"created\": \"2024-06-17 15:43:03\",\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"fulfillments\": [\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        },\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        }\n      ],\n      \"gift_message\": \"Thanks for the laughs. -Sansa\",\n      \"id\": 1029210,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"packing_slip\": true,\n      \"partial_fulfillment\": false,\n      \"placed_at\": \"2024-06-17 15:43:03\",\n      \"products\": 2,\n      \"quantity\": 3,\n      \"signature_confirmation\": false,\n      \"status\": \"Processing\",\n      \"terms\": \"DDU\",\n      \"wholesale\": true\n    }\n  ],\n  \"next_page\": \"ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b324a718-1484-4e9b-bee2-be59019648c7",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product.id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "shipping_address.name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.order_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6bf7f689-3066-4b0b-8f9c-ad2d1798f966",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product.id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "shipping_address.name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.order_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5298ceb5-062f-4c89-848b-644e86b717fb",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product.id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "shipping_address.name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.order_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "33e88c14-8d82-42c0-9939-94acc5f302a7",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product.id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "shipping_address.name",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "shop.order_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3128083a-d944-44e5-90f9-f8cbec7992af",
+          "name": "POST /orders",
+          "request": {
+            "name": "POST /orders",
+            "description": {
+              "content": "Creates an order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"<string>\",\n      \"order_id\": null\n    },\n    \"line_items\": [\n      {\n        \"quantity\": \"<integer>\",\n        \"sku\": \"<string>\",\n        \"sold_for\": null\n      },\n      {\n        \"quantity\": \"<integer>\",\n        \"sku\": \"<string>\",\n        \"sold_for\": null\n      }\n    ],\n    \"service\": \"BoxC Parcel\",\n    \"consignor\": {\n      \"name\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"company_name\": null,\n      \"phone\": null,\n      \"email\": null,\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"consignee\": {\n      \"name\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"<datetime>\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"gift_message\": null,\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": false,\n    \"partial_fulfillment\": \"<boolean>\",\n    \"signature_confirmation\": false,\n    \"status\": \"<string>\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": null\n    },\n    \"wholesale\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "71c74727-ed6d-4c79-97fe-189abdb66feb",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"30338272\",\n      \"type\": \"BoxC\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"fulfillments\": [\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      },\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      }\n    ],\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"id\": 1029210,\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"placed_at\": \"2024-06-17 15:43:03\",\n    \"products\": 2,\n    \"quantity\": 3,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"wholesale\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7d7009fd-2d17-4191-8d48-ea728f0dc0a2",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Request is malformed.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Request is malformed.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "06bda1d2-cda2-4303-84ec-939d973078d0",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e89ce53-f827-46a4-ac98-6cb46274d039",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "db69b247-0b92-4944-9e2a-08aa2c0e8501",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0bd58bd-2973-4023-a00b-2a85e587aa80",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1323,\n  \"message\": \"Order could not be created.\",\n  \"errors\": [\n    \"Order could not be created.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "564e5cfe-7c0a-4405-b826-acca0c571e47",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"order_id\": \"30338272\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"exception_on_failure\": false,\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 503,\n  \"message\": \"Address resolution service unavailable at this time.\",\n  \"errors\": [\n    \"Address resolution service unavailable at this time.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1e5a3af-db05-4513-bb7c-c12062566982",
+          "name": "GET /orders/{id}",
+          "request": {
+            "name": "GET /orders/{id}",
+            "description": {
+              "content": "Retrieves an order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The order ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "32a984db-4d7b-4566-b469-4ab811ae124a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"30338272\",\n      \"type\": \"BoxC\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"fulfillments\": [\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      },\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      }\n    ],\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"id\": 1029210,\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"placed_at\": \"2024-06-17 15:43:03\",\n    \"products\": 2,\n    \"quantity\": 3,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"wholesale\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85cb71c1-265c-499e-b739-6f90cb5015e7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ae2c6a2-06ba-4e33-9e94-8542470b966b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2bb97a3-b6d1-40b0-a6df-8e2f584f4432",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1320,\n  \"message\": \"Order not found\",\n  \"errors\": [\n    \"Order not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da11d56d-b67a-4e25-985b-2abdee384f42",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bc2f800b-8b95-4d35-968c-a2aebe8f2bc4",
+          "name": "PUT /orders/{id}",
+          "request": {
+            "name": "PUT /orders/{id}",
+            "description": {
+              "content": "Updates an order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The order ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"gift_message\": \"<string>\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": \"<integer>\",\n        \"sku\": \"<string>\",\n        \"sold_for\": null\n      },\n      {\n        \"quantity\": \"<integer>\",\n        \"sku\": \"<string>\",\n        \"sold_for\": null\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": \"<boolean>\",\n    \"service\": \"BoxC Parcel\",\n    \"shop\": {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\",\n      \"order_id\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"<string>\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"company_name\": null,\n      \"phone\": null,\n      \"email\": null,\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"warehouse\": {\n      \"id\": null\n    },\n    \"wholesale\": false\n  },\n  \"to\": true,\n  \"consignor\": 256.3770384673747,\n  \"service\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "677dfb45-090a-4678-9495-c9544d5f3532",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"order\": {\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"30338272\",\n      \"type\": \"BoxC\"\n    },\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"dg_code\": null,\n        \"fulfilled\": false,\n        \"fulfillment_id\": 123456,\n        \"hs_code\": null,\n        \"name\": \"XL T-Shirt\",\n        \"product_id\": 1001181,\n        \"sold_for\": 9.95\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-06-17 15:43:03\",\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"fulfillments\": [\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      },\n      {\n        \"created\": \"2024-06-17 15:43:03\",\n        \"fulfilled\": \"2024-06-27 08:33:49\",\n        \"fulfillment_fee\": 1.5,\n        \"id\": 4923,\n        \"packed\": \"2024-06-18 11:09:24\",\n        \"packaging_fee\": 0.1,\n        \"packaging_slip_fee\": 0.25,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 123456,\n        \"shipping_cost\": 0,\n        \"tracking_number\": \"926149997649150002357\",\n        \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n      }\n    ],\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"id\": 1029210,\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"packing_slip\": true,\n    \"partial_fulfillment\": false,\n    \"placed_at\": \"2024-06-17 15:43:03\",\n    \"products\": 2,\n    \"quantity\": 3,\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"wholesale\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5d5e4f34-082e-4f2b-8728-7df9a01348d1",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Request is malformed.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Request is malformed.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "40bacec1-b7ee-4ab3-be22-0bbc86ee8627",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87138198-e7f8-4e6a-aca4-aa728e77763b",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cbb59983-83d3-4fa0-b9c8-c7c6038229cb",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1320,\n  \"message\": \"Order not found\",\n  \"errors\": [\n    \"Order not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "593a001f-636f-4b24-9204-94a6ae03c99f",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1fb04956-0be8-411b-acc2-86376bd989ad",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order\": {\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"gift_message\": \"Thanks for the laughs. -Sansa\",\n    \"ignore_bad_address\": false,\n    \"insurance\": false,\n    \"line_items\": [\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      },\n      {\n        \"quantity\": 1,\n        \"sku\": \"<string>\",\n        \"sold_for\": 9.95\n      }\n    ],\n    \"packing_slip\": false,\n    \"partial_fulfillment\": false,\n    \"service\": \"BoxC Priority\",\n    \"shop\": {\n      \"id\": \"my-shop\",\n      \"name\": \"Appleseeds\",\n      \"order_id\": \"<string>\",\n      \"type\": \"BoxC\"\n    },\n    \"signature_confirmation\": false,\n    \"status\": \"Processing\",\n    \"terms\": \"DDU\",\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"warehouse\": {\n      \"id\": \"WH0SZ001\"\n    },\n    \"wholesale\": true\n  },\n  \"to\": 6864,\n  \"consignor\": false,\n  \"service\": 5686.466437786727\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1324,\n  \"message\": \"Order could not be updated\",\n  \"errors\": [\n    \"Order could not be updated\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "debf13a7-7d4f-4260-a049-e2bf83dd50e3",
+          "name": "DELETE /orders/{id}",
+          "request": {
+            "name": "DELETE /orders/{id}",
+            "description": {
+              "content": "Deletes an order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The order ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "02bb9141-0f55-4d51-9dff-01f14ad88b71",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "61dbe40f-1d8a-4f3d-b469-3e885f65a24a",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1321,\n  \"message\": \"Order can't be modified in its current state\",\n  \"errors\": [\n    \"Order can't be modified in its current state\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc8a5aa2-a365-4405-ac05-4ca90010ae7c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "deb240f0-1f3d-4f2c-9791-ef2fc8a70f94",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f98ebf0-fb9a-44bf-b44c-648e92377bf6",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1320,\n  \"message\": \"Order not found\",\n  \"errors\": [\n    \"Order not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b74f1971-9566-414b-98c8-fdd861c1eaab",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The order ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a4b9da32-ab78-44b3-99da-d8afb7a7d68b",
+          "name": "POST /orders/status",
+          "request": {
+            "name": "POST /orders/status",
+            "description": {
+              "content": "Change the status of up to 100 orders at once. Returns the affected orders with their new status including those that can't be changed. It omits orders that can't be found.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orders\": [\n    {\n      \"id\": \"<integer>\",\n      \"status\": \"<string>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"status\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6d1c4c95-6174-463d-b8d3-f24541d4840b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orders\": [\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    },\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"shop\": {\n        \"id\": \"my-shop\",\n        \"name\": \"Appleseeds\",\n        \"order_id\": \"30338272\",\n        \"type\": \"BoxC\"\n      },\n      \"line_items\": [\n        {\n          \"quantity\": 1,\n          \"sku\": \"<string>\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        },\n        {\n          \"quantity\": 1,\n          \"sku\": \"<string>\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"<string>\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"<string>\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"<string>\",\n        \"id\": \"<string>\",\n        \"street2\": \"<string>\",\n        \"province\": \"TX\",\n        \"postal_code\": \"<string>\"\n      },\n      \"created\": \"2024-06-17 15:43:03\",\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"fulfillments\": [\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        },\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        }\n      ],\n      \"gift_message\": \"Thanks for the laughs. -Sansa\",\n      \"id\": 1029210,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"packing_slip\": true,\n      \"partial_fulfillment\": false,\n      \"placed_at\": \"2024-06-17 15:43:03\",\n      \"products\": 2,\n      \"quantity\": 3,\n      \"signature_confirmation\": false,\n      \"status\": \"Processing\",\n      \"terms\": \"DDU\",\n      \"wholesale\": true\n    },\n    {\n      \"shop\": {\n        \"id\": \"my-shop\",\n        \"name\": \"Appleseeds\",\n        \"order_id\": \"30338272\",\n        \"type\": \"BoxC\"\n      },\n      \"line_items\": [\n        {\n          \"quantity\": 1,\n          \"sku\": \"<string>\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        },\n        {\n          \"quantity\": 1,\n          \"sku\": \"<string>\",\n          \"dg_code\": null,\n          \"fulfilled\": false,\n          \"fulfillment_id\": 123456,\n          \"hs_code\": null,\n          \"name\": \"XL T-Shirt\",\n          \"product_id\": 1001181,\n          \"sold_for\": 9.95\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"<string>\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"<string>\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"<string>\",\n        \"id\": \"<string>\",\n        \"street2\": \"<string>\",\n        \"province\": \"TX\",\n        \"postal_code\": \"<string>\"\n      },\n      \"created\": \"2024-06-17 15:43:03\",\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"fulfillments\": [\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        },\n        {\n          \"created\": \"2024-06-17 15:43:03\",\n          \"fulfilled\": \"2024-06-27 08:33:49\",\n          \"fulfillment_fee\": 1.5,\n          \"id\": 4923,\n          \"packed\": \"2024-06-18 11:09:24\",\n          \"packaging_fee\": 0.1,\n          \"packaging_slip_fee\": 0.25,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 123456,\n          \"shipping_cost\": 0,\n          \"tracking_number\": \"926149997649150002357\",\n          \"tracking_url\": \"https://track.boxc.com/?id=9261499976491500023573\"\n        }\n      ],\n      \"gift_message\": \"Thanks for the laughs. -Sansa\",\n      \"id\": 1029210,\n      \"ignore_bad_address\": false,\n      \"insurance\": false,\n      \"packing_slip\": true,\n      \"partial_fulfillment\": false,\n      \"placed_at\": \"2024-06-17 15:43:03\",\n      \"products\": 2,\n      \"quantity\": 3,\n      \"signature_confirmation\": false,\n      \"status\": \"Processing\",\n      \"terms\": \"DDU\",\n      \"wholesale\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "51e8d740-b33c-4d16-bb3b-505074ea91ee",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orders\": [\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    },\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /orders: The required properties (status) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/orders: The required properties (status) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a6d4e3a4-ff42-45fe-bcb0-2b958c2244da",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orders\": [\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    },\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15c089ef-c946-4d7a-9a9f-7773d78e174f",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orders\": [\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    },\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e324f3ff-fe34-4fff-b41a-030a1494ee9e",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orders\": [\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    },\n    {\n      \"id\": 1029210,\n      \"status\": \"Processing\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "43d53c5b-5adf-4b8b-b9fa-70200607bd53",
+    "name": "BoxC CalculateDuty Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

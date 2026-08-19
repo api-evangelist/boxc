@@ -1,0 +1,613 @@
+{
+  "item": [
+    {
+      "id": "573a86e5-c0f2-477f-883b-cb9ec7974e12",
+      "name": "Users",
+      "description": {
+        "content": "The Users resources allows an application to retrieve information about the tokenized user such as balances, personal/company address, and subscriptions. Only the addresses can be updated by applications\n\n### Subscriptions\n\nA subscription is a recurring payment for a provided service. The specified `amount` is deducted from the user's BoxC balance at the start of each `interval` - also known as `current_period_start`.\n\n- Applications can only view subscriptions that belong to them.\n- Subscriptions automatically renew each interval until cancelled.\n- Cancelling a subscription will flag it to be deleted after `current_period_end`. To save a subscription it must be renewed before `current_period_end`.\n- Subscriptions are automatically removed from the list if their `current_period_end` is less than the current time.\n- A subscription cannot be modified after creation - only renewed.\n- A subscription will not be renewed if the user has insufficient funds.\n- A subscription can only be cancelled by the user from their account's dashboard.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f9ca640b-1b5d-4581-97ab-b5acd9493f81",
+          "name": "GET /users/me",
+          "request": {
+            "name": "GET /users/me",
+            "description": {
+              "content": "Retrieves this user.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9128baa4-bb5c-4ef6-920a-44b1f634d115",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"/ER/\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    },\n    \"balance\": 1525.46,\n    \"balances\": {\n      \"USD\": 1201.42,\n      \"CNY\": 421090\n    },\n    \"credit_limits\": {\n      \"USD\": 100000,\n      \"CNY\": 0\n    },\n    \"first_name\": \"Huang\",\n    \"id\": 12006,\n    \"last_name\": \"Qin\",\n    \"subscriptions\": [\n      {\n        \"amount\": 29.95,\n        \"application\": \"Returns By BoxC\",\n        \"cancelled_at\": null,\n        \"created\": \"2024-07-18 14:10:01\",\n        \"currency\": \"USD\",\n        \"current_period_end\": \"2024-08-18 23:59:59\",\n        \"current_period_start\": \"2024-07-18 14:10:01\",\n        \"id\": 1128,\n        \"interval\": \"monthly\",\n        \"name\": \"RBB Basic Plan\",\n        \"status\": \"active\"\n      },\n      {\n        \"amount\": 29.95,\n        \"application\": \"Returns By BoxC\",\n        \"cancelled_at\": null,\n        \"created\": \"2024-07-18 14:10:01\",\n        \"currency\": \"USD\",\n        \"current_period_end\": \"2024-08-18 23:59:59\",\n        \"current_period_start\": \"2024-07-18 14:10:01\",\n        \"id\": 565,\n        \"interval\": \"monthly\",\n        \"name\": \"RBB Basic Plan\",\n        \"status\": \"active\"\n      }\n    ],\n    \"timezone\": \"UTC\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cbe8fd07-cc52-42bd-948c-64ffd3876e3c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "45fd0795-040d-4a3e-98d7-c69d035acb7d",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c4d4063-5c2f-44ba-927c-9e46ed9f84bb",
+              "name": "User not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"User not found\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "666e9c45-2d1f-44e0-9a79-75c7dfe953d4",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e93e34f5-1947-43f3-9611-24b5230308a5",
+          "name": "PUT /users/me",
+          "request": {
+            "name": "PUT /users/me",
+            "description": {
+              "content": "Updates a user.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c80efd28-3407-4ddb-a0cb-c76948182d1f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    },\n    \"balance\": 1525.46,\n    \"balances\": {\n      \"USD\": 1201.42,\n      \"CNY\": 421090\n    },\n    \"credit_limits\": {\n      \"USD\": 100000,\n      \"CNY\": 0\n    },\n    \"first_name\": \"Huang\",\n    \"id\": 12006,\n    \"last_name\": \"Qin\",\n    \"subscriptions\": [\n      {\n        \"amount\": 29.95,\n        \"application\": \"Returns By BoxC\",\n        \"cancelled_at\": null,\n        \"created\": \"2024-07-18 14:10:01\",\n        \"currency\": \"USD\",\n        \"current_period_end\": \"2024-08-18 23:59:59\",\n        \"current_period_start\": \"2024-07-18 14:10:01\",\n        \"id\": 65,\n        \"interval\": \"monthly\",\n        \"name\": \"RBB Basic Plan\",\n        \"status\": \"active\"\n      },\n      {\n        \"amount\": 29.95,\n        \"application\": \"Returns By BoxC\",\n        \"cancelled_at\": null,\n        \"created\": \"2024-07-18 14:10:01\",\n        \"currency\": \"USD\",\n        \"current_period_end\": \"2024-08-18 23:59:59\",\n        \"current_period_start\": \"2024-07-18 14:10:01\",\n        \"id\": 5667,\n        \"interval\": \"monthly\",\n        \"name\": \"RBB Basic Plan\",\n        \"status\": \"active\"\n      }\n    ],\n    \"timezone\": \"UTC\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efcd3c97-28c1-49d1-8095-9ba2654a10ff",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /user/address: The required properties (street1) are missing.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/user/address: The required properties (street1) are missing.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c49effc4-13b1-4c04-8032-bfbf9946acf7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5bea342-d1f6-4f1a-90db-28f2444600ad",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9bd0ac70-cbbe-47f9-af78-cd314300040a",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "me"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": {\n    \"address\": {\n      \"company_name\": \"Terracotta Warriors Ltd, Co\",\n      \"street1\": \"4 Jing Shan Qian Jie\",\n      \"city\": \"Beijing\",\n      \"country\": \"<string>\",\n      \"street2\": \"Dongcheng\",\n      \"province\": \"Hebei\",\n      \"postal_code\": \"100009\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "3a5147c4-a7ae-463d-b464-ee730ea3ac54",
+    "name": "BoxC CalculateDuty Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

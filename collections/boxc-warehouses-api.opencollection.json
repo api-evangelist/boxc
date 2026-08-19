@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Warehouses API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Warehouses",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /warehouses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/warehouses"
+          },
+          "docs": "Retrieves a list of warehouses."
+        },
+        {
+          "info": {
+            "name": "GET /warehouses/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/warehouses/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The warehouse ID"
+              }
+            ]
+          },
+          "docs": "Retrieves a warehouse."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

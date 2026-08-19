@@ -1,0 +1,445 @@
+{
+  "item": [
+    {
+      "id": "421947a8-06ca-4fe4-b66c-ccca6e286143",
+      "name": "Classify",
+      "description": {
+        "content": "The Classify resource permits a user to retrieve the <em>most likely</em> HS code and description for one or more products. Each successful request costs $0.05 (USD) regardless of the number of products.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e9a432c5-c55d-49d3-8d38-0b0dc82d263a",
+          "name": "POST /classify",
+          "request": {
+            "name": "POST /classify",
+            "description": {
+              "content": "Get HS codes and descriptions for products. Accurate HS codes are required for customs clearance.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "classify"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"classify\": {\n    \"destination_country\": \"<string>\",\n    \"origin_country\": \"<string>\",\n    \"products\": [\n      {\n        \"description\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      },\n      {\n        \"description\": \"<string>\",\n        \"hs_code\": \"<string>\"\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e1f798b6-0cdf-4190-bf21-2cc45778babb",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\",\n        \"result\": {\n          \"import_hs_code\": \"6212109020\",\n          \"export_hs_code\": \"6115950000\",\n          \"description\": \"Socks\"\n        }\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\",\n        \"result\": {\n          \"import_hs_code\": \"6212109020\",\n          \"export_hs_code\": \"6115950000\",\n          \"description\": \"Socks\"\n        }\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "60234d0f-f1a5-4979-9aec-de016cb1635f",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"classify/origin_country: Required\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"origin_country is required\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ddf3d9e2-5fd7-43b3-8b8c-5537248ea633",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0ff71f4-49ff-4065-af8e-7bb8000f86d4",
+              "name": "Payment Required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1080,\n  \"message\": \"Insufficient funds\",\n  \"errors\": [\n    \"Insufficient funds\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f78cb036-4813-484f-b20b-7aee29c9bdbc",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63521e45-2454-4f6d-a07f-add35eefabe3",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1316a131-719d-4fff-834c-e233d8714651",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "classify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"classify\": {\n    \"destination_country\": \"US\",\n    \"origin_country\": \"CN\",\n    \"products\": [\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      },\n      {\n        \"description\": \"Sports Bra\",\n        \"hs_code\": \"610610\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1010,\n  \"message\": \"Service Unavailable\",\n  \"errors\": [\n    \"Service Unavailable\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a0f70321-9643-4a9f-a68c-42d00385cc23",
+    "name": "BoxC CalculateDuty Classify API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

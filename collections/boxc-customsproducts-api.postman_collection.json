@@ -1,0 +1,1761 @@
+{
+  "item": [
+    {
+      "id": "f7c870f6-f9fc-4b63-8787-44d82594e2d6",
+      "name": "CustomsProducts",
+      "description": {
+        "content": "Not to be confused with Fulfillment [Products](/#tag/Products), Customs Products are for clearing shipments containing regulated items like Food and Cosmetics (PGA). Customs Products contain information about the item including the manufacturer, seller, importer, etc. Shipments that are determined to be PGA must provide the `product_id` in the line item. Manifesting PGA shipments will notify the relevant agencies.\n\nSeveral properties are conditional and offer different options based on the `coi` and `type` of product.\n\n**Important:** This resource and its operations are in Beta and subject to change without notice.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f07cc00b-b5ea-48b8-bcec-f497d0f7c64e",
+          "name": "GET /customs/products",
+          "request": {
+            "name": "GET /customs/products",
+            "description": {
+              "content": "Retrieves a paginated list of customs products.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customs",
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "",
+                  "description": "Used for selecting the page after the initial query."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d53fc064-f0d2-4bb6-be53-5871180f7ff1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"products\": [\n    {\n      \"brand_name\": \"Test\",\n      \"coo\": \"CN\",\n      \"coi\": \"US\",\n      \"contact\": {\n        \"name\": \"John Doe\",\n        \"email\": \"john@doe.com\",\n        \"phone\": \"1231231234\"\n      },\n      \"description\": \"Test\",\n      \"intended_use_code\": \"100.000\",\n      \"manufacturer\": {\n        \"use_consignor\": false,\n        \"id\": {\n          \"type\": \"DUNS\",\n          \"value\": \"1231231\"\n        },\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"importer\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"shipper\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"type\": \"FOO\",\n      \"uom\": \"PCS\",\n      \"affirmation_of_compliance\": null,\n      \"code\": \"1234-57\",\n      \"compliance_code\": [\n        {\n          \"code\": \"COS\",\n          \"value\": \"1231231\"\n        }\n      ],\n      \"created_at\": \"2025-08-29 12:13:14\",\n      \"deleted_at\": \"2025-08-29 19:11:33\",\n      \"fsvp_importer\": {\n        \"exempt\": false,\n        \"use_consignor\": false,\n        \"id\": {\n          \"type\": \"DUNS\",\n          \"value\": \"1231231\"\n        },\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"id\": 121006,\n      \"packaging\": {\n        \"type\": \"BOX\",\n        \"quantity\": 2\n      },\n      \"prior_notice_submitter\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"processing_code\": \"ADD\",\n      \"quantity\": 123.51,\n      \"updated_at\": \"2025-08-29 14:10:14\"\n    },\n    {\n      \"brand_name\": \"Test\",\n      \"coo\": \"CN\",\n      \"coi\": \"US\",\n      \"contact\": {\n        \"name\": \"John Doe\",\n        \"email\": \"john@doe.com\",\n        \"phone\": \"1231231234\"\n      },\n      \"description\": \"Test\",\n      \"intended_use_code\": \"100.000\",\n      \"manufacturer\": {\n        \"use_consignor\": false,\n        \"id\": {\n          \"type\": \"DUNS\",\n          \"value\": \"1231231\"\n        },\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"importer\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"shipper\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"type\": \"FOO\",\n      \"uom\": \"PCS\",\n      \"affirmation_of_compliance\": null,\n      \"code\": \"1234-57\",\n      \"compliance_code\": [\n        {\n          \"code\": \"COS\",\n          \"value\": \"1231231\"\n        }\n      ],\n      \"created_at\": \"2025-08-29 12:13:14\",\n      \"deleted_at\": \"2025-08-29 19:11:33\",\n      \"fsvp_importer\": {\n        \"exempt\": false,\n        \"use_consignor\": false,\n        \"id\": {\n          \"type\": \"DUNS\",\n          \"value\": \"1231231\"\n        },\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"id\": 121006,\n      \"packaging\": {\n        \"type\": \"BOX\",\n        \"quantity\": 2\n      },\n      \"prior_notice_submitter\": {\n        \"use_consignor\": false,\n        \"address\": {\n          \"name\": \"Test\",\n          \"street1\": \"test\",\n          \"street2\": null,\n          \"city\": \"test\",\n          \"province\": null,\n          \"postal_code\": null,\n          \"country\": \"CN\",\n          \"email\": \"test@mail.com\",\n          \"phone\": \"1234-47223\"\n        }\n      },\n      \"processing_code\": \"ADD\",\n      \"quantity\": 123.51,\n      \"updated_at\": \"2025-08-29 14:10:14\"\n    }\n  ],\n  \"next_page\": \"ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8d6887f9-e045-4e37-b20d-fe48edb66a1a",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "48e241c6-7fa5-47f7-960d-169aa4224ce1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6cec2fd9-aae4-42a8-8a4a-5b89ca714d21",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e00afa50-c549-44a0-91b7-d11107004a40",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bc09ef97-9007-4e3d-8f6c-0c87b1c36ed9",
+          "name": "POST /customs/products",
+          "request": {
+            "name": "POST /customs/products",
+            "description": {
+              "content": "Creates a customs product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customs",
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": {\n    \"brand_name\": \"<string>\",\n    \"coo\": \"<string>\",\n    \"coi\": \"<string>\",\n    \"contact\": {\n      \"email\": null,\n      \"name\": null,\n      \"phone\": null\n    },\n    \"description\": \"<string>\",\n    \"intended_use_code\": \"<string>\",\n    \"manufacturer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"id\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"type\": \"<string>\",\n    \"uom\": null,\n    \"affirmation_of_compliance\": null,\n    \"code\": null,\n    \"compliance_code\": null,\n    \"fsvp_importer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"exempt\": false,\n      \"id\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"packaging\": null,\n    \"prior_notice_submitter\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"processing_code\": null,\n    \"quantity\": null\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c803f1c3-8466-439f-9a98-6e1963702490",
+              "name": "Success OK.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"created_at\": \"2025-08-29 12:13:14\",\n    \"deleted_at\": \"2025-08-29 19:11:33\",\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"id\": 121006,\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51,\n    \"updated_at\": \"2025-08-29 14:10:14\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3cc62ffb-f620-41a6-b067-73b6ae816320",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /product/type: Product type must be one of [FOO, COS, FOO-CCW]\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/product/type: Product type must be one of [FOO, COS, FOO-CCW]\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74bfd7e7-075e-492b-9daa-1e7c344bda2e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4c2ea96-9107-4543-910e-15e1ebb950eb",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd6820cf-f6ff-4959-af57-8b3a1b38cd0f",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "21c647fa-77b6-4207-bd98-f77f6a8dbaea",
+          "name": "GET /customs/products/{id}",
+          "request": {
+            "name": "GET /customs/products/{id}",
+            "description": {
+              "content": "Retrieves a customs product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customs",
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ca4c0e5e-b1b9-480b-b63f-ef700ca373fc",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"created_at\": \"2025-08-29 12:13:14\",\n    \"deleted_at\": \"2025-08-29 19:11:33\",\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"id\": 121006,\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51,\n    \"updated_at\": \"2025-08-29 14:10:14\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d7a3bd6a-9b43-4dc0-98cd-cee89c546c46",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a3db2e5-7bcc-4ef6-988e-ece189c63a15",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c06af9c8-5e84-4f44-a32c-61295efef27c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1460,\n  \"message\": \"Customs Product not found\",\n  \"errors\": [\n    \"Customs Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85e8fba2-61fa-41af-907e-70163e4c35f2",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d93169b9-4d59-4940-b28d-24f456499151",
+          "name": "PUT /customs/products/{id}",
+          "request": {
+            "name": "PUT /customs/products/{id}",
+            "description": {
+              "content": "Updates a customs product.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customs",
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product id."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product\": {\n    \"brand_name\": \"<string>\",\n    \"coo\": \"<string>\",\n    \"coi\": \"<string>\",\n    \"contact\": {\n      \"email\": null,\n      \"name\": null,\n      \"phone\": null\n    },\n    \"description\": \"<string>\",\n    \"intended_use_code\": \"<string>\",\n    \"manufacturer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"id\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"type\": \"<string>\",\n    \"uom\": null,\n    \"affirmation_of_compliance\": null,\n    \"code\": null,\n    \"compliance_code\": null,\n    \"fsvp_importer\": {\n      \"use_consignor\": \"<boolean>\",\n      \"exempt\": false,\n      \"id\": {\n        \"type\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"packaging\": null,\n    \"prior_notice_submitter\": {\n      \"use_consignor\": \"<boolean>\",\n      \"address\": {\n        \"name\": null,\n        \"street1\": null,\n        \"city\": null,\n        \"country\": null,\n        \"email\": null,\n        \"phone\": null,\n        \"street2\": null,\n        \"province\": null,\n        \"postal_code\": null\n      }\n    },\n    \"processing_code\": null,\n    \"quantity\": null\n  },\n  \"required\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d4931c72-52f4-4245-9ec5-4c42fd08d7f5",
+              "name": "Success OK.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"created_at\": \"2025-08-29 12:13:14\",\n    \"deleted_at\": \"2025-08-29 19:11:33\",\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"id\": 121006,\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51,\n    \"updated_at\": \"2025-08-29 14:10:14\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e35e1df9-5a90-4fe0-8e2c-53e6d4b0621e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /product/type: Product type must be one of [FOO, COS, FOO-CCW]\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/product/type: Product type must be one of [FOO, COS, FOO-CCW]\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d44ebd5-a156-418c-9735-3fb1c71c9a58",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "da635e0d-455d-4537-ae12-9516f188b473",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8c6ca10f-cc69-42f9-a79d-50aa795cca8c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1460,\n  \"message\": \"Customs Product not found\",\n  \"errors\": [\n    \"Customs Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "abcd645e-bc97-41f4-8640-5cfbd909fc35",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product id."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product\": {\n    \"brand_name\": \"Test\",\n    \"coo\": \"CN\",\n    \"coi\": \"US\",\n    \"contact\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@doe.com\",\n      \"phone\": \"1231231234\"\n    },\n    \"description\": \"Test\",\n    \"intended_use_code\": \"100.000\",\n    \"manufacturer\": {\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"importer\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"shipper\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"type\": \"FOO\",\n    \"uom\": \"PCS\",\n    \"affirmation_of_compliance\": null,\n    \"code\": \"1234-57\",\n    \"compliance_code\": [\n      {\n        \"code\": \"COS\",\n        \"value\": \"1231231\"\n      }\n    ],\n    \"fsvp_importer\": {\n      \"exempt\": false,\n      \"use_consignor\": false,\n      \"id\": {\n        \"type\": \"DUNS\",\n        \"value\": \"1231231\"\n      },\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"packaging\": {\n      \"type\": \"BOX\",\n      \"quantity\": 2\n    },\n    \"prior_notice_submitter\": {\n      \"use_consignor\": false,\n      \"address\": {\n        \"name\": \"Test\",\n        \"street1\": \"test\",\n        \"street2\": null,\n        \"city\": \"test\",\n        \"province\": null,\n        \"postal_code\": null,\n        \"country\": \"CN\",\n        \"email\": \"test@mail.com\",\n        \"phone\": \"1234-47223\"\n      }\n    },\n    \"processing_code\": \"ADD\",\n    \"quantity\": 123.51\n  },\n  \"required\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d0653519-d528-4eae-acd6-7878aaed6214",
+          "name": "DELETE /customs/products/{id}",
+          "request": {
+            "name": "DELETE /customs/products/{id}",
+            "description": {
+              "content": "Deletes a customs product. It is only a soft delete since products may still be referenced from shipments.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customs",
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The product ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5823050f-ad1f-415d-a20a-b1d43d20e582",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "43118e8c-f6ad-45ab-b373-674036e563fd",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4e29b69-812c-48be-9d98-9df5509491e0",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a10be665-3c5b-4531-9908-40afa262fa2e",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1460,\n  \"message\": \"Customs Product not found\",\n  \"errors\": [\n    \"Customs Product not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31e18283-0bf7-4967-b58d-33b7fe7c66f7",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customs",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The product ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "bcdafc88-7179-4e5a-9022-c2419043abd5",
+    "name": "BoxC CalculateDuty CustomsProducts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

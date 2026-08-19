@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty EntryPoints API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "EntryPoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /entry-points",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/entry-points"
+          },
+          "docs": "Retrieves a list of entry points."
+        },
+        {
+          "info": {
+            "name": "GET /entry-points/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/entry-points/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The entry point ID"
+              }
+            ]
+          },
+          "docs": "Retrieves an entry point."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

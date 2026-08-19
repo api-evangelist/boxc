@@ -1,0 +1,2699 @@
+{
+  "item": [
+    {
+      "id": "24ec4d31-fbc6-4b3b-9dd4-b5caa7b4f829",
+      "name": "Shipments",
+      "description": {
+        "content": "The Shipments resource allows a user to create, update, retrieve, and delete shipments. Only test shipments and shipments without labels can be deleted. Shipments with uncancelled or processed labels cannot be updated. All shipments require address verification on the shipping address. Cancelling a label will refund the cost. Test shipments and shipments without labels are routinely purged from the system.\n\nThere are some weight and volumetric constraints for shipments that is dependant on the route. For example, if a Shipment's length + girth is greater than a certain size then the user is charged an additional fee per KG. The length is the measurement of the longest dimension, and girth is the distance around the thickest part (perpendicular to the length). If the Shipment's weight or volume exceeds the limit for a route an error will be returned.\n\n**Note:** Set the `overpack_id` to null when unassigning it from an overpack. You won't be allowed to update a labelled shipment beyond that.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2c9f98c6-8ce5-411f-8bb5-96db830b2e18",
+          "name": "GET /shipments",
+          "request": {
+            "name": "GET /shipments",
+            "description": {
+              "content": "Retrieves a paginated list of shipments.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "created_min",
+                  "value": "",
+                  "description": "The inclusive date to begin the search."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_max",
+                  "value": "",
+                  "description": "The inclusive date to end the search."
+                },
+                {
+                  "disabled": false,
+                  "key": "labeled",
+                  "value": "both",
+                  "description": "Filter to return only shipments that have labels."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "50",
+                  "description": "The number of results to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "The sort order of the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "order_number",
+                  "value": "",
+                  "description": "Filter that searches for shipments by the order_number."
+                },
+                {
+                  "disabled": false,
+                  "key": "overpack_id",
+                  "value": "",
+                  "description": "Filter that searches for shipments by their overpack ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "packed",
+                  "value": "both",
+                  "description": "Filter to return only shipments that are in an overpack."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_token",
+                  "value": "",
+                  "description": "Used for selecting the page after the initial query."
+                },
+                {
+                  "disabled": false,
+                  "key": "processed",
+                  "value": "both",
+                  "description": "Filter to return only shipments that are processed."
+                },
+                {
+                  "disabled": false,
+                  "key": "tracking_number",
+                  "value": "",
+                  "description": "Filter that searches for shipments by tracking number. Date filters are ignored if this is provided."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fe023852-9782-465d-b43c-8eaaff156b02",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "labeled",
+                      "value": "both"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "order_number",
+                      "value": ""
+                    },
+                    {
+                      "key": "overpack_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "packed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    },
+                    {
+                      "key": "processed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "tracking_number",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shipments\": [\n    {\n      \"line_items\": [\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"origin_description\": \"手机外壳\",\n          \"quantity\": 2,\n          \"value\": 9.95,\n          \"weight\": 0.235,\n          \"compliance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"dg_code\": null,\n          \"duty\": 2.23,\n          \"user_hts_code\": null,\n          \"hts_code\": null,\n          \"product_id\": 121009,\n          \"tax\": 2.23,\n          \"supplier\": null,\n          \"url\": null\n        },\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"origin_description\": \"手机外壳\",\n          \"quantity\": 2,\n          \"value\": 9.95,\n          \"weight\": 0.235,\n          \"compliance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"dg_code\": null,\n          \"duty\": 2.23,\n          \"user_hts_code\": null,\n          \"hts_code\": null,\n          \"product_id\": 121009,\n          \"tax\": 2.23,\n          \"supplier\": null,\n          \"url\": null\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"entry_point\": \"TEST01\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"string\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"string\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"weight\": 0.088,\n      \"carrier\": \"DeutschePost\",\n      \"carrier_params\": {\n        \"ppi_number\": \"PMK9999\"\n      },\n      \"claim_url\": \"https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS\",\n      \"cod\": {\n        \"amount\": 13.37,\n        \"currency\": \"AUD\"\n      },\n      \"comments\": [\n        \"SKU #10292301\",\n        \"SKU #10292301\"\n      ],\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"string\",\n        \"id\": \"string\",\n        \"street2\": \"string\",\n        \"province\": \"TX\",\n        \"postal_code\": \"string\"\n      },\n      \"created\": \"2024-11-17 15:43:03\",\n      \"credentials_id\": null,\n      \"currency\": \"USD\",\n      \"duty\": 2.23,\n      \"errors\": {\n        \"code\": 1080,\n        \"http_status\": 402,\n        \"message\": \"Insufficient funds\",\n        \"status\": \"error\"\n      },\n      \"events\": [\n        {\n          \"carrier\": \"USPS\",\n          \"city\": \"New York City\",\n          \"code\": 200,\n          \"country\": \"US\",\n          \"description\": \"DELIVERED\",\n          \"latitude\": null,\n          \"longitude\": null,\n          \"postal_code\": \"10001\",\n          \"province\": \"NY\",\n          \"time\": \"2024-05-26 07:11:45\"\n        },\n        {\n          \"carrier\": \"USPS\",\n          \"city\": \"New York City\",\n          \"code\": 200,\n          \"country\": \"US\",\n          \"description\": \"DELIVERED\",\n          \"latitude\": null,\n          \"longitude\": null,\n          \"postal_code\": \"10001\",\n          \"province\": \"NY\",\n          \"time\": \"2024-05-26 07:11:45\"\n        }\n      ],\n      \"exit_point\": \"LAX\",\n      \"freight_charge\": {\n        \"amount\": 13.37,\n        \"currency\": \"MXN\"\n      },\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"height\": 1.5,\n      \"id\": 42001,\n      \"ignore_bad_address\": false,\n      \"images\": {\n        \"pod\": [\n          \"https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271\"\n        ],\n        \"scans\": [\n          \"https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271\"\n        ]\n      },\n      \"insurance\": false,\n      \"insured_value\": 35.95,\n      \"irregular\": false,\n      \"is_return\": false,\n      \"label\": {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      },\n      \"labels\": [\n        {\n          \"cancelled\": false,\n          \"carrier\": \"USPS\",\n          \"chargeable_weight\": 0.3,\n          \"cost\": 3.15,\n          \"created\": \"2024-05-17 15:43:03\",\n          \"delivery_date\": \"2024-05-26 12:05:09\",\n          \"exit_point\": \"LAX\",\n          \"events\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"height\": 1.5,\n          \"id\": 2382131,\n          \"insurance_fee\": 0,\n          \"is_master\": true,\n          \"is_ready\": true,\n          \"length\": 15,\n          \"overpack_id\": 1501231,\n          \"processed\": false,\n          \"processed_date\": \"2024-05-27 19:14:55\",\n          \"processed_weight\": 0.284,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 1014,\n          \"status\": \"Processed\",\n          \"surcharge\": 0,\n          \"tracking_number\": \"9261299991753900000290\",\n          \"weight\": 0.202,\n          \"width\": 8\n        },\n        {\n          \"cancelled\": false,\n          \"carrier\": \"USPS\",\n          \"chargeable_weight\": 0.3,\n          \"cost\": 3.15,\n          \"created\": \"2024-05-17 15:43:03\",\n          \"delivery_date\": \"2024-05-26 12:05:09\",\n          \"exit_point\": \"LAX\",\n          \"events\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"height\": 1.5,\n          \"id\": 2382131,\n          \"insurance_fee\": 0,\n          \"is_master\": true,\n          \"is_ready\": true,\n          \"length\": 15,\n          \"overpack_id\": 1501231,\n          \"processed\": false,\n          \"processed_date\": \"2024-05-27 19:14:55\",\n          \"processed_weight\": 0.284,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 1014,\n          \"status\": \"Processed\",\n          \"surcharge\": 0,\n          \"tracking_number\": \"9261299991753900000290\",\n          \"weight\": 0.202,\n          \"width\": 8\n        }\n      ],\n      \"length\": 15,\n      \"nature_type\": \"11\",\n      \"order_number\": \"23018721-ABC\",\n      \"overpack_id\": 1291028,\n      \"pga\": false,\n      \"signature_confirmation\": false,\n      \"tax\": 10.15,\n      \"terms\": \"DDU\",\n      \"test\": false,\n      \"total_cost\": 3.58,\n      \"updated\": \"2024-11-20 02:32:48\",\n      \"volumetric_weight\": 0.088,\n      \"width\": 8,\n      \"zonos_customer_id\": \"Z123456789\"\n    },\n    {\n      \"line_items\": [\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"origin_description\": \"手机外壳\",\n          \"quantity\": 2,\n          \"value\": 9.95,\n          \"weight\": 0.235,\n          \"compliance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"dg_code\": null,\n          \"duty\": 2.23,\n          \"user_hts_code\": null,\n          \"hts_code\": null,\n          \"product_id\": 121009,\n          \"tax\": 2.23,\n          \"supplier\": null,\n          \"url\": null\n        },\n        {\n          \"coo\": \"CN\",\n          \"currency\": \"USD\",\n          \"description\": \"Phone case\",\n          \"origin_description\": \"手机外壳\",\n          \"quantity\": 2,\n          \"value\": 9.95,\n          \"weight\": 0.235,\n          \"compliance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"dg_code\": null,\n          \"duty\": 2.23,\n          \"user_hts_code\": null,\n          \"hts_code\": null,\n          \"product_id\": 121009,\n          \"tax\": 2.23,\n          \"supplier\": null,\n          \"url\": null\n        }\n      ],\n      \"service\": \"BoxC Priority\",\n      \"entry_point\": \"TEST01\",\n      \"consignor\": {\n        \"name\": \"Generic Company, LLC\",\n        \"phone\": \"555-123-4567\",\n        \"street1\": \"1 WORLD WAY\",\n        \"city\": \"SHENZHEN\",\n        \"country\": \"CN\",\n        \"email\": null,\n        \"id\": \"string\",\n        \"street2\": \"\",\n        \"province\": \"GUANGDONG\",\n        \"postal_code\": \"string\"\n      },\n      \"to\": {\n        \"name\": \"John Smith\",\n        \"street1\": \"108 N WESTGATE WAY\",\n        \"city\": \"WYLIE\",\n        \"country\": \"US\",\n        \"company_name\": null,\n        \"phone\": \"555-123-4562\",\n        \"email\": \"john@example.com\",\n        \"street2\": null,\n        \"province\": \"TX\",\n        \"postal_code\": \"75098\"\n      },\n      \"weight\": 0.088,\n      \"carrier\": \"DeutschePost\",\n      \"carrier_params\": {\n        \"ppi_number\": \"PMK9999\"\n      },\n      \"claim_url\": \"https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS\",\n      \"cod\": {\n        \"amount\": 13.37,\n        \"currency\": \"AUD\"\n      },\n      \"comments\": [\n        \"SKU #10292301\",\n        \"SKU #10292301\"\n      ],\n      \"consignee\": {\n        \"name\": \"Addressee John\",\n        \"city\": \"MESQUITE\",\n        \"country\": \"US\",\n        \"street1\": \"2959 ANCHOR DR\",\n        \"phone\": \"555-456-7890\",\n        \"email\": \"string\",\n        \"id\": \"string\",\n        \"street2\": \"string\",\n        \"province\": \"TX\",\n        \"postal_code\": \"string\"\n      },\n      \"created\": \"2024-11-17 15:43:03\",\n      \"credentials_id\": null,\n      \"currency\": \"USD\",\n      \"duty\": 2.23,\n      \"errors\": {\n        \"code\": 1080,\n        \"http_status\": 402,\n        \"message\": \"Insufficient funds\",\n        \"status\": \"error\"\n      },\n      \"events\": [\n        {\n          \"carrier\": \"USPS\",\n          \"city\": \"New York City\",\n          \"code\": 200,\n          \"country\": \"US\",\n          \"description\": \"DELIVERED\",\n          \"latitude\": null,\n          \"longitude\": null,\n          \"postal_code\": \"10001\",\n          \"province\": \"NY\",\n          \"time\": \"2024-05-26 07:11:45\"\n        },\n        {\n          \"carrier\": \"USPS\",\n          \"city\": \"New York City\",\n          \"code\": 200,\n          \"country\": \"US\",\n          \"description\": \"DELIVERED\",\n          \"latitude\": null,\n          \"longitude\": null,\n          \"postal_code\": \"10001\",\n          \"province\": \"NY\",\n          \"time\": \"2024-05-26 07:11:45\"\n        }\n      ],\n      \"exit_point\": \"LAX\",\n      \"freight_charge\": {\n        \"amount\": 13.37,\n        \"currency\": \"MXN\"\n      },\n      \"from\": {\n        \"name\": \"My Company Name\",\n        \"street1\": \"113 INTL BROADWAY\",\n        \"city\": \"LOS ANGELES\",\n        \"country\": \"US\",\n        \"street2\": \"\",\n        \"province\": \"CA\",\n        \"postal_code\": \"91013\"\n      },\n      \"height\": 1.5,\n      \"id\": 42001,\n      \"ignore_bad_address\": false,\n      \"images\": {\n        \"pod\": [\n          \"https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271\"\n        ],\n        \"scans\": [\n          \"https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271\"\n        ]\n      },\n      \"insurance\": false,\n      \"insured_value\": 35.95,\n      \"irregular\": false,\n      \"is_return\": false,\n      \"label\": {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      },\n      \"labels\": [\n        {\n          \"cancelled\": false,\n          \"carrier\": \"USPS\",\n          \"chargeable_weight\": 0.3,\n          \"cost\": 3.15,\n          \"created\": \"2024-05-17 15:43:03\",\n          \"delivery_date\": \"2024-05-26 12:05:09\",\n          \"exit_point\": \"LAX\",\n          \"events\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"height\": 1.5,\n          \"id\": 2382131,\n          \"insurance_fee\": 0,\n          \"is_master\": true,\n          \"is_ready\": true,\n          \"length\": 15,\n          \"overpack_id\": 1501231,\n          \"processed\": false,\n          \"processed_date\": \"2024-05-27 19:14:55\",\n          \"processed_weight\": 0.284,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 1014,\n          \"status\": \"Processed\",\n          \"surcharge\": 0,\n          \"tracking_number\": \"9261299991753900000290\",\n          \"weight\": 0.202,\n          \"width\": 8\n        },\n        {\n          \"cancelled\": false,\n          \"carrier\": \"USPS\",\n          \"chargeable_weight\": 0.3,\n          \"cost\": 3.15,\n          \"created\": \"2024-05-17 15:43:03\",\n          \"delivery_date\": \"2024-05-26 12:05:09\",\n          \"exit_point\": \"LAX\",\n          \"events\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"height\": 1.5,\n          \"id\": 2382131,\n          \"insurance_fee\": 0,\n          \"is_master\": true,\n          \"is_ready\": true,\n          \"length\": 15,\n          \"overpack_id\": 1501231,\n          \"processed\": false,\n          \"processed_date\": \"2024-05-27 19:14:55\",\n          \"processed_weight\": 0.284,\n          \"service\": \"BoxC Parcel\",\n          \"shipment_id\": 1014,\n          \"status\": \"Processed\",\n          \"surcharge\": 0,\n          \"tracking_number\": \"9261299991753900000290\",\n          \"weight\": 0.202,\n          \"width\": 8\n        }\n      ],\n      \"length\": 15,\n      \"nature_type\": \"11\",\n      \"order_number\": \"23018721-ABC\",\n      \"overpack_id\": 1291028,\n      \"pga\": false,\n      \"signature_confirmation\": false,\n      \"tax\": 10.15,\n      \"terms\": \"DDU\",\n      \"test\": false,\n      \"total_cost\": 3.58,\n      \"updated\": \"2024-11-20 02:32:48\",\n      \"volumetric_weight\": 0.088,\n      \"width\": 8,\n      \"zonos_customer_id\": \"Z123456789\"\n    }\n  ],\n  \"next_page\": \"ZGF0ZV9lbmQ9MjAyMy0wNy0yOCZsaW1pdD01MCZvcmRlcj1kZXNjJnBhZ2U9MSZsYXN0X2lkPTE1Mzg0Nw\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a7ac9c53-c3b7-4fa2-b61b-c1aef0167a6a",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "labeled",
+                      "value": "both"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "order_number",
+                      "value": ""
+                    },
+                    {
+                      "key": "overpack_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "packed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    },
+                    {
+                      "key": "processed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "tracking_number",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1025,\n  \"message\": \"Invalid page token\",\n  \"errors\": [\n    \"Invalid page token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d195d450-afac-4710-89d0-cabdc7f8c7f4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "labeled",
+                      "value": "both"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "order_number",
+                      "value": ""
+                    },
+                    {
+                      "key": "overpack_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "packed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    },
+                    {
+                      "key": "processed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "tracking_number",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a65ff8fd-5249-43b2-be65-df0367f95af7",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "labeled",
+                      "value": "both"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "order_number",
+                      "value": ""
+                    },
+                    {
+                      "key": "overpack_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "packed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    },
+                    {
+                      "key": "processed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "tracking_number",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96aba20a-ce3c-4d7e-8f46-b1f43902aac6",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "created_min",
+                      "value": ""
+                    },
+                    {
+                      "key": "created_max",
+                      "value": ""
+                    },
+                    {
+                      "key": "labeled",
+                      "value": "both"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "order_number",
+                      "value": ""
+                    },
+                    {
+                      "key": "overpack_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "packed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "page_token",
+                      "value": ""
+                    },
+                    {
+                      "key": "processed",
+                      "value": "both"
+                    },
+                    {
+                      "key": "tracking_number",
+                      "value": ""
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d01fb334-787f-4857-9db0-148175cf5100",
+          "name": "POST /shipments",
+          "request": {
+            "name": "POST /shipments",
+            "description": {
+              "content": "Creates a shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipment\": {\n    \"line_items\": [\n      {\n        \"coo\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"description\": \"<string>\",\n        \"origin_description\": \"<string>\",\n        \"quantity\": \"<integer>\",\n        \"value\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"hts_code\": null,\n        \"product_id\": null,\n        \"supplier\": null,\n        \"url\": null\n      },\n      {\n        \"coo\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"description\": \"<string>\",\n        \"origin_description\": \"<string>\",\n        \"quantity\": \"<integer>\",\n        \"value\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"hts_code\": null,\n        \"product_id\": null,\n        \"supplier\": null,\n        \"url\": null\n      }\n    ],\n    \"service\": \"BoxC Parcel\",\n    \"entry_point\": \"<string>\",\n    \"consignor\": {\n      \"name\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"company_name\": null,\n      \"phone\": null,\n      \"email\": null,\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"weight\": \"<decimal>\",\n    \"carrier\": null,\n    \"carrier_params\": \"<object>\",\n    \"cod\": {\n      \"amount\": \"<decimal>\"\n    },\n    \"comments\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"compliance\": {\n      \"address\": true,\n      \"classify\": true,\n      \"descriptions\": true,\n      \"denied_party\": true,\n      \"pga\": true\n    },\n    \"consignee\": {\n      \"name\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"create_label\": false,\n    \"credentials_id\": null,\n    \"currency\": \"USD\",\n    \"exit_point\": null,\n    \"freight_charge\": {\n      \"amount\": \"<decimal>\",\n      \"currency\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"height\": 1,\n    \"ignore_bad_address\": false,\n    \"images\": {},\n    \"insurance\": false,\n    \"irregular\": false,\n    \"is_return\": false,\n    \"length\": 15,\n    \"nature_type\": null,\n    \"order_number\": null,\n    \"overpack_id\": null,\n    \"packages\": [\n      {\n        \"height\": \"<decimal>\",\n        \"length\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"width\": \"<decimal>\"\n      },\n      {\n        \"height\": \"<decimal>\",\n        \"length\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"width\": \"<decimal>\"\n      }\n    ],\n    \"signature_confirmation\": false,\n    \"terms\": \"DDU\",\n    \"test\": false,\n    \"tracking_number\": \"<string>\",\n    \"width\": 10,\n    \"zonos_customer_id\": null\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2c772ac8-3c95-45ef-b2a9-c3081931c5bf",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shipment\": {\n    \"line_items\": [\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      },\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"entry_point\": \"TEST01\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"weight\": 0.088,\n    \"carrier\": \"DeutschePost\",\n    \"carrier_params\": {\n      \"ppi_number\": \"PMK9999\"\n    },\n    \"claim_url\": \"https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS\",\n    \"cod\": {\n      \"amount\": 13.37,\n      \"currency\": \"AUD\"\n    },\n    \"comments\": [\n      \"SKU #10292301\",\n      \"SKU #10292301\"\n    ],\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-11-17 15:43:03\",\n    \"credentials_id\": null,\n    \"currency\": \"USD\",\n    \"duty\": 2.23,\n    \"errors\": {\n      \"code\": 1080,\n      \"http_status\": 402,\n      \"message\": \"Insufficient funds\",\n      \"status\": \"error\"\n    },\n    \"events\": [\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      },\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      }\n    ],\n    \"exit_point\": \"LAX\",\n    \"freight_charge\": {\n      \"amount\": 13.37,\n      \"currency\": \"MXN\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"height\": 1.5,\n    \"id\": 42001,\n    \"ignore_bad_address\": false,\n    \"images\": {\n      \"pod\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271\"\n      ],\n      \"scans\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271\"\n      ]\n    },\n    \"insurance\": false,\n    \"insured_value\": 35.95,\n    \"irregular\": false,\n    \"is_return\": false,\n    \"label\": {\n      \"cancelled\": false,\n      \"carrier\": \"USPS\",\n      \"chargeable_weight\": 0.3,\n      \"cost\": 3.15,\n      \"created\": \"2024-05-17 15:43:03\",\n      \"delivery_date\": \"2024-05-26 12:05:09\",\n      \"exit_point\": \"LAX\",\n      \"events\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"height\": 1.5,\n      \"id\": 2382131,\n      \"insurance_fee\": 0,\n      \"is_master\": true,\n      \"is_ready\": true,\n      \"length\": 15,\n      \"overpack_id\": 1501231,\n      \"processed\": false,\n      \"processed_date\": \"2024-05-27 19:14:55\",\n      \"processed_weight\": 0.284,\n      \"service\": \"BoxC Parcel\",\n      \"shipment_id\": 1014,\n      \"status\": \"Processed\",\n      \"surcharge\": 0,\n      \"tracking_number\": \"9261299991753900000290\",\n      \"weight\": 0.202,\n      \"width\": 8\n    },\n    \"labels\": [\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      },\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      }\n    ],\n    \"length\": 15,\n    \"nature_type\": \"11\",\n    \"order_number\": \"23018721-ABC\",\n    \"overpack_id\": 1291028,\n    \"pga\": false,\n    \"signature_confirmation\": false,\n    \"tax\": 10.15,\n    \"terms\": \"DDU\",\n    \"test\": false,\n    \"total_cost\": 3.58,\n    \"updated\": \"2024-11-20 02:32:48\",\n    \"volumetric_weight\": 0.088,\n    \"width\": 8,\n    \"zonos_customer_id\": \"Z123456789\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ddd42c6c-b561-4b6d-80bc-0553ef98ebac",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Request is malformed.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Request is malformed.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5ee4a3fd-5161-4bea-a353-9fd9eb5048ae",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8956bb34-7b63-4542-9a56-20e5ebbb6db8",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e70cbfee-c2b3-4f68-83fc-495c7b1c4d57",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "953df0a2-eed9-4c00-9e7d-83d0c228d552",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1010,\n  \"message\": \"Error while checking for denied parties\",\n  \"errors\": [\n    \"Error while checking for denied parties\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3133ecec-275e-4e8b-abd9-cbeec8cb079e",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 503,\n  \"message\": \"Address resolution service unavailable at this time.\",\n  \"errors\": [\n    \"Address resolution service unavailable at this time.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af25e267-ad79-4927-b631-66ae38cda421",
+          "name": "GET /shipments/{id}",
+          "request": {
+            "name": "GET /shipments/{id}",
+            "description": {
+              "content": "Gets a shipment by its `id`. Clients can print a generic BoxC shipment label by changing the `Accept` header to <em>application/pdf</em> or providing `type=PDF` in the query parameters. The label is not a carrier label and should only be used for internal operations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "Allows a client to print the BoxC generic shipment label."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The shipment ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2986084b-4723-46b0-85c7-7b9d9eae6bed",
+              "name": "Returns application/json or a PDF depending on the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the generic shipment label.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shipment\": {\n    \"line_items\": [\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      },\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"entry_point\": \"TEST01\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"weight\": 0.088,\n    \"carrier\": \"DeutschePost\",\n    \"carrier_params\": {\n      \"ppi_number\": \"PMK9999\"\n    },\n    \"claim_url\": \"https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS\",\n    \"cod\": {\n      \"amount\": 13.37,\n      \"currency\": \"AUD\"\n    },\n    \"comments\": [\n      \"SKU #10292301\",\n      \"SKU #10292301\"\n    ],\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-11-17 15:43:03\",\n    \"credentials_id\": null,\n    \"currency\": \"USD\",\n    \"duty\": 2.23,\n    \"errors\": {\n      \"code\": 1080,\n      \"http_status\": 402,\n      \"message\": \"Insufficient funds\",\n      \"status\": \"error\"\n    },\n    \"events\": [\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      },\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      }\n    ],\n    \"exit_point\": \"LAX\",\n    \"freight_charge\": {\n      \"amount\": 13.37,\n      \"currency\": \"MXN\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"height\": 1.5,\n    \"id\": 42001,\n    \"ignore_bad_address\": false,\n    \"images\": {\n      \"pod\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271\"\n      ],\n      \"scans\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271\"\n      ]\n    },\n    \"insurance\": false,\n    \"insured_value\": 35.95,\n    \"irregular\": false,\n    \"is_return\": false,\n    \"label\": {\n      \"cancelled\": false,\n      \"carrier\": \"USPS\",\n      \"chargeable_weight\": 0.3,\n      \"cost\": 3.15,\n      \"created\": \"2024-05-17 15:43:03\",\n      \"delivery_date\": \"2024-05-26 12:05:09\",\n      \"exit_point\": \"LAX\",\n      \"events\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"height\": 1.5,\n      \"id\": 2382131,\n      \"insurance_fee\": 0,\n      \"is_master\": true,\n      \"is_ready\": true,\n      \"length\": 15,\n      \"overpack_id\": 1501231,\n      \"processed\": false,\n      \"processed_date\": \"2024-05-27 19:14:55\",\n      \"processed_weight\": 0.284,\n      \"service\": \"BoxC Parcel\",\n      \"shipment_id\": 1014,\n      \"status\": \"Processed\",\n      \"surcharge\": 0,\n      \"tracking_number\": \"9261299991753900000290\",\n      \"weight\": 0.202,\n      \"width\": 8\n    },\n    \"labels\": [\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      },\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      }\n    ],\n    \"length\": 15,\n    \"nature_type\": \"11\",\n    \"order_number\": \"23018721-ABC\",\n    \"overpack_id\": 1291028,\n    \"pga\": false,\n    \"signature_confirmation\": false,\n    \"tax\": 10.15,\n    \"terms\": \"DDU\",\n    \"test\": false,\n    \"total_cost\": 3.58,\n    \"updated\": \"2024-11-20 02:32:48\",\n    \"volumetric_weight\": 0.088,\n    \"width\": 8,\n    \"zonos_customer_id\": \"Z123456789\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1d10dcf3-51ff-4ab9-8768-2b1230753482",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the generic shipment label.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f31ce32-af2c-485f-93cd-cad51e9dc745",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the generic shipment label.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "39b3e5c3-2be6-49db-9399-4a1ec30ee49c",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the generic shipment label.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1210,\n  \"message\": \"Shipment not found\",\n  \"errors\": [\n    \"Shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e33fb840-fc26-4f8e-b6bb-f1e23e0a94d8",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "PDF"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optionally download the generic shipment label.",
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4bb454ab-7de2-444e-aeec-1c6b2a5bc01c",
+          "name": "PUT /shipments/{id}",
+          "request": {
+            "name": "PUT /shipments/{id}",
+            "description": {
+              "content": "Updates a shipment. Only shipments with no labels or cancelled labels can be updated.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The shipment ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipment\": {\n    \"line_items\": [\n      {\n        \"coo\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"description\": \"<string>\",\n        \"origin_description\": \"<string>\",\n        \"quantity\": \"<integer>\",\n        \"value\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"hts_code\": null,\n        \"product_id\": null,\n        \"supplier\": null,\n        \"url\": null\n      },\n      {\n        \"coo\": \"<string>\",\n        \"currency\": \"<string>\",\n        \"description\": \"<string>\",\n        \"origin_description\": \"<string>\",\n        \"quantity\": \"<integer>\",\n        \"value\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"hts_code\": null,\n        \"product_id\": null,\n        \"supplier\": null,\n        \"url\": null\n      }\n    ],\n    \"service\": \"BoxC Parcel\",\n    \"entry_point\": \"<string>\",\n    \"consignor\": {\n      \"name\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"company_name\": null,\n      \"phone\": null,\n      \"email\": null,\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"weight\": \"<decimal>\",\n    \"carrier\": null,\n    \"carrier_params\": \"<object>\",\n    \"cod\": {\n      \"amount\": \"<decimal>\"\n    },\n    \"comments\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"compliance\": {\n      \"address\": true,\n      \"classify\": true,\n      \"descriptions\": true,\n      \"denied_party\": true,\n      \"pga\": true\n    },\n    \"consignee\": {\n      \"name\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"<string>\",\n      \"postal_code\": \"<string>\"\n    },\n    \"create_label\": false,\n    \"credentials_id\": null,\n    \"currency\": \"USD\",\n    \"exit_point\": null,\n    \"freight_charge\": {\n      \"amount\": \"<decimal>\",\n      \"currency\": \"<string>\"\n    },\n    \"from\": {\n      \"name\": \"<string>\",\n      \"street1\": \"<string>\",\n      \"city\": \"<string>\",\n      \"country\": \"<string>\",\n      \"street2\": null,\n      \"province\": null,\n      \"postal_code\": null\n    },\n    \"height\": 1,\n    \"ignore_bad_address\": false,\n    \"images\": {},\n    \"insurance\": false,\n    \"irregular\": false,\n    \"is_return\": false,\n    \"length\": 15,\n    \"nature_type\": null,\n    \"order_number\": null,\n    \"overpack_id\": null,\n    \"packages\": [\n      {\n        \"height\": \"<decimal>\",\n        \"length\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"width\": \"<decimal>\"\n      },\n      {\n        \"height\": \"<decimal>\",\n        \"length\": \"<decimal>\",\n        \"weight\": \"<decimal>\",\n        \"width\": \"<decimal>\"\n      }\n    ],\n    \"signature_confirmation\": false,\n    \"terms\": \"DDU\",\n    \"test\": false,\n    \"tracking_number\": \"<string>\",\n    \"width\": 10,\n    \"zonos_customer_id\": null\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5ba5d2cf-9369-4fa6-8afb-66fb93e3eeb9",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shipment\": {\n    \"line_items\": [\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      },\n      {\n        \"coo\": \"CN\",\n        \"currency\": \"USD\",\n        \"description\": \"Phone case\",\n        \"origin_description\": \"手机外壳\",\n        \"quantity\": 2,\n        \"value\": 9.95,\n        \"weight\": 0.235,\n        \"compliance\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"dg_code\": null,\n        \"duty\": 2.23,\n        \"user_hts_code\": null,\n        \"hts_code\": null,\n        \"product_id\": 121009,\n        \"tax\": 2.23,\n        \"supplier\": null,\n        \"url\": null\n      }\n    ],\n    \"service\": \"BoxC Priority\",\n    \"entry_point\": \"TEST01\",\n    \"consignor\": {\n      \"name\": \"Generic Company, LLC\",\n      \"phone\": \"555-123-4567\",\n      \"street1\": \"1 WORLD WAY\",\n      \"city\": \"SHENZHEN\",\n      \"country\": \"CN\",\n      \"email\": null,\n      \"id\": \"<string>\",\n      \"street2\": \"\",\n      \"province\": \"GUANGDONG\",\n      \"postal_code\": \"<string>\"\n    },\n    \"to\": {\n      \"name\": \"John Smith\",\n      \"street1\": \"108 N WESTGATE WAY\",\n      \"city\": \"WYLIE\",\n      \"country\": \"US\",\n      \"company_name\": null,\n      \"phone\": \"555-123-4562\",\n      \"email\": \"john@example.com\",\n      \"street2\": null,\n      \"province\": \"TX\",\n      \"postal_code\": \"75098\"\n    },\n    \"weight\": 0.088,\n    \"carrier\": \"DeutschePost\",\n    \"carrier_params\": {\n      \"ppi_number\": \"PMK9999\"\n    },\n    \"claim_url\": \"https://www.xcover.com/en/account/claims/fnol?bookingID=AAA-AAA-AAINS\",\n    \"cod\": {\n      \"amount\": 13.37,\n      \"currency\": \"AUD\"\n    },\n    \"comments\": [\n      \"SKU #10292301\",\n      \"SKU #10292301\"\n    ],\n    \"consignee\": {\n      \"name\": \"Addressee John\",\n      \"city\": \"MESQUITE\",\n      \"country\": \"US\",\n      \"street1\": \"2959 ANCHOR DR\",\n      \"phone\": \"555-456-7890\",\n      \"email\": \"<string>\",\n      \"id\": \"<string>\",\n      \"street2\": \"<string>\",\n      \"province\": \"TX\",\n      \"postal_code\": \"<string>\"\n    },\n    \"created\": \"2024-11-17 15:43:03\",\n    \"credentials_id\": null,\n    \"currency\": \"USD\",\n    \"duty\": 2.23,\n    \"errors\": {\n      \"code\": 1080,\n      \"http_status\": 402,\n      \"message\": \"Insufficient funds\",\n      \"status\": \"error\"\n    },\n    \"events\": [\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      },\n      {\n        \"carrier\": \"USPS\",\n        \"city\": \"New York City\",\n        \"code\": 200,\n        \"country\": \"US\",\n        \"description\": \"DELIVERED\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"postal_code\": \"10001\",\n        \"province\": \"NY\",\n        \"time\": \"2024-05-26 07:11:45\"\n      }\n    ],\n    \"exit_point\": \"LAX\",\n    \"freight_charge\": {\n      \"amount\": 13.37,\n      \"currency\": \"MXN\"\n    },\n    \"from\": {\n      \"name\": \"My Company Name\",\n      \"street1\": \"113 INTL BROADWAY\",\n      \"city\": \"LOS ANGELES\",\n      \"country\": \"US\",\n      \"street2\": \"\",\n      \"province\": \"CA\",\n      \"postal_code\": \"91013\"\n    },\n    \"height\": 1.5,\n    \"id\": 42001,\n    \"ignore_bad_address\": false,\n    \"images\": {\n      \"pod\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271\"\n      ],\n      \"scans\": [\n        \"https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271\"\n      ]\n    },\n    \"insurance\": false,\n    \"insured_value\": 35.95,\n    \"irregular\": false,\n    \"is_return\": false,\n    \"label\": {\n      \"cancelled\": false,\n      \"carrier\": \"USPS\",\n      \"chargeable_weight\": 0.3,\n      \"cost\": 3.15,\n      \"created\": \"2024-05-17 15:43:03\",\n      \"delivery_date\": \"2024-05-26 12:05:09\",\n      \"exit_point\": \"LAX\",\n      \"events\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"height\": 1.5,\n      \"id\": 2382131,\n      \"insurance_fee\": 0,\n      \"is_master\": true,\n      \"is_ready\": true,\n      \"length\": 15,\n      \"overpack_id\": 1501231,\n      \"processed\": false,\n      \"processed_date\": \"2024-05-27 19:14:55\",\n      \"processed_weight\": 0.284,\n      \"service\": \"BoxC Parcel\",\n      \"shipment_id\": 1014,\n      \"status\": \"Processed\",\n      \"surcharge\": 0,\n      \"tracking_number\": \"9261299991753900000290\",\n      \"weight\": 0.202,\n      \"width\": 8\n    },\n    \"labels\": [\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      },\n      {\n        \"cancelled\": false,\n        \"carrier\": \"USPS\",\n        \"chargeable_weight\": 0.3,\n        \"cost\": 3.15,\n        \"created\": \"2024-05-17 15:43:03\",\n        \"delivery_date\": \"2024-05-26 12:05:09\",\n        \"exit_point\": \"LAX\",\n        \"events\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ],\n        \"height\": 1.5,\n        \"id\": 2382131,\n        \"insurance_fee\": 0,\n        \"is_master\": true,\n        \"is_ready\": true,\n        \"length\": 15,\n        \"overpack_id\": 1501231,\n        \"processed\": false,\n        \"processed_date\": \"2024-05-27 19:14:55\",\n        \"processed_weight\": 0.284,\n        \"service\": \"BoxC Parcel\",\n        \"shipment_id\": 1014,\n        \"status\": \"Processed\",\n        \"surcharge\": 0,\n        \"tracking_number\": \"9261299991753900000290\",\n        \"weight\": 0.202,\n        \"width\": 8\n      }\n    ],\n    \"length\": 15,\n    \"nature_type\": \"11\",\n    \"order_number\": \"23018721-ABC\",\n    \"overpack_id\": 1291028,\n    \"pga\": false,\n    \"signature_confirmation\": false,\n    \"tax\": 10.15,\n    \"terms\": \"DDU\",\n    \"test\": false,\n    \"total_cost\": 3.58,\n    \"updated\": \"2024-11-20 02:32:48\",\n    \"volumetric_weight\": 0.088,\n    \"width\": 8,\n    \"zonos_customer_id\": \"Z123456789\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e793a107-0bda-483b-a806-3f702b8b9358",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Request is malformed.\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"Request is malformed.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3d4d14f1-0020-4dfe-958e-87cf0d33e73f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "37eccb3a-2051-400f-a60f-dba3bee2b391",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0945e1ed-4f95-41aa-86bc-5abbf53793f1",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1210,\n  \"message\": \"Shipment not found\",\n  \"errors\": [\n    \"Shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "48739b0b-3261-4194-ad97-264a20cc4d4a",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "110ee8e2-179e-4962-9f84-5d093f76441c",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1010,\n  \"message\": \"Error while checking for denied parties\",\n  \"errors\": [\n    \"Error while checking for denied parties\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9cd7245b-3fc6-4e2e-aa0e-d5534335d664",
+              "name": "Service Unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 503,\n  \"message\": \"Address resolution service unavailable at this time.\",\n  \"errors\": [\n    \"Address resolution service unavailable at this time.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "61d33369-b32e-4451-bafc-e44199f1b154",
+          "name": "DELETE /shipments/{id}",
+          "request": {
+            "name": "DELETE /shipments/{id}",
+            "description": {
+              "content": "Deletes a shipment.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The shipment ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "29d2f1cd-d68c-43b5-ae6e-5b9bb0211653",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5edd37ff-5e43-4975-906f-e6af36b4df02",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1212,\n  \"message\": \"Shipment can't be deleted\",\n  \"errors\": [\n    \"Shipment can't be deleted\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1d6d27b5-0968-4059-a2a0-6ad2b313913b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a1930d04-f900-4d54-977b-a28f8102b423",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3438773-aa57-4942-b439-076e0dd4fdaa",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1210,\n  \"message\": \"Shipment not found\",\n  \"errors\": [\n    \"Shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "72af0f16-6159-41f7-bc3f-f35c6eb19d0d",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a29ed2da-6925-4148-9a3a-37f5552d078a",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1212,\n  \"message\": \"Shipment can't be deleted\",\n  \"errors\": [\n    \"Shipment can't be deleted\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "86957d0d-1ce7-4063-a2fc-064f7064a275",
+          "name": "PUT /shipments/{id}/process",
+          "request": {
+            "name": "PUT /shipments/{id}/process",
+            "description": {
+              "content": "Process a shipment with the final measured weight and dimensions. Useful for clients that process shipments at their own facilities. Only select clients are authorized to perform this action. This changes shipment status to <em>Processed</em> and can't be reversed.<p><strong>Note:</strong> Multi-package shipments can't be processed this way as of now.</p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shipments",
+                ":id",
+                "process"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<integer>",
+                  "key": "id",
+                  "description": "(Required) The shipment ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipment\": {\n    \"datetime\": \"<string>\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": 1,\n    \"length\": 15,\n    \"weight\": \"<decimal>\",\n    \"width\": 10,\n    \"irregular\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "19a1e156-e3f5-49ee-8e14-ce2a2a1e9df4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shipment\": {\n    \"status\": \"Processed\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aea725bd-7bdb-4b6e-b103-d08335e43f1b",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1000,\n  \"message\": \"Validation Error. /shipment: The required properties (weight) are missing\",\n  \"status\": \"error\",\n  \"errors\": [\n    \"/shipment: The required properties (weight) are missing\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bbaed5c0-5714-4b1a-a0e2-412ef5a585f4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1005,\n  \"message\": \"Invalid access token\",\n  \"errors\": [\n    \"Invalid access token\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "339babdb-a5c1-4c7c-9109-ce6083f65762",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1008,\n  \"message\": \"Forbidden: Authorization revoked\",\n  \"errors\": [\n    \"Forbidden: Authorization revoked\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e9f20339-fa24-444b-9eb0-9b5525fa34d3",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1210,\n  \"message\": \"Shipment not found\",\n  \"errors\": [\n    \"Shipment not found\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd978292-633c-4ceb-b8e7-7392c69f0634",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1015,\n  \"message\": \"Too many requests. Please wait before trying again.\",\n  \"errors\": [\n    \"Too many requests. Please wait before trying again.\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "526e707e-e53e-4429-988a-c8cc22c981c7",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shipments",
+                    ":id",
+                    "process"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "description": "(Required) The shipment ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shipment\": {\n    \"datetime\": \"2024-06-02 11:12:13\",\n    \"fulfillment_id\": \"<integer>\",\n    \"height\": \"1.00\",\n    \"length\": 15,\n    \"weight\": 0.088,\n    \"width\": 8,\n    \"irregular\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 1082,\n  \"message\": \"There was an error while charging the account balance\",\n  \"errors\": [\n    \"There was an error while charging the account balance\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.boxc.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "29dfcc7b-ab1b-4fc7-a1ea-b6c7af6272ba",
+    "name": "BoxC CalculateDuty Shipments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.\n",
+      "type": "text/plain"
+    }
+  }
+}

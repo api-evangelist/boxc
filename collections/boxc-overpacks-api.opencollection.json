@@ -1,0 +1,137 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "BoxC CalculateDuty Overpacks API",
+    "version": "1.123"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Overpacks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /overpacks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/overpacks",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of results to return."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The sort order of the results."
+              },
+              {
+                "name": "page_token",
+                "value": "",
+                "type": "query",
+                "description": "Used for selecting the page after the initial query."
+              }
+            ]
+          },
+          "docs": "Retrieves a paginated list of overpacks."
+        },
+        {
+          "info": {
+            "name": "POST /overpacks",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/overpacks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an overpack."
+        },
+        {
+          "info": {
+            "name": "GET /overpacks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/overpacks/:id",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "PDF",
+                "type": "query",
+                "description": "The data stream type if you don't want the overpack details and need the label for the overpack."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The overpack ID"
+              }
+            ]
+          },
+          "docs": "Retrieves an overpack."
+        },
+        {
+          "info": {
+            "name": "PUT /overpacks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/overpacks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The overpack ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an overpack."
+        },
+        {
+          "info": {
+            "name": "DELETE /overpacks/{id}",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/overpacks/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The overpack ID"
+              }
+            ]
+          },
+          "docs": "Deletes an overpack."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
