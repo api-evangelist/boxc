@@ -37,6 +37,16 @@ tags:
 - Company
 - Logistics
 - Shipping
+- E-Commerce
+- Cross-Border
+- Fulfillment
+- Customs
+- Tracking
+- Webhook
+tags_raw:
+- Company
+- Logistics
+- Shipping
 - Ecommerce
 - Cross-Border
 - Fulfillment
@@ -150,6 +160,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Entrypoints
+  tags_raw:
   - EntryPoints
   properties:
   - type: OpenAPI
@@ -354,6 +366,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -423,6 +437,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
@@ -608,6 +624,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
@@ -961,6 +979,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
