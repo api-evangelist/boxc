@@ -10,6 +10,18 @@ description: >-
   Warehouses, Manifests, Overpacks, Inbound, Returns, Reshipments, Webhooks, Carrier
   Credentials, Customs Products, Entry Points, Tracking, Calculate Duty, Validate Address,
   and Classify. Authentication is OAuth 2.0 / OpenID Connect with RS256 JWT bearer tokens.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
