@@ -1009,6 +1009,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/boxc-capability-edges.yml
+  name: Boxc Business Capability Map
 - type: Website
   url: https://boxc.com
 - type: DeveloperPortal

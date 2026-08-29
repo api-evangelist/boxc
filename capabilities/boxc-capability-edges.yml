@@ -1,0 +1,73 @@
+slug: boxc
+provider: Boxc
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Transportation & Logistics
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Track
+  spec_file: boxc-track-api-openapi.yml
+  capability_id: BC-2510
+  capability_id_l1: BC-2510
+  capability_name: Shipment Visibility & Tracking Management
+  confidence: 0.88
+  evidence: 'POST /track addTrackingEvents; GET /track/{trackingNumber} getTrackingEvents; schemas: Track,
+    Event, Destination'
+  reason: Submitting and retrieving tracking events against a tracking number is shipment visibility and
+    tracking; it spans both event capture and status resolution so only the L1 is asserted.
+- tag: CalculateDuty
+  spec_file: boxc-calculateduty-api-openapi.yml
+  capability_id: BC-2480.60
+  capability_id_l1: BC-2480
+  capability_name: Duty and Indirect Tax Management
+  confidence: 0.85
+  evidence: 'POST /calculate-duty  calculateDuty; vendor: ''customs clearance, duties and taxes'''
+  reason: The operation computes duties for cross-border shipments, matching duty and indirect-tax determination
+    within customs and trade compliance.
+- tag: Manifests
+  spec_file: boxc-manifests-api-openapi.yml
+  capability_id: BC-2500.40
+  capability_id_l1: BC-2500
+  capability_name: Manifest and Cargo Declaration Management
+  confidence: 0.78
+  evidence: 'POST /manifests addManifest; schemas: manifest, ManifestItem, Overpack'
+  reason: Creation and retrieval of manifests listing overpacks/items handed to carriers is manifest and
+    cargo declaration management within cargo documentation.
+- tag: Inbound
+  spec_file: boxc-inbound-api-openapi.yml
+  capability_id: BC-2460.10
+  capability_id_l1: BC-2460
+  capability_name: Inbound Operations Management
+  confidence: 0.75
+  evidence: 'POST /inbound  addInbound; schemas: InboundShipments, inbound-product, warehouse'
+  reason: Creates and manages inbound shipments of products into BoxC warehouses, matching inbound receipt/putaway
+    operations of third-party warehousing. Schema names (warehouse, inbound-product) support the warehousing
+    reading.
+- tag: Returns
+  spec_file: boxc-returns-api-openapi.yml
+  capability_id: BC-2460.50
+  capability_id_l1: BC-2460
+  capability_name: Returns and Reverse Operations Management
+  confidence: 0.72
+  evidence: 'GET /returns getReturns; PUT /returns/{id} updateReturn; POST /returns/{id}/messages; vendor:
+    "warehousing and fulfillment, and returns through one integration"'
+  reason: Operations manage return records and their correspondence for goods flowing back through the
+    platform's fulfilment network — returns and reverse operations management.
+- tag: Classify
+  spec_file: boxc-classify-api-openapi.yml
+  capability_id: BC-2480.10
+  capability_id_l1: BC-2480
+  capability_name: Tariff Classification Management
+  confidence: 0.7
+  evidence: 'POST /classify  addClassify; schemas: Classify, classify; vendor: ''customs clearance, duties
+    and taxes'''
+  reason: In a cross-border customs context, a classify endpoint performs goods classification (HS/tariff
+    code determination). Operation summary is bare, so confidence is moderate rather than high.
