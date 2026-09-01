@@ -172,7 +172,7 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
-  - EntryPoints
+  - Entrypoints
   tags_raw:
   - EntryPoints
   properties:
