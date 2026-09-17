@@ -163,27 +163,6 @@ apis:
     url: https://docs.boxc.com/
   - type: APIReference
     url: https://docs.boxc.com/
-- aid: boxc:boxc-entrypoints-api
-  name: Boxc EntryPoints API
-  description: >-
-    An entry point is the drop off location / origin for your shipments which affects your rates and the
-    routes available. The `entry_point.id` is required when creating a shipment. You must query this endpoint
-    to get an active list of entry points as some of added, changed, or removed.
-  humanURL: https://docs.boxc.com/
-  baseURL: https://api.boxc.com/v1
-  tags:
-  - Entrypoints
-  tags_raw:
-  - EntryPoints
-  properties:
-  - type: OpenAPI
-    url: openapi/boxc-entrypoints-api-openapi.yml
-  - type: Swagger
-    url: openapi/_original/boxc-openapi-original.yml
-  - type: Documentation
-    url: https://docs.boxc.com/
-  - type: APIReference
-    url: https://docs.boxc.com/
 - aid: boxc:boxc-estimate-api
   name: Boxc Estimate API
   description: >-
@@ -648,24 +627,6 @@ apis:
     url: https://docs.boxc.com/
   - type: APIReference
     url: https://docs.boxc.com/
-- aid: boxc:boxc-validateaddress-api
-  name: Boxc ValidateAddress API
-  description: >-
-    The Validate Address resource permits a user to validate and retrieve the most likely matches of provided
-    postal addresses. Each successful validation costs $0.03 (USD).
-  humanURL: https://docs.boxc.com/
-  baseURL: https://api.boxc.com/v1
-  tags:
-  - ValidateAddress
-  properties:
-  - type: OpenAPI
-    url: openapi/boxc-validateaddress-api-openapi.yml
-  - type: Swagger
-    url: openapi/_original/boxc-openapi-original.yml
-  - type: Documentation
-    url: https://docs.boxc.com/
-  - type: APIReference
-    url: https://docs.boxc.com/
 - aid: boxc:boxc-warehouses-api
   name: Boxc Warehouses API
   description: >-
@@ -997,6 +958,43 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/boxc-webhooks-api-openapi.yml
+  - type: Swagger
+    url: openapi/_original/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-entry-points-api
+  name: Boxc Entry Points API
+  description: >-
+    An entry point is the drop off location / origin for your shipments which affects your rates and the
+    routes available. The `entry_point.id` is required when creating a shipment. You must query this endpoint
+    to get an active list of entry points as some of added, changed, or removed.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Entry Points
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-entry-points-api-openapi.yml
+  - type: Swagger
+    url: openapi/_original/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-validate-address-api
+  name: Boxc Validate Address API
+  description: >-
+    The Validate Address resource permits a user to validate and retrieve the most likely matches of provided
+    postal addresses. Each successful validation costs $0.03 (USD).
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Validate Address
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-validate-address-api-openapi.yml
   - type: Swagger
     url: openapi/_original/boxc-openapi-original.yml
   - type: Documentation
