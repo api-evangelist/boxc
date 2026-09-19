@@ -1,29 +1,30 @@
-# Kin Score artifact — boxc — 2026-08-17T064519
+# Kin Score artifact — boxc — 2026-09-16T225339
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: boxc
-  schema_version: 0.11.0
-  scored_at: '2026-08-17'
-  run_ts: 2026-08-17T064519
-  composite: 44.2
-  band: developing
+  schema_version: 0.22.0
+  scored_at: '2026-09-16'
+  run_ts: 2026-09-16T225339
+  composite: 30.5
+  band: thin
   facets:
-    discoverability: 68.5
-    contract_quality: 61.8
-    governance: 11.5
-    operational_transparency: 28.9
-    developer_ergonomics: 60.3
-    commercial_clarity: 23.7
+    discoverability: 51.9
+    contract_quality: 62.3
+    contract_governance: 4.5
+    operational_transparency: 26.3
+    developer_ergonomics: 25.6
+    access_clarity: 6.6
   agent_readiness:
-    score: 53.4
+    score: 50.1
     band: agent-ready
     band_gated_from: agent-native
     dimensions:
       spec_presence: true
       agentic_access: derived
-      mcp_server: derived
-      auth_clarity: true
+      reversibility_documented: documented
+      mcp_server: false
+      auth_clarity: served
       idempotency: false
       error_semantics: verified
       openapi_examples: verified
@@ -34,6 +35,10 @@ kin_score:
       consent_identity: false
       agent_card: false
       dry_run_mode: false
+      delegated_identity: served
+      protected_resource_metadata: false
+      dynamic_client_registration: true
+      agentic_commerce: false
   provenance:
     mcp: derived
     skills: derived

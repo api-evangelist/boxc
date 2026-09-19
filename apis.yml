@@ -637,6 +637,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Warehouse
+  tags_raw:
   - Warehouses
   properties:
   - type: OpenAPI
@@ -973,6 +975,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Entrypoints
+  tags_raw:
   - Entry Points
   properties:
   - type: OpenAPI
