@@ -45,6 +45,9 @@ x-tier-reason: enriched-2026-07-18
 specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-07-18'
+x-docs-platform: redoc
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-20
 tags:
 - Company
 - Logistics
