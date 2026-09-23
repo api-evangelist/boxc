@@ -28,7 +28,7 @@ actions:
     - manifests_complete
     - fulfillments_complete
     - fulfillments_update
-notes: >-
+x-notes: >-
   API Evangelist enrichment overlay. Captures the production base URL, the OAuth 2.0 / OIDC
   authorization model (not fully expressed in the Swagger 2.0 securityDefinitions), and links
   to the derived enrichment artifacts. The original harvested spec is never mutated.

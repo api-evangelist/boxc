@@ -1,32 +1,15 @@
-swagger: '2.0'
+openapi: 3.2.0
 info:
   x-logo:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
-  title: BoxC CalculateDuty Reshipments API
+  title: BoxC Reshipments API
   version: '1.123'
-  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
-
-    '
-schemes:
-- https
+  description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Reshipments
   x-displayName: Reshipments
-  description: 'The Reshipments resource allows you to reship one or more returned packages at a time from a BoxC warehouse. When a reshipment is created the `status` of all included returns will change to "Reshipping". Only returns with the following status can be reshipped: Processed, Verifying, and Verified. If reshipping more than one return at a time then you must wait for a facility operator to provide an `estimated_reship_fee`. If reshipping one return then the estimate will be instantaneous. In both cases you must approve the estimate before the reshipment is sent and your account is charged.
-
-
-    **Note:** All returns in a bulk reshipment (> 1 return) must reside in the same warehouse.
-
-    ### Status
-
-    When a reshipment is created its status is set to "Pending" by default. It will remain that way until the `estimated_reship_fee` is populated by the system or facility operator. Afterwards, you have the option to approve or decline the amount by [updating](/#tag/Reshipments/operation/updateReshipment) the status accordingly. If "Declined", it will not be reshipped. If "Approved" it will be reshipped, tracking information will be made available, and a final reship_fee will be provided. Reshipments with the status "Approved" cannot be deleted.
-
-
-    **Important:** Reshipments that are "Pending" or "Declined" longer than 15 days will be deleted by the system.
-
-
-    **Note:** The final reshipping fee may differ from the estimated reshipping fee.'
+  description: The Reshipments resource allows you to reship one or more returned packages at a time from a BoxC warehouse.
 paths:
   /reshipments:
     get:
@@ -35,10 +18,6 @@ paths:
       summary: GET /reshipments
       description: Retrieves a paginated list of reshipments.
       operationId: getReshipments
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - returns
@@ -46,25 +25,28 @@ paths:
       - in: query
         name: limit
         description: The number of results to return.
-        default: 50
-        minimum: 50
-        maximum: 100
         required: false
-        type: integer
+        schema:
+          type: integer
+          default: 50
+          maximum: 100
+          minimum: 50
       - in: query
         name: order
         description: The sort order of the results.
-        enum:
-        - asc
-        - desc
-        default: desc
         required: false
-        type: string
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
       - in: query
         name: page_token
         description: Used for selecting the page after the initial query.
         required: false
-        type: string
+        schema:
+          type: string
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -132,7 +114,7 @@ paths:
                             '
                           example: Approved
                         to:
-                          $ref: '#/definitions/To'
+                          $ref: '#/components/schemas/To'
                         tracking_number:
                           type: string
                           description: The tracking number for this reshipment. Set by the system.
@@ -156,7 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 invalidToken:
                   summary: Bad Request
@@ -167,21 +149,17 @@ paths:
                     errors:
                     - Invalid page token
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
     post:
       tags:
       - Reshipments
       summary: POST /reshipments
       description: Creates a reshipment.
       operationId: addReshipment
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - returns
@@ -215,7 +193,7 @@ paths:
                       - 12001
                       - 12002
                     to:
-                      $ref: '#/definitions/To'
+                      $ref: '#/components/schemas/To'
                     value:
                       type: decimal
                       description: The total value of the contents in this reshipment for Customs requirements.
@@ -234,13 +212,13 @@ paths:
                 type: object
                 properties:
                   reshipment:
-                    $ref: '#/definitions/Reshipment'
+                    $ref: '#/components/schemas/Reshipment'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 validation:
                   summary: Validation error
@@ -270,17 +248,17 @@ paths:
                     errors:
                     - One or more returns can't be reshipped
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/definitions/InternalServerError'
+                $ref: '#/components/schemas/InternalServerError'
               examples:
                 internalServerError:
                   summary: Internal Server Error
@@ -297,10 +275,6 @@ paths:
       summary: GET /reshipments/{id}
       description: Retrieves a reshipment.
       operationId: getReshipmentsById
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - returns
@@ -309,7 +283,8 @@ paths:
         in: path
         description: The reshipment ID
         required: true
-        type: integer
+        schema:
+          type: integer
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -323,17 +298,17 @@ paths:
                 type: object
                 properties:
                   reshipment:
-                    $ref: '#/definitions/Reshipment'
+                    $ref: '#/components/schemas/Reshipment'
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -344,17 +319,13 @@ paths:
                     errors:
                     - Reshipment not found
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
     put:
       tags:
       - Reshipments
       summary: PUT /reshipments/{id}
       description: Updates a reshipment.
       operationId: updateReshipment
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - returns
@@ -363,7 +334,8 @@ paths:
         in: path
         description: The reshipment ID
         required: true
-        type: integer
+        schema:
+          type: integer
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -395,13 +367,13 @@ paths:
                 type: object
                 properties:
                   reshipment:
-                    $ref: '#/definitions/Reshipment'
+                    $ref: '#/components/schemas/Reshipment'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 validation:
                   summary: Validation error
@@ -421,17 +393,17 @@ paths:
                     errors:
                     - Reshipment can't be updated
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '402':
-          $ref: '#/definitions/PaymentRequired'
+          $ref: '#/components/schemas/PaymentRequired'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -442,13 +414,13 @@ paths:
                     errors:
                     - Reshipment not found
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/definitions/InternalServerError'
+                $ref: '#/components/schemas/InternalServerError'
               examples:
                 internalServerError:
                   summary: Internal Server Error
@@ -464,10 +436,6 @@ paths:
       summary: DELETE /reshipments/{id}
       description: Deletes a reshipment.
       operationId: deleteReshipment
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - returns
@@ -476,7 +444,8 @@ paths:
         in: path
         description: The reshipment ID
         required: true
-        type: integer
+        schema:
+          type: integer
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -489,7 +458,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 cannotDelete:
                   summary: Bad Request
@@ -500,15 +469,15 @@ paths:
                     errors:
                     - Reshipment can't be deleted
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -519,13 +488,13 @@ paths:
                     errors:
                     - Reshipment not found
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/definitions/InternalServerError'
+                $ref: '#/components/schemas/InternalServerError'
               examples:
                 internalServerError:
                   summary: Internal Server Error
@@ -535,399 +504,400 @@ paths:
                     message: Reshipment can't be deleted
                     errors:
                     - Reshipment can't be deleted
-definitions:
-  forbidden:
-    description: Forbidden
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Forbidden
-          description: Error relating to insufficient permissions for a resource
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                type: string
-        examples:
-          revoked:
-            summary: Forbidden Authorization Revoked
-            description: 'Forbidden: Authorization revoked'
-            value:
-              code: 1008
-              message: 'Forbidden: Authorization revoked'
-              errors:
-              - 'Forbidden: Authorization revoked'
-          scope:
-            summary: Forbidden Scope
-            description: 'Forbidden: Missing required scope'
-            value:
-              code: 1009
-              message: 'Forbidden: Missing required scope'
-              errors:
-              - 'Forbidden: Missing required scope'
-  bad-request:
-    type: object
-    summary: Bad Request
-    description: Validation error with the request
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Lists validation errors with the schema or the resource being operated on.
-        type: array
-        minItems: 1
-        maxItems: 5
-        items:
-          type: string
-  PaymentRequired:
-    $ref: '#/definitions/payment-required'
-  InternalServerError:
-    $ref: '#/definitions/internal-server-error'
-  payment-required:
-    description: Payment Required
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Payment Required
-          description: There are insufficient funds available for this resource
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Duplicate of the error message
-              type: array
-              items:
-                type: string
-        examples:
-          paymentRequired:
-            summary: Payment Required
-            description: Insufficient funds
-            value:
-              code: 1080
-              message: Insufficient funds
-              errors:
-              - Insufficient funds
-  to:
-    description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
-    title: ShippingAddress
-    type: object
-    properties:
-      company_name:
-        description: The company name.
-        type: string
-        maxLength: 40
-        default: null
-        example: null
-      name:
-        description: The recipient's name.
-        type: string
-        maxLength: 40
-        example: John Smith
-      phone:
-        description: The recipient's phone number. Conditional.
-        type: string
-        default: null
-        maxLength: 20
-        format: phone
-        example: 555-123-4562
-      email:
-        description: The recipient's e-mail address. Conditional.
-        type: string
-        default: null
-        maxLength: 64
-        format: email
-        example: john@example.com
-      street1:
-        description: The recipient's street address.
-        type: string
-        maxLength: 50
-        minLength: 1
-        example: 108 N WESTGATE WAY
-      street2:
-        description: Additional space for the recipient's street address.
-        type: string
-        maxLength: 50
-        default: null
-        example: null
-      city:
-        description: The recipient's city.
-        type: string
-        maxLength: 40
-        example: WYLIE
-      province:
-        description: The recipient's province or state. Conditional.
-        type: string
-        maxLength: 40
-        default: null
-        example: TX
-      postal_code:
-        description: The recipient's postal code or ZIP Code. Conditional.
-        type: string
-        maxLength: 10
-        default: null
-        example: '75098'
-      country:
-        description: The recipient's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-        type: string
-        pattern:
-        - A-Z
-        maxLength: 2
-        minLength: 2
-        example: US
-    required:
-    - name
-    - street1
-    - city
-    - country
-  NotFound:
-    $ref: '#/definitions/not-found'
-  BadRequest:
-    $ref: '#/definitions/bad-request'
-  unauthorized:
-    description: Unauthorized
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Unauthorized
-          description: Lack of valid authentication credentials for the resource
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                type: string
-        examples:
-          accessToken:
-            summary: Invalid access token
-            description: Invalid access token
-            value:
-              code: 1005
-              message: Invalid access token
-              errors:
-              - Invalid access token
-  reshipment:
-    type: object
-    properties:
-      contents:
-        description: A description of the contents in this reshipment for Customs requirements.
-        type: string
-        format: string
-        maxLength: 60
-        default: null
-        example: Leggings
-      created:
-        description: The UTC date and time the reshipment was created.
-        type: string
-        example: '2024-06-27 11:32:18'
-        format: datetime
-        readOnly: true
-      estimated_reship_fee:
-        description: An estimated price in USD for this reshipment including the cost of the label and packaging material.
-        type: decimal
-        default: 0
-        example: 14.2
-      id:
-        description: The unique ID for this reshipment.
-        type: integer
-        example: 13489
-      reship_fee:
-        description: The fee in USD for this reshipment including the cost of the label and packaging material.
-        type: decimal
-        default: 0
-        example: 14.37
-      returns:
-        type: array
-        description: A list of return IDs included in this reshipment. If searching for reshipments then the total number of returns will be shown instead. This property is immutable.
-        items:
-          type: integer
-        example:
-        - 12001
-        - 12002
-      service:
-        description: The carrier used for this reshipment.
-        type: string
-        default: null
-        example: USPS
-      status:
-        type: string
-        enum:
-        - Pending
-        - Declined
-        - Approved
-        description: The status of this reshipment.
-        example: Approved
-      to:
-        $ref: '#/definitions/To'
-      tracking_number:
-        type: string
-        description: The tracking number for this reshipment.
-        default: null
-        example: '9261299997140101431920'
-      value:
-        type: decimal
-        description: The total value of the contents in this reshipment for Customs requirements.
-        example: 29.95
-      weight:
-        description: The measured actual weight of this reshipment in KG.
-        type: decimal
-        default: 0
-        example: 0.791
-    required:
-    - to
-    - contents
-    - value
-    - returns
-    additionalProperties: false
-  rate-limit:
-    description: Too Many Requests
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Too Many Requests
-          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                type: string
-        examples:
-          rateLimit:
+components:
+  schemas:
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
             summary: Too Many Requests
-            description: Too many requests. Please wait before trying again.
-            value:
-              code: 1015
-              message: Too many requests. Please wait before trying again.
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
               errors:
-              - Too many requests. Please wait before trying again.
-  not-found:
-    type: object
-    summary: Not Found
-    description: Object not found or not owned by the user
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Duplicate of the error message
-        type: array
-        items:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    To:
+      $ref: '#/components/schemas/to'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
           type: string
-  To:
-    $ref: '#/definitions/to'
-  internal-server-error:
-    type: object
-    summary: Internal Server Error
-    description: Processing Error
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Displays processing error.
-        type: array
-        minItems: 1
-        maxItems: 1
-        items:
+        status:
           type: string
-  Forbidden:
-    $ref: '#/definitions/forbidden'
-  Unauthorized:
-    $ref: '#/definitions/unauthorized'
-  RateLimit:
-    $ref: '#/definitions/rate-limit'
-  Reshipment:
-    $ref: '#/definitions/reshipment'
-securityDefinitions:
-  JWT:
-    type: http
-    scheme: bearer
-    bearerScheme: JWT
-    in: header
-    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
-  PrivilegedClient:
-    type: http
-    scheme: bearer
-    bearerScheme: JWT
-    description: Some clients require special privileges to use operations. No additional scope is needed.
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    to:
+      description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
+      title: ShippingAddress
+      type: object
+      properties:
+        company_name:
+          description: The company name.
+          type: string
+          maxLength: 40
+          default: null
+          example: null
+        name:
+          description: The recipient's name.
+          type: string
+          maxLength: 40
+          example: John Smith
+        phone:
+          description: The recipient's phone number. Conditional.
+          type: string
+          default: null
+          maxLength: 20
+          format: phone
+          example: 555-123-4562
+        email:
+          description: The recipient's e-mail address. Conditional.
+          type: string
+          default: null
+          maxLength: 64
+          format: email
+          example: john@example.com
+        street1:
+          description: The recipient's street address.
+          type: string
+          maxLength: 50
+          minLength: 1
+          example: 108 N WESTGATE WAY
+        street2:
+          description: Additional space for the recipient's street address.
+          type: string
+          maxLength: 50
+          default: null
+          example: null
+        city:
+          description: The recipient's city.
+          type: string
+          maxLength: 40
+          example: WYLIE
+        province:
+          description: The recipient's province or state. Conditional.
+          type: string
+          maxLength: 40
+          default: null
+          example: TX
+        postal_code:
+          description: The recipient's postal code or ZIP Code. Conditional.
+          type: string
+          maxLength: 10
+          default: null
+          example: '75098'
+        country:
+          description: The recipient's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          pattern:
+          - A-Z
+          maxLength: 2
+          minLength: 2
+          example: US
+      required:
+      - name
+      - street1
+      - city
+      - country
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    Reshipment:
+      $ref: '#/components/schemas/reshipment'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Processing Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
+    reshipment:
+      type: object
+      properties:
+        contents:
+          description: A description of the contents in this reshipment for Customs requirements.
+          type: string
+          format: string
+          maxLength: 60
+          default: null
+          example: Leggings
+        created:
+          description: The UTC date and time the reshipment was created.
+          type: string
+          example: '2024-06-27 11:32:18'
+          format: datetime
+          readOnly: true
+        estimated_reship_fee:
+          description: An estimated price in USD for this reshipment including the cost of the label and packaging material.
+          type: decimal
+          default: 0
+          example: 14.2
+        id:
+          description: The unique ID for this reshipment.
+          type: integer
+          example: 13489
+        reship_fee:
+          description: The fee in USD for this reshipment including the cost of the label and packaging material.
+          type: decimal
+          default: 0
+          example: 14.37
+        returns:
+          type: array
+          description: A list of return IDs included in this reshipment. If searching for reshipments then the total number of returns will be shown instead. This property is immutable.
+          items:
+            type: integer
+          example:
+          - 12001
+          - 12002
+        service:
+          description: The carrier used for this reshipment.
+          type: string
+          default: null
+          example: USPS
+        status:
+          type: string
+          enum:
+          - Pending
+          - Declined
+          - Approved
+          description: The status of this reshipment.
+          example: Approved
+        to:
+          $ref: '#/components/schemas/To'
+        tracking_number:
+          type: string
+          description: The tracking number for this reshipment.
+          default: null
+          example: '9261299997140101431920'
+        value:
+          type: decimal
+          description: The total value of the contents in this reshipment for Customs requirements.
+          example: 29.95
+        weight:
+          description: The measured actual weight of this reshipment in KG.
+          type: decimal
+          default: 0
+          example: 0.791
+      required:
+      - to
+      - contents
+      - value
+      - returns
+      additionalProperties: false
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      in: header
+      description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+    PrivilegedClient:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      description: Some clients require special privileges to use operations. No additional scope is needed.
 x-servers:
 - url: https://api.boxc.com/v1
 x-tagGroups:

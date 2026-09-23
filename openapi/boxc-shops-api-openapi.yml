@@ -1,15 +1,11 @@
-swagger: '2.0'
+openapi: 3.2.0
 info:
   x-logo:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
-  title: BoxC CalculateDuty Shops API
+  title: BoxC Shops API
   version: '1.123'
-  description: 'A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment''s journey on your behalf with our routing engine.
-
-    '
-schemes:
-- https
+  description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Shops
   x-displayName: Shops
@@ -22,10 +18,6 @@ paths:
       summary: GET /shops
       description: Retrieves a list of shops.
       operationId: getShops
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - read_shops
@@ -34,20 +26,23 @@ paths:
         name: limit
         description: The number of results to return.
         required: false
-        type: integer
-        default: 50
-        maximum: 100
+        schema:
+          type: integer
+          default: 50
+          maximum: 100
       - in: query
         name: name
         description: Filter that searches for shops with a similar name.
-        default: null
         required: false
-        type: string
+        schema:
+          type: string
+          default: null
       - in: query
         name: page_token
         description: Used for selecting the page after the initial query.
         required: false
-        type: string
+        schema:
+          type: string
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -63,7 +58,7 @@ paths:
                   shops:
                     type: array
                     items:
-                      $ref: '#/definitions/Shop'
+                      $ref: '#/components/schemas/Shop'
                   next_page:
                     type: string
                     description: Page token. Set by the system.
@@ -73,7 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 invalidToken:
                   summary: Bad Request
@@ -84,21 +79,17 @@ paths:
                     errors:
                     - Invalid page token
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
     post:
       tags:
       - Shops
       summary: POST /shops
       description: Creates a new shop.
       operationId: addShop
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - write_shops
@@ -114,7 +105,7 @@ paths:
               type: object
               properties:
                 shop:
-                  $ref: '#/definitions/Shop'
+                  $ref: '#/components/schemas/Shop'
               required:
               - shop
       responses:
@@ -127,13 +118,13 @@ paths:
                 description: Shop object
                 properties:
                   shop:
-                    $ref: '#/definitions/Shop'
+                    $ref: '#/components/schemas/Shop'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 validation:
                   summary: Validation error
@@ -153,17 +144,17 @@ paths:
                     errors:
                     - Shop ID is already in use
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/definitions/InternalServerError'
+                $ref: '#/components/schemas/InternalServerError'
               examples:
                 internalServerError:
                   summary: Internal Server Error
@@ -180,10 +171,6 @@ paths:
       summary: GET /shops/{id}
       description: Retrieves a shop.
       operationId: getShopsById
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - read_shops
@@ -192,8 +179,9 @@ paths:
         in: path
         description: The shop ID
         required: true
-        type: string
-        maxLength: 32
+        schema:
+          type: string
+          maxLength: 32
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -207,17 +195,17 @@ paths:
                 type: object
                 properties:
                   shop:
-                    $ref: '#/definitions/Shop'
+                    $ref: '#/components/schemas/Shop'
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -228,17 +216,13 @@ paths:
                     errors:
                     - Shop not found
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
     put:
       tags:
       - Shops
       summary: PUT /shops/{id}
       description: Updates a shop.
       operationId: updateShop
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - write_shops
@@ -247,8 +231,9 @@ paths:
         in: path
         description: The shop ID
         required: true
-        type: string
-        maxLength: 32
+        schema:
+          type: string
+          maxLength: 32
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -262,7 +247,7 @@ paths:
               description: Shop object
               properties:
                 shop:
-                  $ref: '#/definitions/ShopPut'
+                  $ref: '#/components/schemas/ShopPut'
       responses:
         '200':
           description: OK
@@ -273,13 +258,13 @@ paths:
                 description: Shop object
                 properties:
                   shop:
-                    $ref: '#/definitions/Shop'
+                    $ref: '#/components/schemas/Shop'
         '400':
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 validation:
                   summary: Validation error
@@ -291,15 +276,15 @@ paths:
                     errors:
                     - Request is malformed.
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -310,17 +295,13 @@ paths:
                     errors:
                     - Shop not found
         '429':
-          $ref: '#/definitions/RateLimit'
+          $ref: '#/components/schemas/RateLimit'
     delete:
       tags:
       - Shops
       summary: DELETE /shops/{id}
       description: Deletes a shop.
       operationId: deleteShop
-      consumes:
-      - application/json
-      produces:
-      - application/json
       security:
       - JWT:
         - write_shops
@@ -329,8 +310,9 @@ paths:
         in: path
         description: The shop ID
         required: true
-        type: string
-        maxLength: 32
+        schema:
+          type: string
+          maxLength: 32
       x-codeSamples:
       - lang: cURL
         label: cURL
@@ -343,7 +325,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
               examples:
                 cannotDelete:
                   summary: Bad Request
@@ -354,15 +336,15 @@ paths:
                     errors:
                     - Shop can't be deleted
         '401':
-          $ref: '#/definitions/Unauthorized'
+          $ref: '#/components/schemas/Unauthorized'
         '403':
-          $ref: '#/definitions/Forbidden'
+          $ref: '#/components/schemas/Forbidden'
         '404':
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/definitions/NotFound'
+                $ref: '#/components/schemas/NotFound'
               examples:
                 notFound:
                   summary: Not Found
@@ -373,273 +355,274 @@ paths:
                     errors:
                     - Shop not found
         '429':
-          $ref: '#/definitions/RateLimit'
-definitions:
-  settings:
-    type: object
-    description: Default settings for the shop.
-    properties:
-      delay_processing:
-        type: integer
-        description: 'The number of <u>hours</u> an order should remain unprocessed in the system before packing. Orders will be processed if their <em>created</em> value plus the shop''s <em>delay_processing</em> value is greater than the current time. Max: 240.'
-        example: 240
-        default: 0
-  bad-request:
-    type: object
-    summary: Bad Request
-    description: Validation error with the request
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Lists validation errors with the schema or the resource being operated on.
-        type: array
-        minItems: 1
-        maxItems: 5
-        items:
-          type: string
-  shop:
-    allOf:
-    - type: object
+          $ref: '#/components/schemas/RateLimit'
+components:
+  schemas:
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    ShopPut:
+      $ref: '#/components/schemas/shop-put'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
       properties:
-        id:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
           type: string
-          description: The shop ID. This property is immutable and must be unique.
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    shop-put:
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Whether or not the shop is active. This only applies to third party shops. An inactive third party shop will no longer have its orders imported into the system.
+          example: true
+          default: true
+        created:
+          type: string
+          description: The date and time the shop was created.
+          example: '2024-06-17 13:22:44'
+          readOnly: true
+        name:
+          type: string
+          description: The shop name.
           minLength: 3
           maxLength: 32
-          pattern: A-Za-z0-9-_
-          example: my-shop
-      required:
-      - id
-      - name
-    - $ref: '#/definitions/ShopPut'
-  Shop:
-    $ref: '#/definitions/shop'
-  InternalServerError:
-    $ref: '#/definitions/internal-server-error'
-  Settings:
-    $ref: '#/definitions/settings'
-  NotFound:
-    $ref: '#/definitions/not-found'
-  shop-put:
-    type: object
-    properties:
-      active:
-        type: boolean
-        description: Whether or not the shop is active. This only applies to third party shops. An inactive third party shop will no longer have its orders imported into the system.
-        example: true
-        default: true
-      created:
-        type: string
-        description: The date and time the shop was created.
-        example: '2024-06-17 13:22:44'
-        readOnly: true
-      name:
-        type: string
-        description: The shop name.
-        minLength: 3
-        maxLength: 32
-        example: Appleseeds
-      settings:
-        $ref: '#/definitions/Settings'
-      type:
-        type: string
-        description: The type of shop. Always "BoxC".
-        example: BoxC
-        deprecated: true
-        enum:
-        - BoxC
-  BadRequest:
-    $ref: '#/definitions/bad-request'
-  unauthorized:
-    description: Unauthorized
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Unauthorized
-          description: Lack of valid authentication credentials for the resource
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
+          example: Appleseeds
+        settings:
+          $ref: '#/components/schemas/Settings'
+        type:
+          type: string
+          description: The type of shop. Always "BoxC".
+          example: BoxC
+          deprecated: true
+          enum:
+          - BoxC
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
                 type: string
-        examples:
-          accessToken:
-            summary: Invalid access token
-            description: Invalid access token
-            value:
-              code: 1005
-              message: Invalid access token
+              status:
+                type: string
+                enum:
+                - error
+                example: error
               errors:
-              - Invalid access token
-  not-found:
-    type: object
-    summary: Not Found
-    description: Object not found or not owned by the user
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Duplicate of the error message
-        type: array
-        items:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Processing Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
           type: string
-  internal-server-error:
-    type: object
-    summary: Internal Server Error
-    description: Processing Error
-    properties:
-      code:
-        description: Error code. Refer to the list of [Errors](/#tag/Errors).
-        type: integer
-      message:
-        description: Error message explaining the code.
-        type: string
-      status:
-        type: string
-        enum:
-        - error
-        example: error
-      errors:
-        description: Displays processing error.
-        type: array
-        minItems: 1
-        maxItems: 1
-        items:
+        status:
           type: string
-  rate-limit:
-    description: Too Many Requests
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Too Many Requests
-          description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
-                type: string
-        examples:
-          rateLimit:
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
+    shop:
+      allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            description: The shop ID. This property is immutable and must be unique.
+            minLength: 3
+            maxLength: 32
+            pattern: A-Za-z0-9-_
+            example: my-shop
+        required:
+        - id
+        - name
+      - $ref: '#/components/schemas/ShopPut'
+    Shop:
+      $ref: '#/components/schemas/shop'
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Settings:
+      $ref: '#/components/schemas/settings'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
             summary: Too Many Requests
-            description: Too many requests. Please wait before trying again.
-            value:
-              code: 1015
-              message: Too many requests. Please wait before trying again.
-              errors:
-              - Too many requests. Please wait before trying again.
-  ShopPut:
-    $ref: '#/definitions/shop-put'
-  Unauthorized:
-    $ref: '#/definitions/unauthorized'
-  Forbidden:
-    $ref: '#/definitions/forbidden'
-  RateLimit:
-    $ref: '#/definitions/rate-limit'
-  forbidden:
-    description: Forbidden
-    content:
-      application/json:
-        schema:
-          type: object
-          summary: Forbidden
-          description: Error relating to insufficient permissions for a resource
-          properties:
-            code:
-              description: Error code. Refer to the list of [Errors](/#tag/Errors).
-              type: integer
-            message:
-              description: Error message explaining the code.
-              type: string
-            status:
-              type: string
-              enum:
-              - error
-              example: error
-            errors:
-              description: Displays processing error.
-              type: array
-              minItems: 1
-              maxItems: 1
-              items:
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
                 type: string
-        examples:
-          revoked:
-            summary: Forbidden Authorization Revoked
-            description: 'Forbidden: Authorization revoked'
-            value:
-              code: 1008
-              message: 'Forbidden: Authorization revoked'
+              status:
+                type: string
+                enum:
+                - error
+                example: error
               errors:
-              - 'Forbidden: Authorization revoked'
-          scope:
-            summary: Forbidden Scope
-            description: 'Forbidden: Missing required scope'
-            value:
-              code: 1009
-              message: 'Forbidden: Missing required scope'
-              errors:
-              - 'Forbidden: Missing required scope'
-securityDefinitions:
-  JWT:
-    type: http
-    scheme: bearer
-    bearerScheme: JWT
-    in: header
-    description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
-  PrivilegedClient:
-    type: http
-    scheme: bearer
-    bearerScheme: JWT
-    description: Some clients require special privileges to use operations. No additional scope is needed.
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    settings:
+      type: object
+      description: Default settings for the shop.
+      properties:
+        delay_processing:
+          type: integer
+          description: 'The number of <u>hours</u> an order should remain unprocessed in the system before packing. Orders will be processed if their <em>created</em> value plus the shop''s <em>delay_processing</em> value is greater than the current time. Max: 240.'
+          example: 240
+          default: 0
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      in: header
+      description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+    PrivilegedClient:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      description: Some clients require special privileges to use operations. No additional scope is needed.
 x-servers:
 - url: https://api.boxc.com/v1
 x-tagGroups:
