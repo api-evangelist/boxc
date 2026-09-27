@@ -98,6 +98,52 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    WarehouseStorage:
+      $ref: '#/components/schemas/warehouse-storage'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     rate-limit:
       description: Too Many Requests
       content:
@@ -134,6 +180,8 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
+    Warehouse:
+      $ref: '#/components/schemas/warehouse'
     forbidden:
       description: Forbidden
       content:
@@ -208,48 +256,6 @@ components:
                 description: The price for storing one unit of a small sized product.
                 example: 0.01
                 readOnly: true
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    WarehouseStorage:
-      $ref: '#/components/schemas/warehouse-storage'
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
     not-found:
       type: object
       summary: Not Found
@@ -271,10 +277,6 @@ components:
           type: array
           items:
             type: string
-    NotFound:
-      $ref: '#/components/schemas/not-found'
-    Warehouse:
-      $ref: '#/components/schemas/warehouse'
     warehouse:
       type: object
       description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
@@ -321,8 +323,6 @@ components:
           readOnly: true
       required:
       - id
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http

@@ -771,88 +771,6 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
-    ServiceUnavailable:
-      $ref: '#/components/schemas/service-unavailable'
-    order-line-item:
-      type: object
-      properties:
-        dg_code:
-          description: The Dangerous Goods code for the product if applicable.
-          type: string
-          default: null
-          example: null
-          readOnly: true
-        fulfilled:
-          description: Whether or not this line item was fulfilled.
-          type: boolean
-          default: false
-          example: false
-          readOnly: true
-        fulfillment_id:
-          description: The fulfillment ID created to fulfill this line item.
-          type: integer
-          example: 123456
-          readOnly: true
-        hs_code:
-          description: The HS code for the line item if applicable.
-          type: string
-          default: null
-          example: null
-          readOnly: true
-        name:
-          description: The product name.
-          type: string
-          example: XL T-Shirt
-          readOnly: true
-        product_id:
-          description: The product ID.
-          type: integer
-          example: 1001181
-          readOnly: true
-        quantity:
-          description: The product quantity that needs to be fulfilled.
-          type: integer
-          maximum: 9999
-          minimum: 1
-          example: 1
-        sku:
-          description: The product SKU belonging to the order's shop.
-          type: string
-          example: '92820183446'
-          minLength: 3
-          maxLength: 32
-          pattern: A-Za-z0-9-_\s/
-        sold_for:
-          description: Allows the user to override the product's retail value in case the line item was sold for a different price. This property represents the total value for the line item.
-          type: decimal
-          default: null
-          example: 9.95
-      required:
-      - quantity
-      - sku
     order:
       type: object
       properties:
@@ -1007,10 +925,63 @@ components:
       - service
       - consignor
       - to
-    Consignee:
-      $ref: '#/components/schemas/consignee'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    fulfillment:
+      type: object
+      properties:
+        created:
+          description: The datetime this fulfillment was initiated.
+          type: string
+          example: '2024-06-17 15:43:03'
+        fulfilled:
+          description: The datetime this fulfillment was finalized.
+          type: string
+          example: '2024-06-27 08:33:49'
+        fulfillment_fee:
+          description: The fee for fulfilling this item or order.
+          type: decimal
+          example: 1.5
+        id:
+          description: The unique ID for this fulfillment.
+          type: integer
+          example: 4923
+        packed:
+          description: The datetime this fulfillment was packed.
+          type: string
+          example: '2024-06-18 11:09:24'
+        packaging_fee:
+          description: The fee for packaging the fulfillment.
+          type: decimal
+          example: 0.1
+        packaging_slip_fee:
+          description: The fee for printing and including a packing slip.
+          type: decimal
+          example: 0.25
+        service:
+          description: The shipping provider and/or service for this fulfillment.
+          type: string
+          example: BoxC Parcel
+        shipment_id:
+          description: The shipment ID if fulfilled by BoxC.
+          type: integer
+          example: 123456
+        shipping_cost:
+          description: The cost of shipping this fulfillment using a third party.
+          type: decimal
+          example: 0
+        tracking_number:
+          description: The tracking number for this fulfillment.
+          type: string
+          default: null
+          example: '926149997649150002357'
+        tracking_url:
+          description: The tracking URL for this fulfillment if available.
+          type: string
+          format: uri
+          example: https://track.boxc.com/?id=9261499976491500023573
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
     unauthorized:
       description: Unauthorized
       content:
@@ -1047,10 +1018,6 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    From:
-      $ref: '#/components/schemas/from'
     internal-server-error:
       type: object
       summary: Internal Server Error
@@ -1074,6 +1041,8 @@ components:
           maxItems: 1
           items:
             type: string
+    Consignee:
+      $ref: '#/components/schemas/consignee'
     not-found:
       type: object
       summary: Not Found
@@ -1095,6 +1064,130 @@ components:
           type: array
           items:
             type: string
+    Fulfillment:
+      $ref: '#/components/schemas/fulfillment'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    From:
+      $ref: '#/components/schemas/from'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    from:
+      description: This will appear as the return address on labels. A default return address will be used if one isn't provided in the request. The country code must match ```to.country```.
+      type: object
+      title: ReturnAddress
+      properties:
+        name:
+          description: Can be a sender's name or company name.
+          type: string
+          maxLength: 40
+          example: My Company Name
+        street1:
+          description: The sender's street address
+          type: string
+          maxLength: 50
+          example: 113 INTL BROADWAY
+        street2:
+          description: Additional space for the sender's street address.
+          type: string
+          maxLength: 50
+          default: null
+          example: ''
+        city:
+          description: The sender's city.
+          type: string
+          maxLength: 40
+          example: LOS ANGELES
+        province:
+          description: The sender's province or state. Conditional.
+          type: string
+          maxLength: 40
+          example: CA
+          default: null
+        postal_code:
+          description: The sender's postal code. Conditional.
+          type: string
+          maxLength: 10
+          example: '91013'
+          default: null
+        country:
+          description: The senders's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          pattern:
+          - A-Z
+          maxLength: 2
+          minLength: 2
+          example: US
+      required:
+      - name
+      - street1
+      - city
+      - country
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    Consignor:
+      $ref: '#/components/schemas/consignor'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
     consignee:
       description: Details about the consignee / buyer. The system will use the shipping address as the consignee address if one isn't provided. Some countries require a tax / passport ID from the buyer.
       type: object
@@ -1154,122 +1247,6 @@ components:
       - city
       - country
       - street1
-    service-unavailable:
-      type: object
-      summary: Service Unavailable
-      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Fulfillment:
-      $ref: '#/components/schemas/fulfillment'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    from:
-      description: This will appear as the return address on labels. A default return address will be used if one isn't provided in the request. The country code must match ```to.country```.
-      type: object
-      title: ReturnAddress
-      properties:
-        name:
-          description: Can be a sender's name or company name.
-          type: string
-          maxLength: 40
-          example: My Company Name
-        street1:
-          description: The sender's street address
-          type: string
-          maxLength: 50
-          example: 113 INTL BROADWAY
-        street2:
-          description: Additional space for the sender's street address.
-          type: string
-          maxLength: 50
-          default: null
-          example: ''
-        city:
-          description: The sender's city.
-          type: string
-          maxLength: 40
-          example: LOS ANGELES
-        province:
-          description: The sender's province or state. Conditional.
-          type: string
-          maxLength: 40
-          example: CA
-          default: null
-        postal_code:
-          description: The sender's postal code. Conditional.
-          type: string
-          maxLength: 10
-          example: '91013'
-          default: null
-        country:
-          description: The senders's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-          type: string
-          pattern:
-          - A-Z
-          maxLength: 2
-          minLength: 2
-          example: US
-      required:
-      - name
-      - street1
-      - city
-      - country
-    Order:
-      $ref: '#/components/schemas/order'
     to:
       description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
       title: ShippingAddress
@@ -1342,8 +1319,134 @@ components:
       - street1
       - city
       - country
+    order-line-item:
+      type: object
+      properties:
+        dg_code:
+          description: The Dangerous Goods code for the product if applicable.
+          type: string
+          default: null
+          example: null
+          readOnly: true
+        fulfilled:
+          description: Whether or not this line item was fulfilled.
+          type: boolean
+          default: false
+          example: false
+          readOnly: true
+        fulfillment_id:
+          description: The fulfillment ID created to fulfill this line item.
+          type: integer
+          example: 123456
+          readOnly: true
+        hs_code:
+          description: The HS code for the line item if applicable.
+          type: string
+          default: null
+          example: null
+          readOnly: true
+        name:
+          description: The product name.
+          type: string
+          example: XL T-Shirt
+          readOnly: true
+        product_id:
+          description: The product ID.
+          type: integer
+          example: 1001181
+          readOnly: true
+        quantity:
+          description: The product quantity that needs to be fulfilled.
+          type: integer
+          maximum: 9999
+          minimum: 1
+          example: 1
+        sku:
+          description: The product SKU belonging to the order's shop.
+          type: string
+          example: '92820183446'
+          minLength: 3
+          maxLength: 32
+          pattern: A-Za-z0-9-_\s/
+        sold_for:
+          description: Allows the user to override the product's retail value in case the line item was sold for a different price. This property represents the total value for the line item.
+          type: decimal
+          default: null
+          example: 9.95
+      required:
+      - quantity
+      - sku
+    Order:
+      $ref: '#/components/schemas/order'
     OrderLineItem:
       $ref: '#/components/schemas/order-line-item'
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    To:
+      $ref: '#/components/schemas/to'
     consignor:
       description: Address and other details for the consignor (sender) which is used for customs clearance.
       type: object
@@ -1405,109 +1508,6 @@ components:
       - street1
       - city
       - country
-    To:
-      $ref: '#/components/schemas/to'
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
-    Consignor:
-      $ref: '#/components/schemas/consignor'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    fulfillment:
-      type: object
-      properties:
-        created:
-          description: The datetime this fulfillment was initiated.
-          type: string
-          example: '2024-06-17 15:43:03'
-        fulfilled:
-          description: The datetime this fulfillment was finalized.
-          type: string
-          example: '2024-06-27 08:33:49'
-        fulfillment_fee:
-          description: The fee for fulfilling this item or order.
-          type: decimal
-          example: 1.5
-        id:
-          description: The unique ID for this fulfillment.
-          type: integer
-          example: 4923
-        packed:
-          description: The datetime this fulfillment was packed.
-          type: string
-          example: '2024-06-18 11:09:24'
-        packaging_fee:
-          description: The fee for packaging the fulfillment.
-          type: decimal
-          example: 0.1
-        packaging_slip_fee:
-          description: The fee for printing and including a packing slip.
-          type: decimal
-          example: 0.25
-        service:
-          description: The shipping provider and/or service for this fulfillment.
-          type: string
-          example: BoxC Parcel
-        shipment_id:
-          description: The shipment ID if fulfilled by BoxC.
-          type: integer
-          example: 123456
-        shipping_cost:
-          description: The cost of shipping this fulfillment using a third party.
-          type: decimal
-          example: 0
-        tracking_number:
-          description: The tracking number for this fulfillment.
-          type: string
-          default: null
-          example: '926149997649150002357'
-        tracking_url:
-          description: The tracking URL for this fulfillment if available.
-          type: string
-          format: uri
-          example: https://track.boxc.com/?id=9261499976491500023573
     NotFound:
       $ref: '#/components/schemas/not-found'
   securitySchemes:

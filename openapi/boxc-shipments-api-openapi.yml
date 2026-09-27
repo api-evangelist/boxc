@@ -784,584 +784,6 @@ paths:
                     - There was an error while charging the account balance
 components:
   schemas:
-    line-item-compliance:
-      type: object
-      description: Additional compliance elements for the line item.
-      properties:
-        cpsc:
-          type: object
-          description: Consumer Product Safety Commission (US) - either the product details or a `disclaim` must be provided.
-          properties:
-            product_id:
-              type:
-              - string
-              - 'null'
-              description: The product id that is used in the CPSC Registry.
-              default: null
-              pattern: ^[A-Za-z0-9./_-]+$
-              maxLength: 19
-            product_version:
-              type:
-              - string
-              - 'null'
-              description: The product id certificate version used in the CPSC Registry.
-              default: null
-              pattern: ^[A-Za-z0-9./_-]+$
-              maxLength: 19
-            certifier_id:
-              type:
-              - string
-              - 'null'
-              description: The certifier id for the product registry (LPCO number).
-              pattern: ^[A-Za-z0-9./_-]+$
-              maxLength: 23
-              default: null
-            disclaim:
-              type:
-              - object
-              - 'null'
-              description: A disclaim is required if you don't provide the `product_id`, `product_version`, and `certifier_id`.
-              default: null
-              properties:
-                code:
-                  type: string
-                  description: Disclaim code
-                  enum:
-                  - A
-                  - B
-                iuc:
-                  type: string
-                  description: IUC
-                  minLength: 7
-                  maxLength: 7
-                iuc_description:
-                  type: string
-                  description: IUC description
-                  maxLength: 64
-              required:
-              - code
-              - iuc
-              - iuc_description
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
-    shipment-images:
-      description: Lists URLs of images taken during transit and categorized by type of photo. URLs expire after a period of time so refer to the `expires` query parameter.
-      type: object
-      readOnly: true
-      properties:
-        pod:
-          type: array
-          default: []
-          readOnly: true
-          example:
-          - https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271
-          items:
-            type: string
-        scans:
-          type: array
-          default: []
-          readOnly: true
-          example:
-          - https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271
-          items:
-            type: string
-    Label:
-      $ref: '#/components/schemas/label'
-    ServiceUnavailable:
-      $ref: '#/components/schemas/service-unavailable'
-    label:
-      type: object
-      properties:
-        cancelled:
-          description: Whether or not the label was cancelled.
-          type: boolean
-          default: false
-          example: false
-        carrier:
-          description: The final mile carrier for this label.
-          type: string
-          example: USPS
-          readOnly: true
-        chargeable_weight:
-          description: The chargeable weight for this shipment which is the greater of gross weight and volumetric weight.
-          type: decimal
-          example: 0.3
-          readOnly: true
-        contents:
-          type: array
-          readOnly: true
-          description: List of contents in this package.
-          default: []
-          minItems: 0
-          items:
-            $ref: '#/components/schemas/PackageContents'
-        cost:
-          description: The shipping cost for the label.
-          type: decimal
-          example: 3.15
-          readOnly: true
-        created:
-          description: The date and time the label was created.
-          type: string
-          default: null
-          example: '2024-05-17 15:43:03'
-          readOnly: true
-        delivery_date:
-          description: The date the shipment was delivered.
-          type: string
-          default: null
-          example: '2024-05-26 12:05:09'
-          readOnly: true
-        exit_point:
-          description: The exit port for this shipment determined by the system. This value is null for shipments where exit port is determined irrelevant for the destination.
-          type: string
-          example: LAX
-          readOnly: true
-        events:
-          description: The tracking history for this package in descending order.
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/Event'
-        height:
-          description: The height of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          default: 1
-          example: 1.5
-        id:
-          description: The unique ID of the label in the system.
-          type: integer
-          example: 2382131
-          readOnly: true
-        insurance_fee:
-          description: The cost of insurance for this shipment if requested.
-          type: decimal
-          default: 0
-          example: 0
-          readOnly: true
-        is_master:
-          description: Indicates this package is the master label. Default is true for single package shipments.
-          type: boolean
-          readOnly: true
-          example: true
-        is_ready:
-          description: Indicates the label file is ready for download. This is true for most cases during shipment creation. Some carriers provide labels asynchronously.
-          type: boolean
-          example: true
-          readOnly: true
-        length:
-          description: The length of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          default: 15
-          example: 15
-        overpack_id:
-          description: The overpack ID assigned to this package.
-          default: null
-          type:
-          - integer
-          - 'null'
-          example: 1501231
-        processed:
-          description: Whether or not the label was processed at our facility.
-          type: boolean
-          default: false
-          example: false
-          readOnly: true
-        processed_date:
-          description: The date the label was first processed at a facility.
-          type: string
-          default: null
-          example: '2024-05-27 19:14:55'
-          readOnly: true
-        processed_weight:
-          description: The processed weight of the shipment at a facility.
-          type: decimal
-          default: null
-          example: 0.284
-          readOnly: true
-        service:
-          type: string
-          description: The type of shipping service this label is billed for.
-          example: BoxC Parcel
-          readOnly: true
-        shipment_id:
-          description: The ID of the shipment you want to create a label for, or is associated with the label.
-          type: integer
-          example: 1014
-        status:
-          description: The latest status of the shipment.
-          type: string
-          enum:
-          - Pending
-          - Processed
-          - Cancelled
-          - Customs
-          - En Route
-          - Exception
-          - Delivered
-          example: Processed
-          readOnly: true
-        surcharge:
-          description: Additional cost for this shipment based on the route and chargeable weight.
-          type: decimal
-          default: 0
-          example: 0
-          readOnly: true
-        tracking_number:
-          type: string
-          description: The tracking number for the label.
-          example: '9261299991753900000290'
-          readOnly: true
-        weight:
-          description: The weight of the package in kg.
-          type: decimal
-          example: 0.202
-          exclusiveMinimum: 0
-          exclusiveMaximum: 10000
-        width:
-          description: The width of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          default: 10
-          example: 8
-    package:
-      type: object
-      title: Package
-      properties:
-        contents:
-          description: Contents in this package.
-          type: array
-          minItems: 0
-          default: []
-          items:
-            $ref: '#/components/schemas/PackageContents'
-        height:
-          description: The height of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 1
-        length:
-          description: The length of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 15
-        weight:
-          description: The weight of the package in kg.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 15
-        width:
-          description: The width of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 10
-      required:
-      - height
-      - length
-      - weight
-      - width
-    Consignee:
-      $ref: '#/components/schemas/consignee'
-    ShipmentProcessRequest:
-      $ref: '#/components/schemas/shipment-process-request'
-    shipment-process-request:
-      type: object
-      properties:
-        shipment:
-          type: object
-          properties:
-            datetime:
-              description: Datetime
-              type: string
-              example: '2024-06-02 11:12:13'
-            fulfillment_id:
-              description: Fulfillment id
-              type: integer
-              example: null
-            height:
-              description: The height of the shipment in cm.
-              type: decimal
-              default: 1
-              example: '1.00'
-            length:
-              description: The length of the shipment in cm.
-              type: decimal
-              default: 15
-              example: 15
-            weight:
-              description: The weight of the shipment in KG.
-              type: decimal
-              example: 0.088
-            width:
-              description: The width of the shipment in cm.
-              type: decimal
-              default: 10
-              example: 8
-            irregular:
-              description: Indicates this shipment was packaged in irregular shaped polybag or soft packaging to assist in calculating the volumetric weight.
-              type: boolean
-              default: false
-              example: false
-          additionalProperties: false
-    package-contents:
-      type: object
-      title: PackageContents
-      properties:
-        description:
-          description: A description of this item.
-          type: string
-          minLength: 3
-          maxLength: 64
-          example: Dayman figurines
-        value:
-          description: The total value of this item.
-          type: decimal
-          exclusiveMinimum: 0
-          example: 200.25
-        quantity:
-          description: The number of units of this item.
-          type: integer
-          exclusiveMinimum: 0
-          example: 10
-      required:
-      - description
-      - value
-      - quantity
-    LineItemCompliance:
-      $ref: '#/components/schemas/line-item-compliance'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    event:
-      type: object
-      description: The tracking history for this label in descending order. Set by the system.
-      properties:
-        carrier:
-          description: The carrier that provided this event.
-          type: string
-          example: USPS
-          readOnly: true
-        city:
-          description: The city the event took place in.
-          type: string
-          maxLength: 40
-          example: New York City
-          readOnly: true
-        code:
-          description: A code matching the description and to help identify the event.
-          type: integer
-          example: 200
-          readOnly: true
-        country:
-          description: The country code the event took place in.
-          type: string
-          maxLength: 2
-          minLength: 2
-          pattern:
-          - A-Z
-          example: US
-          readOnly: true
-        description:
-          description: A description of the event.
-          type: string
-          example: DELIVERED
-          readOnly: true
-        latitude:
-          description: Latitude coordinate of the event.
-          type:
-          - number
-          - 'null'
-          minimum: -90
-          maximum: 90
-          example: null
-          readOnly: true
-        longitude:
-          description: Longitude coordinate of the event.
-          type:
-          - number
-          - 'null'
-          minimum: -180
-          maximum: 180
-          example: null
-          readOnly: true
-        postal_code:
-          description: The postal code the event took place in.
-          type: string
-          maxLength: 10
-          example: '10001'
-          readOnly: true
-        province:
-          description: The province the event took place in.
-          type: string
-          maxLength: 40
-          example: NY
-          readOnly: true
-        time:
-          description: The local date and time the event occurred.
-          type: string
-          format: datetime
-          default: null
-          example: '2024-05-26 07:11:45'
-          readOnly: true
-    line-item:
-      type: object
-      description: Contents of the shipment.
-      properties:
-        compliance:
-          $ref: '#/components/schemas/LineItemCompliance'
-        coo:
-          description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-          type: string
-          example: CN
-        currency:
-          description: The ISO 4217 currency code of this line item's total declared value.
-          type: string
-          minLength: 3
-          maxLength: 3
-          example: USD
-        description:
-          description: A concise description of the line item in English.
-          type: string
-          maxLength: 64
-          example: Phone case
-        dg_code:
-          description: A code that identifies dangerous goods. Required if shipping lithium batteries, ORM-D, or other dangerous goods. Refer to [this page](/#tag/DangerousGoods) for a list of codes and further information.
-          type: string
-          default: null
-          example: null
-        duty:
-          description: The duty owed for this line item in the `shipment.currency`.
-          type: decimal
-          readOnly: true
-          example: 2.23
-        user_hts_code:
-          description: The Harmonized Tariff System classification number for customs clearance based on the destination country provided by the user.
-          type: string
-          minLength: 8
-          maxLength: 13
-          default: null
-          example: null
-          readOnly: true
-        hts_code:
-          description: The Harmonized Tariff System classification number for customs clearance based on the destination country.
-          type: string
-          minLength: 8
-          maxLength: 13
-          default: null
-          example: null
-        origin_description:
-          description: A concise description of the line item in the entry point country's language.
-          type: string
-          maxLength: 64
-          example: 手机外壳
-        product_id:
-          description: The [Customs Product](/#tag/CustomsProducts) `id` which is required for international PGA shipments. This number is assigned when creating the product.
-          type: integer
-          example: 121009
-          default: null
-        tax:
-          description: The tax owed for this line item in the `shipment.currency`.
-          type: decimal
-          readOnly: true
-          example: 2.23
-        quantity:
-          description: The number of units in this line item.
-          type: integer
-          maxValue: 9999
-          example: 2
-        supplier:
-          description: The product supplier or manufacturer. This is known as the Manufacturer Identification code (MID) in the US. It's required for most international shipments.
-          type: string
-          maxLength: 32
-          default: null
-        url:
-          description: A URL to the product listing online.
-          type: string
-          format: uri
-          maxLength: 128
-          default: null
-          example: null
-        value:
-          description: The total declared value of all units in this line item.
-          type: decimal
-          example: 9.95
-        weight:
-          description: The weight for a single unit of this line item.
-          type: decimal
-          example: 0.235
-      required:
-      - coo
-      - currency
-      - description
-      - origin_description
-      - quantity
-      - value
-      - weight
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
     shipment:
       description: Shipment
       type: object
@@ -1742,10 +1164,52 @@ components:
       - consignor
       - to
       - weight
-    From:
-      $ref: '#/components/schemas/from'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    PackageContents:
+      $ref: '#/components/schemas/package-contents'
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
+    ShipmentImages:
+      $ref: '#/components/schemas/shipment-images'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    Shipment:
+      $ref: '#/components/schemas/shipment'
     internal-server-error:
       type: object
       summary: Internal Server Error
@@ -1769,6 +1233,48 @@ components:
           maxItems: 1
           items:
             type: string
+    Consignee:
+      $ref: '#/components/schemas/consignee'
+    package:
+      type: object
+      title: Package
+      properties:
+        contents:
+          description: Contents in this package.
+          type: array
+          minItems: 0
+          default: []
+          items:
+            $ref: '#/components/schemas/PackageContents'
+        height:
+          description: The height of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 1
+        length:
+          description: The length of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 15
+        weight:
+          description: The weight of the package in kg.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 15
+        width:
+          description: The width of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 10
+      required:
+      - height
+      - length
+      - weight
+      - width
     not-found:
       type: object
       summary: Not Found
@@ -1790,6 +1296,348 @@ components:
           type: array
           items:
             type: string
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    Package:
+      $ref: '#/components/schemas/package'
+    LineItem:
+      $ref: '#/components/schemas/line-item'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    Event:
+      $ref: '#/components/schemas/event'
+    From:
+      $ref: '#/components/schemas/from'
+    line-item:
+      type: object
+      description: Contents of the shipment.
+      properties:
+        compliance:
+          $ref: '#/components/schemas/LineItemCompliance'
+        coo:
+          description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          example: CN
+        currency:
+          description: The ISO 4217 currency code of this line item's total declared value.
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: USD
+        description:
+          description: A concise description of the line item in English.
+          type: string
+          maxLength: 64
+          example: Phone case
+        dg_code:
+          description: A code that identifies dangerous goods. Required if shipping lithium batteries, ORM-D, or other dangerous goods. Refer to [this page](/#tag/DangerousGoods) for a list of codes and further information.
+          type: string
+          default: null
+          example: null
+        duty:
+          description: The duty owed for this line item in the `shipment.currency`.
+          type: decimal
+          readOnly: true
+          example: 2.23
+        user_hts_code:
+          description: The Harmonized Tariff System classification number for customs clearance based on the destination country provided by the user.
+          type: string
+          minLength: 8
+          maxLength: 13
+          default: null
+          example: null
+          readOnly: true
+        hts_code:
+          description: The Harmonized Tariff System classification number for customs clearance based on the destination country.
+          type: string
+          minLength: 8
+          maxLength: 13
+          default: null
+          example: null
+        origin_description:
+          description: A concise description of the line item in the entry point country's language.
+          type: string
+          maxLength: 64
+          example: 手机外壳
+        product_id:
+          description: The [Customs Product](/#tag/CustomsProducts) `id` which is required for international PGA shipments. This number is assigned when creating the product.
+          type: integer
+          example: 121009
+          default: null
+        tax:
+          description: The tax owed for this line item in the `shipment.currency`.
+          type: decimal
+          readOnly: true
+          example: 2.23
+        quantity:
+          description: The number of units in this line item.
+          type: integer
+          maxValue: 9999
+          example: 2
+        supplier:
+          description: The product supplier or manufacturer. This is known as the Manufacturer Identification code (MID) in the US. It's required for most international shipments.
+          type: string
+          maxLength: 32
+          default: null
+        url:
+          description: A URL to the product listing online.
+          type: string
+          format: uri
+          maxLength: 128
+          default: null
+          example: null
+        value:
+          description: The total declared value of all units in this line item.
+          type: decimal
+          example: 9.95
+        weight:
+          description: The weight for a single unit of this line item.
+          type: decimal
+          example: 0.235
+      required:
+      - coo
+      - currency
+      - description
+      - origin_description
+      - quantity
+      - value
+      - weight
+    ShipmentProcessRequest:
+      $ref: '#/components/schemas/shipment-process-request'
+    event:
+      type: object
+      description: The tracking history for this label in descending order. Set by the system.
+      properties:
+        carrier:
+          description: The carrier that provided this event.
+          type: string
+          example: USPS
+          readOnly: true
+        city:
+          description: The city the event took place in.
+          type: string
+          maxLength: 40
+          example: New York City
+          readOnly: true
+        code:
+          description: A code matching the description and to help identify the event.
+          type: integer
+          example: 200
+          readOnly: true
+        country:
+          description: The country code the event took place in.
+          type: string
+          maxLength: 2
+          minLength: 2
+          pattern:
+          - A-Z
+          example: US
+          readOnly: true
+        description:
+          description: A description of the event.
+          type: string
+          example: DELIVERED
+          readOnly: true
+        latitude:
+          description: Latitude coordinate of the event.
+          type:
+          - number
+          - 'null'
+          minimum: -90
+          maximum: 90
+          example: null
+          readOnly: true
+        longitude:
+          description: Longitude coordinate of the event.
+          type:
+          - number
+          - 'null'
+          minimum: -180
+          maximum: 180
+          example: null
+          readOnly: true
+        postal_code:
+          description: The postal code the event took place in.
+          type: string
+          maxLength: 10
+          example: '10001'
+          readOnly: true
+        province:
+          description: The province the event took place in.
+          type: string
+          maxLength: 40
+          example: NY
+          readOnly: true
+        time:
+          description: The local date and time the event occurred.
+          type: string
+          format: datetime
+          default: null
+          example: '2024-05-26 07:11:45'
+          readOnly: true
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    package-contents:
+      type: object
+      title: PackageContents
+      properties:
+        description:
+          description: A description of this item.
+          type: string
+          minLength: 3
+          maxLength: 64
+          example: Dayman figurines
+        value:
+          description: The total value of this item.
+          type: decimal
+          exclusiveMinimum: 0
+          example: 200.25
+        quantity:
+          description: The number of units of this item.
+          type: integer
+          exclusiveMinimum: 0
+          example: 10
+      required:
+      - description
+      - value
+      - quantity
+    from:
+      description: This will appear as the return address on labels. A default return address will be used if one isn't provided in the request. The country code must match ```to.country```.
+      type: object
+      title: ReturnAddress
+      properties:
+        name:
+          description: Can be a sender's name or company name.
+          type: string
+          maxLength: 40
+          example: My Company Name
+        street1:
+          description: The sender's street address
+          type: string
+          maxLength: 50
+          example: 113 INTL BROADWAY
+        street2:
+          description: Additional space for the sender's street address.
+          type: string
+          maxLength: 50
+          default: null
+          example: ''
+        city:
+          description: The sender's city.
+          type: string
+          maxLength: 40
+          example: LOS ANGELES
+        province:
+          description: The sender's province or state. Conditional.
+          type: string
+          maxLength: 40
+          example: CA
+          default: null
+        postal_code:
+          description: The sender's postal code. Conditional.
+          type: string
+          maxLength: 10
+          example: '91013'
+          default: null
+        country:
+          description: The senders's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          pattern:
+          - A-Z
+          maxLength: 2
+          minLength: 2
+          example: US
+      required:
+      - name
+      - street1
+      - city
+      - country
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    Label:
+      $ref: '#/components/schemas/label'
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    Consignor:
+      $ref: '#/components/schemas/consignor'
+    shipment-images:
+      description: Lists URLs of images taken during transit and categorized by type of photo. URLs expire after a period of time so refer to the `expires` query parameter.
+      type: object
+      readOnly: true
+      properties:
+        pod:
+          type: array
+          default: []
+          readOnly: true
+          example:
+          - https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271
+          items:
+            type: string
+        scans:
+          type: array
+          default: []
+          readOnly: true
+          example:
+          - https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271
+          items:
+            type: string
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
     consignee:
       description: Details about the consignee / buyer. The system will use the shipping address as the consignee address if one isn't provided. Some countries require a tax / passport ID from the buyer.
       type: object
@@ -1849,128 +1697,6 @@ components:
       - city
       - country
       - street1
-    service-unavailable:
-      type: object
-      summary: Service Unavailable
-      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Package:
-      $ref: '#/components/schemas/package'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    ShipmentImages:
-      $ref: '#/components/schemas/shipment-images'
-    PackageContents:
-      $ref: '#/components/schemas/package-contents'
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    from:
-      description: This will appear as the return address on labels. A default return address will be used if one isn't provided in the request. The country code must match ```to.country```.
-      type: object
-      title: ReturnAddress
-      properties:
-        name:
-          description: Can be a sender's name or company name.
-          type: string
-          maxLength: 40
-          example: My Company Name
-        street1:
-          description: The sender's street address
-          type: string
-          maxLength: 50
-          example: 113 INTL BROADWAY
-        street2:
-          description: Additional space for the sender's street address.
-          type: string
-          maxLength: 50
-          default: null
-          example: ''
-        city:
-          description: The sender's city.
-          type: string
-          maxLength: 40
-          example: LOS ANGELES
-        province:
-          description: The sender's province or state. Conditional.
-          type: string
-          maxLength: 40
-          example: CA
-          default: null
-        postal_code:
-          description: The sender's postal code. Conditional.
-          type: string
-          maxLength: 10
-          example: '91013'
-          default: null
-        country:
-          description: The senders's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-          type: string
-          pattern:
-          - A-Z
-          maxLength: 2
-          minLength: 2
-          example: US
-      required:
-      - name
-      - street1
-      - city
-      - country
-    Event:
-      $ref: '#/components/schemas/event'
-    LineItem:
-      $ref: '#/components/schemas/line-item'
     to:
       description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
       title: ShippingAddress
@@ -2043,6 +1769,75 @@ components:
       - street1
       - city
       - country
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    To:
+      $ref: '#/components/schemas/to'
+    LineItemCompliance:
+      $ref: '#/components/schemas/line-item-compliance'
     consignor:
       description: Address and other details for the consignor (sender) which is used for customs clearance.
       type: object
@@ -2104,60 +1899,265 @@ components:
       - street1
       - city
       - country
-    To:
-      $ref: '#/components/schemas/to'
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
-    Consignor:
-      $ref: '#/components/schemas/consignor'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    Shipment:
-      $ref: '#/components/schemas/shipment'
+    label:
+      type: object
+      properties:
+        cancelled:
+          description: Whether or not the label was cancelled.
+          type: boolean
+          default: false
+          example: false
+        carrier:
+          description: The final mile carrier for this label.
+          type: string
+          example: USPS
+          readOnly: true
+        chargeable_weight:
+          description: The chargeable weight for this shipment which is the greater of gross weight and volumetric weight.
+          type: decimal
+          example: 0.3
+          readOnly: true
+        contents:
+          type: array
+          readOnly: true
+          description: List of contents in this package.
+          default: []
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/PackageContents'
+        cost:
+          description: The shipping cost for the label.
+          type: decimal
+          example: 3.15
+          readOnly: true
+        created:
+          description: The date and time the label was created.
+          type: string
+          default: null
+          example: '2024-05-17 15:43:03'
+          readOnly: true
+        delivery_date:
+          description: The date the shipment was delivered.
+          type: string
+          default: null
+          example: '2024-05-26 12:05:09'
+          readOnly: true
+        exit_point:
+          description: The exit port for this shipment determined by the system. This value is null for shipments where exit port is determined irrelevant for the destination.
+          type: string
+          example: LAX
+          readOnly: true
+        events:
+          description: The tracking history for this package in descending order.
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Event'
+        height:
+          description: The height of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          default: 1
+          example: 1.5
+        id:
+          description: The unique ID of the label in the system.
+          type: integer
+          example: 2382131
+          readOnly: true
+        insurance_fee:
+          description: The cost of insurance for this shipment if requested.
+          type: decimal
+          default: 0
+          example: 0
+          readOnly: true
+        is_master:
+          description: Indicates this package is the master label. Default is true for single package shipments.
+          type: boolean
+          readOnly: true
+          example: true
+        is_ready:
+          description: Indicates the label file is ready for download. This is true for most cases during shipment creation. Some carriers provide labels asynchronously.
+          type: boolean
+          example: true
+          readOnly: true
+        length:
+          description: The length of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          default: 15
+          example: 15
+        overpack_id:
+          description: The overpack ID assigned to this package.
+          default: null
+          type:
+          - integer
+          - 'null'
+          example: 1501231
+        processed:
+          description: Whether or not the label was processed at our facility.
+          type: boolean
+          default: false
+          example: false
+          readOnly: true
+        processed_date:
+          description: The date the label was first processed at a facility.
+          type: string
+          default: null
+          example: '2024-05-27 19:14:55'
+          readOnly: true
+        processed_weight:
+          description: The processed weight of the shipment at a facility.
+          type: decimal
+          default: null
+          example: 0.284
+          readOnly: true
+        service:
+          type: string
+          description: The type of shipping service this label is billed for.
+          example: BoxC Parcel
+          readOnly: true
+        shipment_id:
+          description: The ID of the shipment you want to create a label for, or is associated with the label.
+          type: integer
+          example: 1014
+        status:
+          description: The latest status of the shipment.
+          type: string
+          enum:
+          - Pending
+          - Processed
+          - Cancelled
+          - Customs
+          - En Route
+          - Exception
+          - Delivered
+          example: Processed
+          readOnly: true
+        surcharge:
+          description: Additional cost for this shipment based on the route and chargeable weight.
+          type: decimal
+          default: 0
+          example: 0
+          readOnly: true
+        tracking_number:
+          type: string
+          description: The tracking number for the label.
+          example: '9261299991753900000290'
+          readOnly: true
+        weight:
+          description: The weight of the package in kg.
+          type: decimal
+          example: 0.202
+          exclusiveMinimum: 0
+          exclusiveMaximum: 10000
+        width:
+          description: The width of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          default: 10
+          example: 8
+    shipment-process-request:
+      type: object
+      properties:
+        shipment:
+          type: object
+          properties:
+            datetime:
+              description: Datetime
+              type: string
+              example: '2024-06-02 11:12:13'
+            fulfillment_id:
+              description: Fulfillment id
+              type: integer
+              example: null
+            height:
+              description: The height of the shipment in cm.
+              type: decimal
+              default: 1
+              example: '1.00'
+            length:
+              description: The length of the shipment in cm.
+              type: decimal
+              default: 15
+              example: 15
+            weight:
+              description: The weight of the shipment in KG.
+              type: decimal
+              example: 0.088
+            width:
+              description: The width of the shipment in cm.
+              type: decimal
+              default: 10
+              example: 8
+            irregular:
+              description: Indicates this shipment was packaged in irregular shaped polybag or soft packaging to assist in calculating the volumetric weight.
+              type: boolean
+              default: false
+              example: false
+          additionalProperties: false
     NotFound:
       $ref: '#/components/schemas/not-found'
+    line-item-compliance:
+      type: object
+      description: Additional compliance elements for the line item.
+      properties:
+        cpsc:
+          type: object
+          description: Consumer Product Safety Commission (US) - either the product details or a `disclaim` must be provided.
+          properties:
+            product_id:
+              type:
+              - string
+              - 'null'
+              description: The product id that is used in the CPSC Registry.
+              default: null
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 19
+            product_version:
+              type:
+              - string
+              - 'null'
+              description: The product id certificate version used in the CPSC Registry.
+              default: null
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 19
+            certifier_id:
+              type:
+              - string
+              - 'null'
+              description: The certifier id for the product registry (LPCO number).
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 23
+              default: null
+            disclaim:
+              type:
+              - object
+              - 'null'
+              description: A disclaim is required if you don't provide the `product_id`, `product_version`, and `certifier_id`.
+              default: null
+              properties:
+                code:
+                  type: string
+                  description: Disclaim code
+                  enum:
+                  - A
+                  - B
+                iuc:
+                  type: string
+                  description: IUC
+                  minLength: 7
+                  maxLength: 7
+                iuc_description:
+                  type: string
+                  description: IUC description
+                  maxLength: 64
+              required:
+              - code
+              - iuc
+              - iuc_description
   securitySchemes:
     JWT:
       type: http

@@ -211,35 +211,6 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    estimate:
-      type: object
-      description: Retrieves an estimate.
-      properties:
-        estimate:
-          type: object
-          properties:
-            currency:
-              description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
-              type: string
-              example: CAD
-              readOnly: true
-            entry_point:
-              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
-              type: string
-              default: null
-              example: LAXI01
-              readOnly: true
-            services:
-              type: array
-              readOnly: true
-              items:
-                $ref: '#/components/schemas/Service'
-    Service:
-      $ref: '#/components/schemas/service'
-    PackageEstimate:
-      $ref: '#/components/schemas/package-estimate'
     bad-request:
       type: object
       summary: Bad Request
@@ -263,56 +234,49 @@ components:
           maxItems: 5
           items:
             type: string
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
-    Estimate:
-      $ref: '#/components/schemas/estimate'
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    package-estimate:
+      type: object
+      title: Package
+      properties:
+        height:
+          description: The height of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 1
+        length:
+          description: The length of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 15
+        weight:
+          description: The weight of the package in kg.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 15
+        width:
+          description: The width of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          exclusiveMaximum: 1000
+          example: 10
+      required:
+      - height
+      - length
+      - weight
+      - width
+    PackageEstimate:
+      $ref: '#/components/schemas/package-estimate'
+    Service:
+      $ref: '#/components/schemas/service'
     unauthorized:
       description: Unauthorized
       content:
@@ -349,39 +313,6 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    package-estimate:
-      type: object
-      title: Package
-      properties:
-        height:
-          description: The height of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 1
-        length:
-          description: The length of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 15
-        weight:
-          description: The weight of the package in kg.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 15
-        width:
-          description: The width of the package in cm.
-          type: decimal
-          exclusiveMinimum: 0
-          exclusiveMaximum: 1000
-          example: 10
-      required:
-      - height
-      - length
-      - weight
-      - width
     rate-limit:
       description: Too Many Requests
       content:
@@ -418,6 +349,8 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     service:
       type: object
       description: A list of services and their estimated price and transit time. Set by the system. If an empty array is returned then there are currently no services available for the given route.
@@ -488,8 +421,75 @@ components:
           description: The volumetric weight based on the requested dimensions and route's divisor.
           type: decimal
           example: 0.412
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    Estimate:
+      $ref: '#/components/schemas/estimate'
+    estimate:
+      type: object
+      description: Retrieves an estimate.
+      properties:
+        estimate:
+          type: object
+          properties:
+            currency:
+              description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
+              type: string
+              example: CAD
+              readOnly: true
+            entry_point:
+              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
+              type: string
+              default: null
+              example: LAXI01
+              readOnly: true
+            services:
+              type: array
+              readOnly: true
+              items:
+                $ref: '#/components/schemas/Service'
   securitySchemes:
     JWT:
       type: http
