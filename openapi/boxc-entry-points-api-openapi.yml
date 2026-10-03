@@ -97,12 +97,73 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
     NotFound:
       $ref: '#/components/schemas/not-found'
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    EntryPoint:
+      $ref: '#/components/schemas/entry-point'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
     forbidden:
       description: Forbidden
       content:
@@ -183,67 +244,6 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    EntryPoint:
-      $ref: '#/components/schemas/entry-point'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
     entry-point:
       type: object
       properties:

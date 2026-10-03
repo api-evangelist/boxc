@@ -164,10 +164,14 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    bad-request:
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    not-found:
       type: object
-      summary: Bad Request
-      description: Validation error with the request
+      summary: Not Found
+      description: Object not found or not owned by the user
       properties:
         code:
           description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -181,54 +185,50 @@ components:
           - error
           example: error
         errors:
-          description: Lists validation errors with the schema or the resource being operated on.
+          description: Duplicate of the error message
           type: array
-          minItems: 1
-          maxItems: 5
           items:
             type: string
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
     Forbidden:
       $ref: '#/components/schemas/forbidden'
-    NotFound:
-      $ref: '#/components/schemas/not-found'
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
+    Invoice:
+      $ref: '#/components/schemas/invoice'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    invoice:
+      type: object
+      properties:
+        created:
+          type: string
+          description: The date and time the invoice was created in UTC.
+          example: '2024-07-03 13:57:13'
+          format: datetime
+        currency:
+          type: string
+          description: The 3-letter currency code for the amount in this invoice.
+          example: USD
+        end_date:
+          type: string
+          description: The end date of the invoice in UTC.
+          example: '2024-06-30'
+        id:
+          type: integer
+          description: The unique ID of the invoice.
+          example: 901934
+        name:
+          type: string
+          description: The name of the invoice for grouping multiple invoices in different currencies together.
+          example: 2024-W34
+        start_date:
+          type: string
+          description: The start date of the invoice in UTC.
+          example: '2024-06-01'
+        total:
+          type: decimal
+          description: The total billed amount of the invoice.
+          example: 2359.56
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     rate-limit:
       description: Too Many Requests
       content:
@@ -265,40 +265,6 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    invoice:
-      type: object
-      properties:
-        created:
-          type: string
-          description: The date and time the invoice was created in UTC.
-          example: '2024-07-03 13:57:13'
-          format: datetime
-        currency:
-          type: string
-          description: The 3-letter currency code for the amount in this invoice.
-          example: USD
-        end_date:
-          type: string
-          description: The end date of the invoice in UTC.
-          example: '2024-06-30'
-        id:
-          type: integer
-          description: The unique ID of the invoice.
-          example: 901934
-        name:
-          type: string
-          description: The name of the invoice for grouping multiple invoices in different currencies together.
-          example: 2024-W34
-        start_date:
-          type: string
-          description: The start date of the invoice in UTC.
-          example: '2024-06-01'
-        total:
-          type: decimal
-          description: The total billed amount of the invoice.
-          example: 2359.56
     forbidden:
       description: Forbidden
       content:
@@ -343,10 +309,46 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    not-found:
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    bad-request:
       type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
+      summary: Bad Request
+      description: Validation error with the request
       properties:
         code:
           description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -360,14 +362,12 @@ components:
           - error
           example: error
         errors:
-          description: Duplicate of the error message
+          description: Lists validation errors with the schema or the resource being operated on.
           type: array
+          minItems: 1
+          maxItems: 5
           items:
             type: string
-    Invoice:
-      $ref: '#/components/schemas/invoice'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
   securitySchemes:
     JWT:
       type: http
