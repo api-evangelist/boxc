@@ -978,6 +978,8 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
+  - Entrypoints
+  tags_raw:
   - Entry Points
   properties:
   - type: OpenAPI
