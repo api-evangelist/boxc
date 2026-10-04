@@ -100,8 +100,8 @@ components:
   schemas:
     Warehouse:
       $ref: '#/components/schemas/warehouse'
-    WarehouseStorage:
-      $ref: '#/components/schemas/warehouse-storage'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     NotFound:
       $ref: '#/components/schemas/not-found'
     not-found:
@@ -125,12 +125,38 @@ components:
           type: array
           items:
             type: string
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
+    warehouse-storage:
+      allOf:
+      - type: object
+        $ref: '#/components/schemas/Warehouse'
+      - type: object
+        properties:
+          storage:
+            description: Information about the storage costs for the warehouse.
+            type: object
+            properties:
+              free_days:
+                type: integer
+                description: The number of days a product will be stored for free.
+                example: 30
+                readOnly: true
+              large_cost:
+                type: decimal
+                description: The price per cubic meter for storing a large sized product.
+                example: 30
+                readOnly: true
+              medium_cost:
+                type: decimal
+                description: The price for storing one unit of a medium sized product.
+                example: 0.03
+                readOnly: true
+              small_cost:
+                type: decimal
+                description: The price for storing one unit of a small sized product.
+                example: 0.01
+                readOnly: true
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
     warehouse:
       type: object
       description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
@@ -177,14 +203,14 @@ components:
           readOnly: true
       required:
       - id
-    rate-limit:
-      description: Too Many Requests
+    unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
             type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
             properties:
               code:
                 description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -205,14 +231,14 @@ components:
                 items:
                   type: string
           examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
               value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
+                code: 1005
+                message: Invalid access token
                 errors:
-                - Too many requests. Please wait before trying again.
+                - Invalid access token
     forbidden:
       description: Forbidden
       content:
@@ -257,44 +283,14 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    warehouse-storage:
-      allOf:
-      - type: object
-        $ref: '#/components/schemas/Warehouse'
-      - type: object
-        properties:
-          storage:
-            description: Information about the storage costs for the warehouse.
-            type: object
-            properties:
-              free_days:
-                type: integer
-                description: The number of days a product will be stored for free.
-                example: 30
-                readOnly: true
-              large_cost:
-                type: decimal
-                description: The price per cubic meter for storing a large sized product.
-                example: 30
-                readOnly: true
-              medium_cost:
-                type: decimal
-                description: The price for storing one unit of a medium sized product.
-                example: 0.03
-                readOnly: true
-              small_cost:
-                type: decimal
-                description: The price for storing one unit of a small sized product.
-                example: 0.01
-                readOnly: true
-    unauthorized:
-      description: Unauthorized
+    rate-limit:
+      description: Too Many Requests
       content:
         application/json:
           schema:
             type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
             properties:
               code:
                 description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -315,14 +311,18 @@ components:
                 items:
                   type: string
           examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
               value:
-                code: 1005
-                message: Invalid access token
+                code: 1015
+                message: Too many requests. Please wait before trying again.
                 errors:
-                - Invalid access token
+                - Too many requests. Please wait before trying again.
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    WarehouseStorage:
+      $ref: '#/components/schemas/warehouse-storage'
   securitySchemes:
     JWT:
       type: http

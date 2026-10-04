@@ -211,6 +211,8 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     package-estimate:
       type: object
       title: Package
@@ -244,123 +246,39 @@ components:
       - length
       - weight
       - width
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    estimate:
-      type: object
-      description: Retrieves an estimate.
-      properties:
-        estimate:
-          type: object
-          properties:
-            currency:
-              description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
-              type: string
-              example: CAD
-              readOnly: true
-            entry_point:
-              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
-              type: string
-              default: null
-              example: LAXI01
-              readOnly: true
-            services:
-              type: array
-              readOnly: true
-              items:
-                $ref: '#/components/schemas/Service'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Estimate:
-      $ref: '#/components/schemas/estimate'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    Service:
-      $ref: '#/components/schemas/service'
     PackageEstimate:
       $ref: '#/components/schemas/package-estimate'
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    Estimate:
+      $ref: '#/components/schemas/estimate'
+    Service:
+      $ref: '#/components/schemas/service'
     service:
       type: object
       description: A list of services and their estimated price and transit time. Set by the system. If an empty array is returned then there are currently no services available for the given route.
@@ -467,29 +385,111 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    bad-request:
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    estimate:
       type: object
-      summary: Bad Request
-      description: Validation error with the request
+      description: Retrieves an estimate.
       properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
+        estimate:
+          type: object
+          properties:
+            currency:
+              description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
+              type: string
+              example: CAD
+              readOnly: true
+            entry_point:
+              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
+              type: string
+              default: null
+              example: LAXI01
+              readOnly: true
+            services:
+              type: array
+              readOnly: true
+              items:
+                $ref: '#/components/schemas/Service'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http

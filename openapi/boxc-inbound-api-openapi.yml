@@ -354,6 +354,54 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
+    Code:
+      $ref: '#/components/schemas/code'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
     inbound:
       type: object
       properties:
@@ -410,42 +458,6 @@ components:
         warehouse:
           type: object
           $ref: '#/components/schemas/warehouse'
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
     unauthorized:
       description: Unauthorized
       content:
@@ -482,10 +494,6 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    InboundProduct:
-      $ref: '#/components/schemas/inbound-product'
-    Code:
-      $ref: '#/components/schemas/code'
     inbound-put:
       type: object
       summary: InboundShipment
@@ -511,6 +519,156 @@ components:
         warehouse:
           type: object
           $ref: '#/components/schemas/warehouse'
+    code:
+      type: object
+      description: Code describing a problem with the units after processing.
+      properties:
+        code:
+          type: string
+          description: Description of the issue.
+          example: Insufficient units arrived.
+          readOnly: true
+        quantity:
+          type: integer
+          description: The number of units affected.
+          example: 1
+          readOnly: true
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    InboundProduct:
+      $ref: '#/components/schemas/inbound-product'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    InboundShipments:
+      $ref: '#/components/schemas/inbound-shipments'
+    InboundUpdate:
+      $ref: '#/components/schemas/inbound-put'
+    warehouse:
+      type: object
+      description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
+      properties:
+        address:
+          description: The warehouse address with newlines (\n).
+          type: string
+          example: 'Unit 5b, 102 Jinfanghua Ecommerce District
+
+            Shenzhen
+
+            GD 518000
+
+            China'
+          readOnly: true
+        country:
+          description: The country where the warehouse resides.
+          type: string
+          example: HK
+          readOnly: true
+        entry_point:
+          description: The [Entry Point](#tag/EntryPoints) id associated to the warehouse.
+          type: string
+          example: SZX002
+          readOnly: true
+        id:
+          description: The unique warehouse ID
+          type: string
+          example: WH0SZ001
+        language:
+          description: The local language for the warehouse.
+          type: string
+          example: Chinese
+          readOnly: true
+        language_code:
+          description: The local language code for the warehouse in ISO 639-1 format.
+          type: string
+          example: zh
+          readOnly: true
+        name:
+          description: The warehouse name.
+          type: string
+          example: BoxC Shenzhen 1
+          readOnly: true
+      required:
+      - id
+    inbound-product:
+      type: object
+      description: Inbound shipment product
+      properties:
+        cost:
+          description: The cost per unit from the manufacturer for this product at the time of inbounding in USD.
+          type: decimal
+          example: 2.25
+        id:
+          description: The product ID.
+          type: integer
+          example: 20111
+        is_packaging:
+          description: Indicates this product is packaging material.
+          type: boolean
+          example: false
+          readOnly: true
+        name:
+          description: The product name.
+          type: string
+          example: XL T-Shirt
+          readOnly: true
+        processed:
+          description: The number of units processed by the warehouse.
+          type: integer
+          example: 300
+          readOnly: true
+        quantity:
+          description: The number of units being sent to the warehouse.
+          type: integer
+          example: 299
+          minimum: 1
+        codes:
+          description: A list of codes describing problems with the units after processing.
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Code'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Inbound:
+      $ref: '#/components/schemas/inbound'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
     inbound-shipments:
       type: object
       properties:
@@ -563,79 +721,6 @@ components:
         warehouse:
           type: object
           $ref: '#/components/schemas/warehouse'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    warehouse:
-      type: object
-      description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
-      properties:
-        address:
-          description: The warehouse address with newlines (\n).
-          type: string
-          example: 'Unit 5b, 102 Jinfanghua Ecommerce District
-
-            Shenzhen
-
-            GD 518000
-
-            China'
-          readOnly: true
-        country:
-          description: The country where the warehouse resides.
-          type: string
-          example: HK
-          readOnly: true
-        entry_point:
-          description: The [Entry Point](#tag/EntryPoints) id associated to the warehouse.
-          type: string
-          example: SZX002
-          readOnly: true
-        id:
-          description: The unique warehouse ID
-          type: string
-          example: WH0SZ001
-        language:
-          description: The local language for the warehouse.
-          type: string
-          example: Chinese
-          readOnly: true
-        language_code:
-          description: The local language code for the warehouse in ISO 639-1 format.
-          type: string
-          example: zh
-          readOnly: true
-        name:
-          description: The warehouse name.
-          type: string
-          example: BoxC Shenzhen 1
-          readOnly: true
-      required:
-      - id
-    InboundShipments:
-      $ref: '#/components/schemas/inbound-shipments'
     forbidden:
       description: Forbidden
       content:
@@ -680,91 +765,6 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
-    NotFound:
-      $ref: '#/components/schemas/not-found'
-    InboundUpdate:
-      $ref: '#/components/schemas/inbound-put'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    inbound-product:
-      type: object
-      description: Inbound shipment product
-      properties:
-        cost:
-          description: The cost per unit from the manufacturer for this product at the time of inbounding in USD.
-          type: decimal
-          example: 2.25
-        id:
-          description: The product ID.
-          type: integer
-          example: 20111
-        is_packaging:
-          description: Indicates this product is packaging material.
-          type: boolean
-          example: false
-          readOnly: true
-        name:
-          description: The product name.
-          type: string
-          example: XL T-Shirt
-          readOnly: true
-        processed:
-          description: The number of units processed by the warehouse.
-          type: integer
-          example: 300
-          readOnly: true
-        quantity:
-          description: The number of units being sent to the warehouse.
-          type: integer
-          example: 299
-          minimum: 1
-        codes:
-          description: A list of codes describing problems with the units after processing.
-          type: array
-          readOnly: true
-          items:
-            $ref: '#/components/schemas/Code'
-    code:
-      type: object
-      description: Code describing a problem with the units after processing.
-      properties:
-        code:
-          type: string
-          description: Description of the issue.
-          example: Insufficient units arrived.
-          readOnly: true
-        quantity:
-          type: integer
-          description: The number of units affected.
-          example: 1
-          readOnly: true
-    Inbound:
-      $ref: '#/components/schemas/inbound'
   securitySchemes:
     JWT:
       type: http

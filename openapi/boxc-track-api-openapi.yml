@@ -121,6 +121,227 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
+    TrackPost:
+      $ref: '#/components/schemas/track-add'
+    Track:
+      $ref: '#/components/schemas/track'
+    destination:
+      type: object
+      properties:
+        city:
+          type: string
+          description: Destination city.
+          example: BROOKLYN
+        province:
+          type: string
+          description: Destination province.
+          example: NY
+        country:
+          type: string
+          description: Destination country.
+          example: US
+        port:
+          type: string
+          description: Destination port.
+          example: JFK
+      additionalProperties: false
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Destination:
+      $ref: '#/components/schemas/destination'
+    event:
+      type: object
+      description: The tracking history for this label in descending order. Set by the system.
+      properties:
+        carrier:
+          description: The carrier that provided this event.
+          type: string
+          example: USPS
+          readOnly: true
+        city:
+          description: The city the event took place in.
+          type: string
+          maxLength: 40
+          example: New York City
+          readOnly: true
+        code:
+          description: A code matching the description and to help identify the event.
+          type: integer
+          example: 200
+          readOnly: true
+        country:
+          description: The country code the event took place in.
+          type: string
+          maxLength: 2
+          minLength: 2
+          pattern:
+          - A-Z
+          example: US
+          readOnly: true
+        description:
+          description: A description of the event.
+          type: string
+          example: DELIVERED
+          readOnly: true
+        latitude:
+          description: Latitude coordinate of the event.
+          type:
+          - number
+          - 'null'
+          minimum: -90
+          maximum: 90
+          example: null
+          readOnly: true
+        longitude:
+          description: Longitude coordinate of the event.
+          type:
+          - number
+          - 'null'
+          minimum: -180
+          maximum: 180
+          example: null
+          readOnly: true
+        postal_code:
+          description: The postal code the event took place in.
+          type: string
+          maxLength: 10
+          example: '10001'
+          readOnly: true
+        province:
+          description: The province the event took place in.
+          type: string
+          maxLength: 40
+          example: NY
+          readOnly: true
+        time:
+          description: The local date and time the event occurred.
+          type: string
+          format: datetime
+          default: null
+          example: '2024-05-26 07:11:45'
+          readOnly: true
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    ShipmentImages:
+      $ref: '#/components/schemas/shipment-images'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
     track-add:
       type: object
       properties:
@@ -233,190 +454,6 @@ components:
             - tracking_number
       required:
       - events
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
-    shipment-images:
-      description: Lists URLs of images taken during transit and categorized by type of photo. URLs expire after a period of time so refer to the `expires` query parameter.
-      type: object
-      readOnly: true
-      properties:
-        pod:
-          type: array
-          default: []
-          readOnly: true
-          example:
-          - https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271
-          items:
-            type: string
-        scans:
-          type: array
-          default: []
-          readOnly: true
-          example:
-          - https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271
-          items:
-            type: string
-    Destination:
-      $ref: '#/components/schemas/destination'
-    destination:
-      type: object
-      properties:
-        city:
-          type: string
-          description: Destination city.
-          example: BROOKLYN
-        province:
-          type: string
-          description: Destination province.
-          example: NY
-        country:
-          type: string
-          description: Destination country.
-          example: US
-        port:
-          type: string
-          description: Destination port.
-          example: JFK
-      additionalProperties: false
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
     track:
       type: object
       properties:
@@ -476,114 +513,77 @@ components:
               description: The shipment tracking number.
               example: '9261290198179000000172'
           additionalProperties: false
-    bad-request:
+    shipment-images:
+      description: Lists URLs of images taken during transit and categorized by type of photo. URLs expire after a period of time so refer to the `expires` query parameter.
       type: object
-      summary: Bad Request
-      description: Validation error with the request
+      readOnly: true
       properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
+        pod:
           type: array
-          minItems: 1
-          maxItems: 5
+          default: []
+          readOnly: true
+          example:
+          - https://storage.googleapis.com/boxc_shipments_us/images/pod/i67e4226fb291a5.123123123.jpeg?fingerprint=06d7de3c7c8c0f5c&expires=1758556271
           items:
             type: string
-    NotFound:
-      $ref: '#/components/schemas/not-found'
-    Track:
-      $ref: '#/components/schemas/track'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    ShipmentImages:
-      $ref: '#/components/schemas/shipment-images'
-    event:
-      type: object
-      description: The tracking history for this label in descending order. Set by the system.
-      properties:
-        carrier:
-          description: The carrier that provided this event.
-          type: string
-          example: USPS
+        scans:
+          type: array
+          default: []
           readOnly: true
-        city:
-          description: The city the event took place in.
-          type: string
-          maxLength: 40
-          example: New York City
-          readOnly: true
-        code:
-          description: A code matching the description and to help identify the event.
-          type: integer
-          example: 200
-          readOnly: true
-        country:
-          description: The country code the event took place in.
-          type: string
-          maxLength: 2
-          minLength: 2
-          pattern:
-          - A-Z
-          example: US
-          readOnly: true
-        description:
-          description: A description of the event.
-          type: string
-          example: DELIVERED
-          readOnly: true
-        latitude:
-          description: Latitude coordinate of the event.
-          type:
-          - number
-          - 'null'
-          minimum: -90
-          maximum: 90
-          example: null
-          readOnly: true
-        longitude:
-          description: Longitude coordinate of the event.
-          type:
-          - number
-          - 'null'
-          minimum: -180
-          maximum: 180
-          example: null
-          readOnly: true
-        postal_code:
-          description: The postal code the event took place in.
-          type: string
-          maxLength: 10
-          example: '10001'
-          readOnly: true
-        province:
-          description: The province the event took place in.
-          type: string
-          maxLength: 40
-          example: NY
-          readOnly: true
-        time:
-          description: The local date and time the event occurred.
-          type: string
-          format: datetime
-          default: null
-          example: '2024-05-26 07:11:45'
-          readOnly: true
+          example:
+          - https://storage.googleapis.com/boxc_shipments_us/images/scans/i67e4226fb291a6.1231232131.jpeg?fingerprint=15d7de3c7c8c0f5c&expires=1758556271
+          items:
+            type: string
     Event:
       $ref: '#/components/schemas/event'
-    TrackPost:
-      $ref: '#/components/schemas/track-add'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
   securitySchemes:
     JWT:
       type: http

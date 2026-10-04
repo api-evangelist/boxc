@@ -110,6 +110,63 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    address:
+      description: This is the user's personal or company address and may not be the same as the consignor.
+      type: object
+      properties:
+        company_name:
+          description: The company name.
+          type: string
+          maxLength: 40
+          example: Terracotta Warriors Ltd, Co
+        street1:
+          description: The company's street address.
+          type: string
+          maxLength: 50
+          example: 4 Jing Shan Qian Jie
+        street2:
+          description: Additional space for the company's street address.
+          type:
+          - string
+          - 'null'
+          default: null
+          maxLength: 50
+          example: Dongcheng
+        city:
+          description: The company's city.
+          type: string
+          maxLength: 40
+          example: Beijing
+        province:
+          description: The company's province. Required for some countries.
+          type:
+          - string
+          - 'null'
+          default: null
+          maxLength: 40
+          example: Hebei
+        postal_code:
+          description: The company's postal code. Required for some countries.
+          type:
+          - string
+          - 'null'
+          maxLength: 10
+          example: '100009'
+          default: null
+        country:
+          description: The company's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          pattern: /^[A-Z]{2}$/
+          example: CN
+      required:
+      - company_name
+      - street1
+      - city
+      - country
+    Subscription:
+      $ref: '#/components/schemas/subscription'
     subscription:
       type: object
       description: Subscription.
@@ -164,65 +221,37 @@ components:
           - active
           - cancelled
           example: active
-    address:
-      description: This is the user's personal or company address and may not be the same as the consignor.
+    bad-request:
       type: object
+      summary: Bad Request
+      description: Validation error with the request
       properties:
-        company_name:
-          description: The company name.
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
           type: string
-          maxLength: 40
-          example: Terracotta Warriors Ltd, Co
-        street1:
-          description: The company's street address.
+        status:
           type: string
-          maxLength: 50
-          example: 4 Jing Shan Qian Jie
-        street2:
-          description: Additional space for the company's street address.
-          type:
-          - string
-          - 'null'
-          default: null
-          maxLength: 50
-          example: Dongcheng
-        city:
-          description: The company's city.
-          type: string
-          maxLength: 40
-          example: Beijing
-        province:
-          description: The company's province. Required for some countries.
-          type:
-          - string
-          - 'null'
-          default: null
-          maxLength: 40
-          example: Hebei
-        postal_code:
-          description: The company's postal code. Required for some countries.
-          type:
-          - string
-          - 'null'
-          maxLength: 10
-          example: '100009'
-          default: null
-        country:
-          description: The company's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-          type: string
-          pattern: /^[A-Z]{2}$/
-          example: CN
-      required:
-      - company_name
-      - street1
-      - city
-      - country
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
     BadRequest:
       $ref: '#/components/schemas/bad-request'
     Address:
       $ref: '#/components/schemas/address'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
+    User:
+      $ref: '#/components/schemas/user'
     unauthorized:
       description: Unauthorized
       content:
@@ -259,18 +288,14 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    rate-limit:
-      description: Too Many Requests
+    forbidden:
+      description: Forbidden
       content:
         application/json:
           schema:
             type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
             properties:
               code:
                 description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -291,14 +316,22 @@ components:
                 items:
                   type: string
           examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
               value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
                 errors:
-                - Too many requests. Please wait before trying again.
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
     user:
       type: object
       properties:
@@ -351,16 +384,14 @@ components:
           example: UTC
           readOnly: true
       additionalProperties: false
-    Subscription:
-      $ref: '#/components/schemas/subscription'
-    forbidden:
-      description: Forbidden
+    rate-limit:
+      description: Too Many Requests
       content:
         application/json:
           schema:
             type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
             properties:
               code:
                 description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -381,47 +412,16 @@ components:
                 items:
                   type: string
           examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
               value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
+                code: 1015
+                message: Too many requests. Please wait before trying again.
                 errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
-    User:
-      $ref: '#/components/schemas/user'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
+                - Too many requests. Please wait before trying again.
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http

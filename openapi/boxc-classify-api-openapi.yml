@@ -102,6 +102,96 @@ paths:
                     - Unable to deduct amount from balance
 components:
   schemas:
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Processing Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     classify:
       x-extendedDiscriminator: summary
       type: object
@@ -171,20 +261,14 @@ components:
       - destination_country
       - origin_country
       - products
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    payment-required:
-      description: Payment Required
+    unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
             type: object
-            summary: Payment Required
-            description: There are insufficient funds available for this resource
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
             properties:
               code:
                 description: Error code. Refer to the list of [Errors](/#tag/Errors).
@@ -198,50 +282,21 @@ components:
                 - error
                 example: error
               errors:
-                description: Duplicate of the error message
+                description: Displays processing error.
                 type: array
+                minItems: 1
+                maxItems: 1
                 items:
                   type: string
           examples:
-            paymentRequired:
-              summary: Payment Required
-              description: Insufficient funds
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
               value:
-                code: 1080
-                message: Insufficient funds
+                code: 1005
+                message: Invalid access token
                 errors:
-                - Insufficient funds
-    internal-server-error:
-      type: object
-      summary: Internal Server Error
-      description: Processing Error
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
-    Classify:
-      $ref: '#/components/schemas/classify'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    PaymentRequired:
-      $ref: '#/components/schemas/payment-required'
+                - Invalid access token
     rate-limit:
       description: Too Many Requests
       content:
@@ -322,65 +377,10 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
+    Classify:
+      $ref: '#/components/schemas/classify'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http
