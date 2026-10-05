@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.boxc.com/swagger.yaml",
+ "requested_url": "https://docs.boxc.com/swagger.yaml",
+ "status": 200,
+ "content_type": "text/yaml",
+ "bytes": 555218,
+ "sha256": "1ebdc4b00a71f532677b42643d5f586abc4447c26f244ab15e2b6eb904e565df",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.988), but the bytes differ, so the archive is an earlier or reformatted copy."
+}
