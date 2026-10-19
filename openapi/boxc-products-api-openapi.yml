@@ -4,12 +4,15 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Products API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Products
   x-displayName: Products
-  description: The Products resource allows users to add their products to the BoxC system.
+  description: 'The Products resource allows users to add their products to the BoxC system. A product can have one or more Stock Keeping Units (SKUs). This gives users the ability to link their different shops'' SKUs to the same product. There can only be one active SKU per shop per product. Orders won''t be fulfilled until the warehouse accepts and processes your products. This includes measuring the weight and dimensions, and updating the quantity.
+
+
+    **Note:** Products and SKUs linked to orders can''t be deleted. Existing SKUs can''t be assigned to a different shop.'
 paths:
   /products:
     get:
@@ -743,54 +746,8 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
-    internal-server-error:
-      type: object
-      summary: Internal Server Error
-      description: Processing Error
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
     not-found:
       type: object
       summary: Not Found
@@ -812,6 +769,90 @@ components:
           type: array
           items:
             type: string
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
     product:
       type: object
       description: Information about the warehouse the inbound shipment is being sent to. Only the id is required when creating a shipment. View the Warehouses resource for a list.
@@ -827,6 +868,8 @@ components:
           maxLength: 32
           default: null
           example: '4011200296908'
+        compliance:
+          $ref: '#/components/schemas/LineItemCompliance'
         coo:
           description: The country of origin or where the product was manufactured in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format for Customs clearance.
           type: string
@@ -952,15 +995,145 @@ components:
           readOnly: true
       required:
       - coo
+      - cost
       - description
       - name
       - value
-    Product:
-      $ref: '#/components/schemas/product'
-    Warehouse:
-      $ref: '#/components/schemas/warehouse'
     Sku:
       $ref: '#/components/schemas/sku'
+    ProductWarehouse:
+      $ref: '#/components/schemas/product-warehouse'
+    Warehouse:
+      $ref: '#/components/schemas/warehouse'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    line-item-compliance:
+      type: object
+      title: ProductCompliance
+      description: Additional customs compliance elements for the product based on destination country.
+      properties:
+        cpsc:
+          type: object
+          description: Consumer Product Safety Commission (US) - either the product details or a `disclaim` must be provided.
+          properties:
+            product_id:
+              type:
+              - string
+              - 'null'
+              description: The product id that is used in the CPSC Registry.
+              default: null
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 19
+            product_version:
+              type:
+              - string
+              - 'null'
+              description: The product id certificate version used in the CPSC Registry.
+              default: null
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 19
+            certifier_id:
+              type:
+              - string
+              - 'null'
+              description: The certifier id for the product registry (LPCO number).
+              pattern: ^[A-Za-z0-9./_-]+$
+              maxLength: 23
+              default: null
+            disclaim:
+              type:
+              - object
+              - 'null'
+              description: A disclaim is required if you don't provide the `product_id`, `product_version`, and `certifier_id`.
+              default: null
+              properties:
+                code:
+                  type: string
+                  description: Disclaim code
+                  enum:
+                  - A
+                  - B
+                iuc:
+                  type: string
+                  description: IUC
+                  minLength: 7
+                  maxLength: 7
+                iuc_description:
+                  type: string
+                  description: IUC description
+                  maxLength: 64
+              required:
+              - code
+              - iuc
+              - iuc_description
+        eu_pid:
+          type: object
+          description: EU product identification details for shipments destined to EU.
+          properties:
+            merchant:
+              type: string
+              description: The merchant's product identifier.
+              minLength: 3
+              maxLength: 40
+              example: GIFT-MUG-LOGO-RED
+            manufacturer:
+              type: string
+              description: The manufacturer's product identifier.
+              minLength: 3
+              maxLength: 40
+              example: PROMO-MUG-350ML
+            standard:
+              type:
+              - string
+              - 'null'
+              description: Any globally standard identifier (e.g. GTIN, UPC, EAN, ISBN). A `disclaim` is required if there is no standard identifier.
+              minLength: 3
+              maxLength: 4,
+              example: null
+            disclaim:
+              type:
+              - object
+              - 'null'
+              description: A disclaim is required when there is no `standard` identifier (e.g. a custom coffee mug).
+              properties:
+                code:
+                  type: string
+                  description: The disclaim code.
+                  minLength: 1
+                  maxLength: 40
+                  example: Y081
+              required:
+              - code
+          required:
+          - merchant
+          - manufacturer
+    Product:
+      $ref: '#/components/schemas/product'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
     unauthorized:
       description: Unauthorized
       content:
@@ -997,6 +1170,53 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    sku:
+      type: object
+      properties:
+        active:
+          description: Whether or not this SKU is active. Orders with an inactive SKU can't be created.
+          type: boolean
+          default: true
+          example: true
+        shop_id:
+          description: The shop ID associated with this SKU
+          type: string
+          example: my-shop
+        sku:
+          description: The SKU identifier
+          type: string
+          minLength: 3
+          maxLength: 32
+          pattern: A-Za-z0-9-_ /
+          example: SK10291
+      required:
+      - shop_id
+      - sku
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     product-warehouse:
       type: object
       description: Information about the product and warehouse the inbound shipment is being sent to.
@@ -1143,46 +1363,8 @@ components:
       - name
       - skus
       - value
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    NotFound:
-      $ref: '#/components/schemas/not-found'
+    LineItemCompliance:
+      $ref: '#/components/schemas/line-item-compliance'
     warehouse:
       type: object
       description: Information about the warehouse the inbound shipment or is being sent to or a return was processed at. Only the ```id``` is required when creating an inbound shipment. View the [Warehouses resource](/#tag/Warehouses) for a list.
@@ -1229,80 +1411,6 @@ components:
           readOnly: true
       required:
       - id
-    ProductWarehouse:
-      $ref: '#/components/schemas/product-warehouse'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    sku:
-      type: object
-      properties:
-        active:
-          description: Whether or not this SKU is active. Orders with an inactive SKU can't be created.
-          type: boolean
-          default: true
-          example: true
-        shop_id:
-          description: The shop ID associated with this SKU
-          type: string
-          example: my-shop
-        sku:
-          description: The SKU identifier
-          type: string
-          minLength: 3
-          maxLength: 32
-          pattern: A-Za-z0-9-_ /
-          example: SK10291
-      required:
-      - shop_id
-      - sku
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
   securitySchemes:
     JWT:
       type: http
@@ -1330,6 +1438,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -1344,6 +1453,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

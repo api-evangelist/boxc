@@ -1,7 +1,7 @@
 {
   "provider": "boxc",
   "sources": [
-    "_original/boxc-openapi-original.yml"
+    "_original/boxc-openapi.yml"
   ],
   "outputs": [
     "boxc-calculateduty-api-openapi.yml",
@@ -16,6 +16,7 @@
     "boxc-manifests-api-openapi.yml",
     "boxc-orders-api-openapi.yml",
     "boxc-overpacks-api-openapi.yml",
+    "boxc-pga-api-openapi.yml",
     "boxc-products-api-openapi.yml",
     "boxc-reshipments-api-openapi.yml",
     "boxc-returns-api-openapi.yml",
@@ -25,41 +26,16 @@
     "boxc-users-api-openapi.yml",
     "boxc-validateaddress-api-openapi.yml",
     "boxc-warehouses-api-openapi.yml",
+    "boxc-waybills-api-openapi.yml",
     "boxc-webhooks-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 2 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "boxc-openapi-original.yml: upgraded swagger 2.0 -> OpenAPI 3.2.0",
-    "superseded outputs removed: boxc-entry-points-api-openapi.yml, boxc-validate-address-api-openapi.yml",
-    "apis.yml register: written (+2 apis, 22 total)"
+    "boxc-openapi.yml: upgraded swagger 2.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+4 apis, 24 total)"
   ],
-  "skipped": [
-    "boxc-calculateduty-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-classify-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-credentials-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-customsproducts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-entry-points-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-estimate-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-inbound-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-invoices-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-labels-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-manifests-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-overpacks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-reshipments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-returns-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-shipments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-shops-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-track-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-validate-address-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-warehouses-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "boxc-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
-  ]
+  "skipped": []
 }

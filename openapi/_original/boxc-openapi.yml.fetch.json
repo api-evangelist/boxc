@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.boxc.com/swagger.yaml",
+ "final": "https://docs.boxc.com/swagger.yaml",
+ "status": 200,
+ "content_type": "text/yaml",
+ "bytes": 592249,
+ "sha256": "46cee84c13026e6cb74c3c0a1d183fc06cf1bb5798c3fab516ec8f4bce474c34",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

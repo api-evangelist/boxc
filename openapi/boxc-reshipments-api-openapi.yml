@@ -4,12 +4,25 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Reshipments API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Reshipments
   x-displayName: Reshipments
-  description: The Reshipments resource allows you to reship one or more returned packages at a time from a BoxC warehouse.
+  description: 'The Reshipments resource allows you to reship one or more returned packages at a time from a BoxC warehouse. When a reshipment is created the `status` of all included returns will change to "Reshipping". Only returns with the following status can be reshipped: Processed, Verifying, and Verified. If reshipping more than one return at a time then you must wait for a facility operator to provide an `estimated_reship_fee`. If reshipping one return then the estimate will be instantaneous. In both cases you must approve the estimate before the reshipment is sent and your account is charged.
+
+
+    **Note:** All returns in a bulk reshipment (> 1 return) must reside in the same warehouse.
+
+    ### Status
+
+    When a reshipment is created its status is set to "Pending" by default. It will remain that way until the `estimated_reship_fee` is populated by the system or facility operator. Afterwards, you have the option to approve or decline the amount by updating the status accordingly. If "Declined", it will not be reshipped. If "Approved" it will be reshipped, tracking information will be made available, and a final reship_fee will be provided. Reshipments with the status "Approved" cannot be deleted.
+
+
+    **Important:** Reshipments that are "Pending" or "Declined" longer than 15 days will be deleted by the system.
+
+
+    **Note:** The final reshipping fee may differ from the estimated reshipping fee.'
 paths:
   /reshipments:
     get:
@@ -506,193 +519,12 @@ paths:
                     - Reshipment can't be deleted
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    To:
-      $ref: '#/components/schemas/to'
-    PaymentRequired:
-      $ref: '#/components/schemas/payment-required'
-    payment-required:
-      description: Payment Required
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Payment Required
-            description: There are insufficient funds available for this resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Duplicate of the error message
-                type: array
-                items:
-                  type: string
-          examples:
-            paymentRequired:
-              summary: Payment Required
-              description: Insufficient funds
-              value:
-                code: 1080
-                message: Insufficient funds
-                errors:
-                - Insufficient funds
     NotFound:
       $ref: '#/components/schemas/not-found'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
     BadRequest:
       $ref: '#/components/schemas/bad-request'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
-    to:
-      description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
-      title: ShippingAddress
-      type: object
-      properties:
-        company_name:
-          description: The company name.
-          type: string
-          maxLength: 40
-          default: null
-          example: null
-        name:
-          description: The recipient's name.
-          type: string
-          maxLength: 40
-          example: John Smith
-        phone:
-          description: The recipient's phone number. Conditional.
-          type: string
-          default: null
-          maxLength: 20
-          format: phone
-          example: 555-123-4562
-        email:
-          description: The recipient's e-mail address. Conditional.
-          type: string
-          default: null
-          maxLength: 64
-          format: email
-          example: john@example.com
-        street1:
-          description: The recipient's street address.
-          type: string
-          maxLength: 50
-          minLength: 1
-          example: 108 N WESTGATE WAY
-        street2:
-          description: Additional space for the recipient's street address.
-          type: string
-          maxLength: 50
-          default: null
-          example: null
-        city:
-          description: The recipient's city.
-          type: string
-          maxLength: 40
-          example: WYLIE
-        province:
-          description: The recipient's province or state. Conditional.
-          type: string
-          maxLength: 40
-          default: null
-          example: TX
-        postal_code:
-          description: The recipient's postal code or ZIP Code. Conditional.
-          type: string
-          maxLength: 10
-          default: null
-          example: '75098'
-        country:
-          description: The recipient's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
-          type: string
-          pattern:
-          - A-Z
-          maxLength: 2
-          minLength: 2
-          example: US
-      required:
-      - name
-      - street1
-      - city
-      - country
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    internal-server-error:
-      type: object
-      summary: Internal Server Error
-      description: Processing Error
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
     unauthorized:
       description: Unauthorized
       content:
@@ -729,42 +561,29 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     forbidden:
       description: Forbidden
       content:
@@ -884,8 +703,202 @@ components:
       - value
       - returns
       additionalProperties: false
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    to:
+      description: The recipient's shipping address. This may or may not be the same as the consignee. Countries have different formatting rules and element requirements for addresses.
+      title: ShippingAddress
+      type: object
+      properties:
+        company_name:
+          description: The company name.
+          type: string
+          maxLength: 40
+          default: null
+          example: null
+        name:
+          description: The recipient's name.
+          type: string
+          maxLength: 40
+          example: John Smith
+        phone:
+          description: The recipient's phone number. Conditional.
+          type: string
+          default: null
+          maxLength: 20
+          format: phone
+          example: 555-123-4562
+        email:
+          description: The recipient's e-mail address. Conditional.
+          type: string
+          default: null
+          maxLength: 64
+          format: email
+          example: john@example.com
+        street1:
+          description: The recipient's street address.
+          type: string
+          maxLength: 50
+          minLength: 1
+          example: 108 N WESTGATE WAY
+        street2:
+          description: Additional space for the recipient's street address.
+          type: string
+          maxLength: 50
+          default: null
+          example: null
+        city:
+          description: The recipient's city.
+          type: string
+          maxLength: 40
+          example: WYLIE
+        province:
+          description: The recipient's province or state. Conditional.
+          type: string
+          maxLength: 40
+          default: null
+          example: TX
+        postal_code:
+          description: The recipient's postal code or ZIP Code. Conditional.
+          type: string
+          maxLength: 10
+          default: null
+          example: '75098'
+        country:
+          description: The recipient's country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format.
+          type: string
+          pattern:
+          - A-Z
+          maxLength: 2
+          minLength: 2
+          example: US
+      required:
+      - name
+      - street1
+      - city
+      - country
     Forbidden:
       $ref: '#/components/schemas/forbidden'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    To:
+      $ref: '#/components/schemas/to'
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
   securitySchemes:
     JWT:
       type: http
@@ -913,6 +926,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -927,6 +941,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

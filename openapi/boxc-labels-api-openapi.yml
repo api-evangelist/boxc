@@ -4,7 +4,7 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Labels API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Labels
@@ -195,6 +195,22 @@ paths:
                     message: Label can't be cancelled
                     errors:
                     - Label can't be cancelled
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+              examples:
+                carrierUnavailable:
+                  summary: Service Unavailable - Carrier
+                  description: The carrier could not cancel the label at this time, for example because it was created moments ago. The label is unchanged and nothing has been credited, so retry.
+                  value:
+                    code: 1010
+                    message: 'Service Unavailable: Please try again shortly.'
+                    status: error
+                    errors:
+                    - 'Service Unavailable: Please try again shortly.'
   /labels:
     post:
       tags:
@@ -453,8 +469,63 @@ paths:
                     message: Label can't be cancelled
                     errors:
                     - Label can't be cancelled
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+              examples:
+                carrierUnavailable:
+                  summary: Service Unavailable - Carrier
+                  description: The carrier could not cancel the label at this time, for example because it was created moments ago. The label is unchanged and nothing has been credited, so retry.
+                  value:
+                    code: 1010
+                    message: 'Service Unavailable: Please try again shortly.'
+                    status: error
+                    errors:
+                    - 'Service Unavailable: Please try again shortly.'
 components:
   schemas:
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    label-patch:
+      type: object
+      properties:
+        cancelled:
+          description: Set to `true` to cancel this label and remove the package from the overpack.
+          type: boolean
+          default: false
+          example: true
+        overpack_id:
+          description: Set to `null` to remove this package from the overpack. Use the overpacks endpoint to assign a package.
+          type: null
+          example: null
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    LabelPatch:
+      $ref: '#/components/schemas/label-patch'
+    LabelPostBulkRequest:
+      $ref: '#/components/schemas/label-post-bulk-request'
     label-post-bulk-request:
       type: object
       properties:
@@ -473,6 +544,113 @@ components:
       required:
       - labels
       additionalProperties: false
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    Event:
+      $ref: '#/components/schemas/event'
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    NotFound:
+      $ref: '#/components/schemas/not-found'
     bad-request:
       type: object
       summary: Bad Request
@@ -496,52 +674,106 @@ components:
           maxItems: 5
           items:
             type: string
-    internal-server-error:
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    PackageContents:
+      $ref: '#/components/schemas/package-contents'
+    package-contents:
       type: object
-      summary: Internal Server Error
-      description: Processing Error
+      title: PackageContents
       properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+        description:
+          description: A description of this item.
+          type: string
+          minLength: 3
+          maxLength: 64
+          example: Dayman figurines
+        value:
+          description: The total value of this item.
+          type: decimal
+          exclusiveMinimum: 0
+          example: 200.25
+        quantity:
+          description: The number of units of this item.
           type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
+          exclusiveMinimum: 0
+          example: 10
+      required:
+      - description
+      - value
+      - quantity
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
     label:
       type: object
       properties:
@@ -702,6 +934,8 @@ components:
           exclusiveMaximum: 1000
           default: 10
           example: 8
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
     event:
       type: object
       description: The tracking history for this label in descending order. Set by the system.
@@ -773,217 +1007,35 @@ components:
           default: null
           example: '2024-05-26 07:11:45'
           readOnly: true
-    PaymentRequired:
-      $ref: '#/components/schemas/payment-required'
-    payment-required:
-      description: Payment Required
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Payment Required
-            description: There are insufficient funds available for this resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Duplicate of the error message
-                type: array
-                items:
-                  type: string
-          examples:
-            paymentRequired:
-              summary: Payment Required
-              description: Insufficient funds
-              value:
-                code: 1080
-                message: Insufficient funds
-                errors:
-                - Insufficient funds
-    unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Unauthorized
-            description: Lack of valid authentication credentials for the resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            accessToken:
-              summary: Invalid access token
-              description: Invalid access token
-              value:
-                code: 1005
-                message: Invalid access token
-                errors:
-                - Invalid access token
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    NotFound:
-      $ref: '#/components/schemas/not-found'
-    Event:
-      $ref: '#/components/schemas/event'
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    package-contents:
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
+    internal-server-error:
       type: object
-      title: PackageContents
+      summary: Internal Server Error
+      description: Internal Server Error
       properties:
-        description:
-          description: A description of this item.
-          type: string
-          minLength: 3
-          maxLength: 64
-          example: Dayman figurines
-        value:
-          description: The total value of this item.
-          type: decimal
-          exclusiveMinimum: 0
-          example: 200.25
-        quantity:
-          description: The number of units of this item.
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
           type: integer
-          exclusiveMinimum: 0
-          example: 10
-      required:
-      - description
-      - value
-      - quantity
-    label-patch:
-      type: object
-      properties:
-        cancelled:
-          description: Set to `true` to cancel this label and remove the package from the overpack.
-          type: boolean
-          default: false
-          example: true
-        overpack_id:
-          description: Set to `null` to remove this package from the overpack.
-          default: null
-          type:
-          - integer
-          - 'null'
-          example: null
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    LabelPatch:
-      $ref: '#/components/schemas/label-patch'
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     Label:
       $ref: '#/components/schemas/label'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    PackageContents:
-      $ref: '#/components/schemas/package-contents'
-    LabelPostBulkRequest:
-      $ref: '#/components/schemas/label-post-bulk-request'
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
   securitySchemes:
     JWT:
       type: http
@@ -1011,6 +1063,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -1025,6 +1078,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

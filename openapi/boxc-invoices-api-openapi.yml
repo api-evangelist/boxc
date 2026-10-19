@@ -4,7 +4,7 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Invoices API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Invoices
@@ -164,58 +164,44 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
     NotFound:
       $ref: '#/components/schemas/not-found'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
+    invoice:
+      type: object
+      properties:
+        created:
+          type: string
+          description: The date and time the invoice was created in UTC.
+          example: '2024-07-03 13:57:13'
+          format: datetime
+        currency:
+          type: string
+          description: The 3-letter currency code for the amount in this invoice.
+          example: USD
+        end_date:
+          type: string
+          description: The end date of the invoice in UTC.
+          example: '2024-06-30'
+        id:
+          type: integer
+          description: The unique ID of the invoice.
+          example: 901934
+        name:
+          type: string
+          description: The name of the invoice for grouping multiple invoices in different currencies together.
+          example: 2024-W34
+        start_date:
+          type: string
+          description: The start date of the invoice in UTC.
+          example: '2024-06-01'
+        total:
+          type: decimal
+          description: The total billed amount of the invoice.
+          example: 2359.56
     BadRequest:
       $ref: '#/components/schemas/bad-request'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
     unauthorized:
       description: Unauthorized
       content:
@@ -252,6 +238,56 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Invoice:
+      $ref: '#/components/schemas/invoice'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     rate-limit:
       description: Too Many Requests
       content:
@@ -332,42 +368,6 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    Invoice:
-      $ref: '#/components/schemas/invoice'
-    invoice:
-      type: object
-      properties:
-        created:
-          type: string
-          description: The date and time the invoice was created in UTC.
-          example: '2024-07-03 13:57:13'
-          format: datetime
-        currency:
-          type: string
-          description: The 3-letter currency code for the amount in this invoice.
-          example: USD
-        end_date:
-          type: string
-          description: The end date of the invoice in UTC.
-          example: '2024-06-30'
-        id:
-          type: integer
-          description: The unique ID of the invoice.
-          example: 901934
-        name:
-          type: string
-          description: The name of the invoice for grouping multiple invoices in different currencies together.
-          example: 2024-W34
-        start_date:
-          type: string
-          description: The start date of the invoice in UTC.
-          example: '2024-06-01'
-        total:
-          type: decimal
-          description: The total billed amount of the invoice.
-          example: 2359.56
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http
@@ -395,6 +395,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -409,6 +410,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

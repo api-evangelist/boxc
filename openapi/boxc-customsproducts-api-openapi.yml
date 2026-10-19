@@ -4,12 +4,18 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Customs Products API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: CustomsProducts
   x-displayName: Customs\Products
-  description: Not to be confused with Fulfillment Products, Customs Products are for clearing shipments containing regulated items like Food and Cosmetics (PGA).
+  description: 'Not to be confused with Fulfillment Products, Customs Products are for clearing shipments containing regulated items like Food and Cosmetics (PGA). Customs Products contain information about the item including the manufacturer, seller, importer, etc. Shipments that are determined to be PGA must provide the `product_id` in the line item. Manifesting PGA shipments will notify the relevant agencies.
+
+
+    Several properties are conditional and offer different options based on the `coi` and `type` of product.
+
+
+    **Important:** This resource and its operations are in Beta and subject to change without notice.'
 paths:
   /customs/products:
     get:
@@ -360,60 +366,12 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    CustomsProduct:
-      $ref: '#/components/schemas/customs-product'
     NotFound:
       $ref: '#/components/schemas/not-found'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
     RateLimit:
       $ref: '#/components/schemas/rate-limit'
     BadRequest:
       $ref: '#/components/schemas/bad-request'
-    not-found:
-      type: object
-      summary: Not Found
-      description: Object not found or not owned by the user
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Duplicate of the error message
-          type: array
-          items:
-            type: string
     unauthorized:
       description: Unauthorized
       content:
@@ -450,50 +408,6 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
-    forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Forbidden
-            description: Error relating to insufficient permissions for a resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            revoked:
-              summary: Forbidden Authorization Revoked
-              description: 'Forbidden: Authorization revoked'
-              value:
-                code: 1008
-                message: 'Forbidden: Authorization revoked'
-                errors:
-                - 'Forbidden: Authorization revoked'
-            scope:
-              summary: Forbidden Scope
-              description: 'Forbidden: Missing required scope'
-              value:
-                code: 1009
-                message: 'Forbidden: Missing required scope'
-                errors:
-                - 'Forbidden: Missing required scope'
     customs-product:
       type: object
       properties:
@@ -1329,6 +1243,56 @@ components:
       - shipper
       - type
       - uom
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    CustomsProduct:
+      $ref: '#/components/schemas/customs-product'
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     rate-limit:
       description: Too Many Requests
       content:
@@ -1365,8 +1329,50 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
   securitySchemes:
     JWT:
       type: http
@@ -1394,6 +1400,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -1408,6 +1415,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

@@ -4,7 +4,7 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Validate Address API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Validate Address
@@ -106,12 +106,6 @@ paths:
                     - There was an error while charging the account balance
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    PaymentRequired:
-      $ref: '#/components/schemas/payment-required'
-    ValidatedAddress:
-      $ref: '#/components/schemas/validated-address'
     validated-address:
       type: object
       properties:
@@ -131,129 +125,6 @@ components:
           items:
             $ref: '#/components/schemas/ValidatedAddressMatch'
       additionalProperties: false
-    validate-address:
-      type: object
-      properties:
-        street1:
-          description: The street address.
-          type: string
-          maxLength: 50
-          example: 113 INTL BROADWAY
-        street2:
-          description: Additional space for street address.
-          type: string
-          maxLength: 50
-          example: ''
-        city:
-          type: string
-          description: The city.
-          example: LOS ANGELES
-        province:
-          type: string
-          description: The province or the state. Optional. Required for US.
-          example: CA
-        postal_code:
-          type: string
-          description: The postal code or ZIP Code.
-          example: '91013'
-        country:
-          type: string
-          description: 'The country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Required.
-
-
-            Allowed Values: AR, AT, AU, BE, BG, BR, CA, CH, CL, CO, CZ, DE, DK, EE, ES, FI, FR, GB, HR, HU, IE, IN, IT, JP, LT, LU, LV, MX, MY, NL, NO, NZ, PL, PR, PT, SE, SG, SI, SK, US'
-          example: US
-      required:
-      - street1
-      - city
-      - country
-      additionalProperties: false
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    internal-server-error:
-      type: object
-      summary: Internal Server Error
-      description: Processing Error
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
-    payment-required:
-      description: Payment Required
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Payment Required
-            description: There are insufficient funds available for this resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Duplicate of the error message
-                type: array
-                items:
-                  type: string
-          examples:
-            paymentRequired:
-              summary: Payment Required
-              description: Insufficient funds
-              value:
-                code: 1080
-                message: Insufficient funds
-                errors:
-                - Insufficient funds
     validated-address-match:
       type: object
       properties:
@@ -294,7 +165,7 @@ components:
             MEDIUM confidence means that the address is missing some components or some parts are unconfirmed but plausible. It is usually acceptable as an address input but whether it can be used or not depends on its completeness thus, caution is advised.
 
 
-            HIGH confidence means that there''s an exact match thus, it is recommended and can be used as an address input. '
+            HIGH confidence means that there''s an exact match thus, it is recommended and can be used as an address input.'
           example: HIGH
           enum:
           - LOW
@@ -780,8 +651,44 @@ components:
               - '11789'
               items:
                 type: string
-    ValidateAddress:
-      $ref: '#/components/schemas/validate-address'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
     unauthorized:
       description: Unauthorized
       content:
@@ -818,6 +725,66 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
+    validate-address:
+      type: object
+      properties:
+        street1:
+          description: The street address.
+          type: string
+          maxLength: 50
+          example: 113 INTL BROADWAY
+        street2:
+          description: Additional space for street address.
+          type: string
+          maxLength: 50
+          example: ''
+        city:
+          type: string
+          description: The city.
+          example: LOS ANGELES
+        province:
+          type: string
+          description: The province or the state. Optional. Required for US.
+          example: CA
+        postal_code:
+          type: string
+          description: The postal code or ZIP Code.
+          example: '91013'
+        country:
+          type: string
+          description: 'The country in [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) format. Required.
+
+
+            Allowed Values: AR, AT, AU, BE, BG, BR, CA, CH, CL, CO, CZ, DE, DK, EE, ES, FI, FR, GB, HR, HU, IE, IN, IT, JP, LT, LU, LV, MX, MY, NL, NO, NZ, PL, PR, PT, SE, SG, SI, SK, US'
+          example: US
+      required:
+      - street1
+      - city
+      - country
+      additionalProperties: false
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     forbidden:
       description: Forbidden
       content:
@@ -862,6 +829,37 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
+    ValidateAddress:
+      $ref: '#/components/schemas/validate-address'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    ValidatedAddressMatch:
+      $ref: '#/components/schemas/validated-address-match'
     rate-limit:
       description: Too Many Requests
       content:
@@ -898,10 +896,12 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
-    ValidatedAddressMatch:
-      $ref: '#/components/schemas/validated-address-match'
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    ValidatedAddress:
+      $ref: '#/components/schemas/validated-address'
   securitySchemes:
     JWT:
       type: http
@@ -929,6 +929,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -943,6 +944,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

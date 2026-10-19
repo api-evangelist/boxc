@@ -969,6 +969,48 @@ apis:
     url: https://docs.boxc.com/
   - type: APIReference
     url: https://docs.boxc.com/
+- aid: boxc:boxc-pga-api
+  name: Boxc PGA API
+  description: >-
+    Use this resource to determine if a product is PGA. Your balance will be debited $0.03 for each `hs_code`
+    submitted.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - PGA
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-pga-api-openapi.yml
+  - type: Swagger
+    url: openapi/_original/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
+- aid: boxc:boxc-waybills-api
+  name: Boxc Waybills API
+  description: >-
+    Waybills allow commercial and postal clients to transmit pre-alert data to BoxC. Manifests are grouped
+    together under one waybill so that all related overpacks and shipments (parcels) are linked. Both
+    air and ocean waybills are supported. Validation rules are different based on the mode of transport
+    and type of waybill. Several of the numbers provided will have their check digit or checksum validated.
+
+
+    Documents can be attached to waybills to assist with the pre-alert by using the relevant endpoints.
+    Active content is stripped from PDF files for security reasons.
+  humanURL: https://docs.boxc.com/
+  baseURL: https://api.boxc.com/v1
+  tags:
+  - Waybills
+  properties:
+  - type: OpenAPI
+    url: openapi/boxc-waybills-api-openapi.yml
+  - type: Swagger
+    url: openapi/_original/boxc-openapi-original.yml
+  - type: Documentation
+    url: https://docs.boxc.com/
+  - type: APIReference
+    url: https://docs.boxc.com/
 - aid: boxc:boxc-entry-points-api
   name: Boxc Entry Points API
   description: >-
@@ -978,8 +1020,6 @@ apis:
   humanURL: https://docs.boxc.com/
   baseURL: https://api.boxc.com/v1
   tags:
-  - Entrypoints
-  tags_raw:
   - Entry Points
   properties:
   - type: OpenAPI

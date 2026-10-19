@@ -1,0 +1,1064 @@
+openapi: 3.2.0
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC Waybills API
+  version: '1.131'
+  description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
+tags:
+- name: Waybills
+  x-displayName: Waybills
+  description: 'Waybills allow commercial and postal clients to transmit pre-alert data to BoxC. Manifests are grouped together under one waybill so that all related overpacks and shipments (parcels) are linked. Both air and ocean waybills are supported. Validation rules are different based on the mode of transport and type of waybill. Several of the numbers provided will have their check digit or checksum validated.
+
+
+    Documents can be attached to waybills to assist with the pre-alert by using the relevant endpoints. Active content is stripped from PDF files for security reasons.'
+paths:
+  /waybills:
+    get:
+      tags:
+      - Waybills
+      summary: GET /waybills
+      description: Retrieves a list of waybills.
+      operationId: getWaybills
+      security:
+      - JWT:
+        - read_waybills
+      parameters:
+      - in: query
+        name: limit
+        description: The number of results to return.
+        required: false
+        schema:
+          type: integer
+          default: 50
+          maximum: 100
+      - in: query
+        name: order
+        description: The sort order of the results. Options are "asc" for ascending, or "desc" for descending.
+        required: false
+        schema:
+          type: string
+          default: desc
+      - in: query
+        name: page_token
+        description: Used for selecting the page after the initial query.
+        required: false
+        schema:
+          type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/waybills\\?limit=50\\&order=desc\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  waybills:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Waybill'
+                  next_page:
+                    type: string
+                    description: Page token.
+                    example: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                invalidToken:
+                  summary: Bad Request
+                  description: Invalid page token
+                  value:
+                    code: 1025
+                    message: Invalid page token
+                    errors:
+                    - Invalid page token
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+    post:
+      tags:
+      - Waybills
+      summary: POST /waybills
+      description: Creates a waybill for air or ocean transit and assigns manifests to it.
+      operationId: addWaybill
+      security:
+      - JWT:
+        - write_waybills
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/waybills \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"waybill\": {\n      \"mot\": \"OCEAN\",\n      \"type\": \"COMMERCIAL\",\n      \"waybill_number\": \"MAEU240918765\",\n      \"origin_code\": \"CNYTN\",\n      \"destination_code\": \"USLGB\",\n      \"carrier_code\": \"11DX\",\n      \"transport_number\": \"052\",\n      \"vessel_name\": \"JUSTIN\",\n      \"imo_number\": \"9778791\",\n      \"departure_date\": \"2026-12-12T11:11:11\",\n      \"arrival_date\": \"2026-12-13T12:12:12\",\n      \"weight_uom\":\"KG\",\n      \"pieces\": 100,\n      \"cbm\": 10.5,\n      \"gross_weight\": 1231.1,\n      \"manifests\": [923614],\n      \"containers\": [\n        { \"number\": \"MSKU1234565\", \"seal\": \"ML-CN4478210\", \"type\": \"45G1\" },\n        { \"number\": \"CSQU3054383\", \"seal\": \"ML-CN4478211\", \"type\": \"22G1\" }\n      ]\n    }\n}'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Waybill object
+              properties:
+                waybill:
+                  $ref: '#/components/schemas/Waybill'
+              required:
+              - waybill
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Returns the new waybill upon success.
+                properties:
+                  waybill:
+                    $ref: '#/components/schemas/Waybill'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /waybill/imo_number: IMO number must be 7 digits with a valid checksum'
+                    status: error
+                    errors:
+                    - '/waybill/imo_number: IMO number must be 7 digits with a valid checksum'
+                badRequest:
+                  summary: Bad Request
+                  description: User is already subscribed to topic
+                  value:
+                    code: 1295
+                    message: 'Manifests not found: 923622'
+                    errors:
+                    - 'Manifests not found: 923622'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Server Error
+                  description: Server error. Try again later.
+                  value:
+                    code: 1001
+                    message: Server error. Try again later.
+                    errors:
+                    - Server error. Try again later.
+  /waybills/{id}:
+    get:
+      tags:
+      - Waybills
+      summary: GET /waybills/{id}
+      description: Retrieves a waybill.
+      operationId: getWaybillsById
+      security:
+      - JWT:
+        - read_waybills
+      parameters:
+      - name: id
+        in: path
+        description: The waybill `id`
+        required: true
+        schema:
+          type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/waybills/{id}\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  waybill:
+                    $ref: '#/components/schemas/Waybill'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Waybill not found
+                  value:
+                    code: 1290
+                    message: Waybill not found
+                    errors:
+                    - Waybill not found
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+    put:
+      tags:
+      - Waybills
+      summary: PUT /waybills/{id}
+      description: Updates a waybill.
+      operationId: updateWaybill
+      security:
+      - JWT:
+        - write_waybills
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT https://api.boxc.com/v1/waybills/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"waybill\": {\n      \"mot\": \"OCEAN\",\n      \"type\": \"COMMERCIAL\",\n      \"waybill_number\": \"MAEU240918765\",\n      \"origin_code\": \"CNYTN\",\n      \"destination_code\": \"USLGB\",\n      \"carrier_code\": \"11DX\",\n      \"transport_number\": \"052\",\n      \"vessel_name\": \"JUSTIN\",\n      \"imo_number\": \"9778791\",\n      \"departure_date\": \"2026-12-12T11:11:11\",\n      \"arrival_date\": \"2026-12-13T12:12:12\",\n      \"weight_uom\":\"KG\",\n      \"pieces\": 100,\n      \"cbm\": 10.5,\n      \"gross_weight\": 1231.1,\n      \"manifests\": [923614],\n      \"containers\": [\n        { \"number\": \"MSKU1234565\", \"seal\": \"ML-CN4478210\", \"type\": \"45G1\" },\n        { \"number\": \"CSQU3054383\", \"seal\": \"ML-CN4478211\", \"type\": \"22G1\" }\n      ]\n    }\n}'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Waybill object
+              properties:
+                waybill:
+                  $ref: '#/components/schemas/Waybill'
+              required:
+              - waybill
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Returns the updated waybill.
+                properties:
+                  waybill:
+                    $ref: '#/components/schemas/Waybill'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /waybill/imo_number: IMO number must be 7 digits with a valid checksum'
+                    status: error
+                    errors:
+                    - '/waybill/imo_number: IMO number must be 7 digits with a valid checksum'
+                badRequest:
+                  summary: Bad Request
+                  description: User is already subscribed to topic
+                  value:
+                    code: 1295
+                    message: 'Manifests not found: 923622'
+                    errors:
+                    - 'Manifests not found: 923622'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          $ref: '#/components/schemas/NotFound'
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Server Error
+                  description: Server error. Try again later.
+                  value:
+                    code: 1001
+                    message: Server error. Try again later.
+                    errors:
+                    - Server error. Try again later.
+    delete:
+      tags:
+      - Waybills
+      summary: DELETE /waybills/{id}
+      description: Removes manifests from the waybill before deleting it. Manifests can be reassigned to a different waybill.
+      operationId: deleteWaybill
+      security:
+      - JWT:
+        - write_waybills
+      parameters:
+      - name: id
+        in: path
+        description: The waybill `id`
+        required: true
+        schema:
+          type: integer
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/waybills/{id} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Waybill not found
+                  value:
+                    code: 1290
+                    message: Waybill not found
+                    errors:
+                    - Waybill not found
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Waybill can't be deleted
+                  value:
+                    code: 1292
+                    message: Waybill can't be deleted
+                    errors:
+                    - Waybill can't be deleted
+  /waybills/{id}/documents:
+    post:
+      tags:
+      - Waybills
+      summary: POST /waybills/{id}/documents
+      description: Creates a document and assigns it to the waybill. Only PDF files that have been base64 encoded are accepted. A UUID is returned for each `document.id` and must be used to reference the document in other requests.
+      operationId: addWaybillDocument
+      security:
+      - JWT:
+        - write_waybills
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/waybills/{id}/documents \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n\"waybill\": {\n  \"document\": {\n    \"name\": \"MAEU240918765.pdf\",\n    \"data\": \"{base64 encoded data}\"\n  }\n}'\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Waybill document
+              properties:
+                waybill:
+                  properties:
+                    document:
+                      $ref: '#/components/schemas/WaybillDocument'
+                  required:
+                  - document
+              required:
+              - waybill
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Returns the new waybill document.
+                properties:
+                  waybill:
+                    properties:
+                      document:
+                        $ref: '#/components/schemas/WaybillDocument'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'Validation Error. /waybill/document/name: Minimum string length is 10, found 7'
+                    status: error
+                    errors:
+                    - '/waybill/document/name: Minimum string length is 10, found 7'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Waybill not found
+                  value:
+                    code: 1290
+                    message: Waybill not found
+                    errors:
+                    - Waybill not found
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Server Error
+                  description: Server error. Try again later.
+                  value:
+                    code: 1001
+                    message: Server error. Try again later.
+                    errors:
+                    - Server error. Try again later.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+              examples:
+                serviceUnavailable:
+                  summary: Service Unavailable
+                  description: Service Unavailable
+                  value:
+                    code: 1010
+                    message: 'Service Unavailable: Unable to save document'
+                    errors:
+                    - 'Service Unavailable: Unable to save document'
+  /waybills/{id}/documents/{uuid}:
+    get:
+      tags:
+      - Waybills
+      summary: GET /waybills/{id}/documents/{uuid}
+      description: Retrieves a waybill document. Clients can download the file by changing the `Accept` header to application/pdf.
+      operationId: getWaybillDocumentById
+      security:
+      - JWT:
+        - read_waybills
+      parameters:
+      - name: id
+        in: path
+        description: The waybill `id`
+        required: true
+        schema:
+          type: integer
+      - name: uuid
+        in: path
+        description: The `document.id`
+        required: true
+        schema:
+          type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL JSON
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/json\" \\\n  https://api.boxc.com/v1/waybills/{id}/documents/{uuid}\n"
+      - lang: cURL
+        label: cURL PDF
+        source: "curl -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Accept: application/pdf\" \\\n  https://api.boxc.com/v1/waybills/{id}/documents/{uuid}\n"
+      responses:
+        '200':
+          description: Returns application/json or a PDF depending on the Accept request header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  waybill:
+                    properties:
+                      document:
+                        $ref: '#/components/schemas/WaybillDocument'
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Waybill not found
+                  value:
+                    code: 1290
+                    message: Waybill not found
+                    errors:
+                    - Waybill not found
+                documentNotFound:
+                  summary: Not Found
+                  description: Document not found
+                  value:
+                    code: 1293
+                    message: Document not found
+                    errors:
+                    - Document not found
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+    delete:
+      tags:
+      - Waybills
+      summary: DELETE /waybills/{id}/documents/{uuid}
+      description: Deletes a document from a waybill.
+      operationId: deleteWaybillDocument
+      security:
+      - JWT:
+        - write_waybills
+      parameters:
+      - name: id
+        in: path
+        description: The waybill `id`
+        required: true
+        schema:
+          type: integer
+      - name: uuid
+        in: path
+        description: The `document.id`
+        required: true
+        schema:
+          type: string
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X DELETE https://api.boxc.com/v1/waybills/{id}/documents/{uuid} \\\n  -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n  -H \"Content-Type: application/json\"\n"
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                notFound:
+                  summary: Not Found
+                  description: Waybill not found
+                  value:
+                    code: 1290
+                    message: Waybill not found
+                    errors:
+                    - Waybill not found
+                documentNotFound:
+                  summary: Not Found
+                  description: Document not found
+                  value:
+                    code: 1293
+                    message: Document not found
+                    errors:
+                    - Document not found
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          $ref: '#/components/schemas/InternalServerError'
+components:
+  schemas:
+    NotFound:
+      $ref: '#/components/schemas/not-found'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    WaybillDocument:
+      $ref: '#/components/schemas/waybill-document'
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
+    not-found:
+      type: object
+      summary: Not Found
+      description: Object not found or not owned by the user
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Waybill:
+      $ref: '#/components/schemas/waybill'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    waybill-document:
+      type: object
+      properties:
+        created:
+          description: The date and time the document was created in UTC.
+          type: string
+          readOnly: true
+          example: '2026-10-13 12:13:14'
+        data:
+          description: The pdf file data that has been base64 encoded before transmission.
+          type: string
+          example: '{base64 encoded string}'
+          writeOnly: true
+        id:
+          description: Document ID assigned by the system.
+          type: string
+          exactLength: 36
+          readOnly: true
+          example: 01a13620-442e-7890-b7da-7d883179df6f
+        name:
+          description: The original file name which must have a 'pdf' extension.
+          type: string
+          pattern: ^[A-Za-z0-9_-]+\.pdf$
+          minLength: 10
+          maxLength: 64
+          example: MAEU240918765.pdf
+      required:
+      - data
+      - name
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    waybill:
+      type: object
+      properties:
+        arrival_date:
+          description: Date and time of arrival.
+          type: string
+          format: date-time
+          example: '2026-10-05T06:30:00'
+        carrier_code:
+          description: 'Air: the 2-letter IATA code. Ocean: The 4-char SCAC.'
+          type: string
+          minLength: 2
+          maxLength: 4
+          example: CX
+        cbm:
+          description: Total cubic meters of the waybill. Required for commercial consignments.
+          type: float
+          minimum: 0
+          exclusiveMax: 1000
+          example: 12.5
+        containers:
+          description: A list of containers in the waybill. Required when `mot` is ocean.
+          type: array
+          items:
+            type: object
+            properties:
+              number:
+                description: Container number that must conform to the ISO 6346 standard.
+                type: string
+                pattern: ^[A-Z]{4}[0-9]{7}$
+                minLength: 10
+                maxLength: 64
+                example: MSKU1234565
+              seal:
+                description: Seal identifier for the container.
+                pattern: ^[A-Z0-9-]+$
+                minLength: 3
+                maxLength: 20
+                example: ML-CN4478210
+              type:
+                description: The type of seal according to the ISO 6346 standard.
+                type: string
+                exactLength: 4
+                example: 45G1
+            required:
+            - number
+            - seal
+            - type
+        destination_code:
+          description: 'Destination port code. Air: 3-char IATA code. Ocean: 5-char UN/LOCODE.'
+          type: string
+          minLength: 3
+          maxLength: 5
+          example: USLGB
+        departure_date:
+          description: Date and time of departure.
+          type: string
+          format: date-time
+          example: '2026-09-20T14:00:00'
+        documents:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/WaybillDocument'
+        gross_weight:
+          description: The total gross weight of the waybill.
+          type: float
+          exclusiveMin: 0
+          exclusiveMax: 100000
+          example: 1240.5
+        imo_number:
+          description: The 7-digit IMO number. Required when `mot` is ocean.
+          type: string
+          exactLength: 7
+          example: '9778791'
+        manifests:
+          description: List of manifest IDs associated with this waybill.
+          type: array
+          minItems: 1
+          example:
+          - 999421
+          - 999422
+          items:
+            type: integer
+            exclusiveMin: 0
+        mot:
+          description: Mode of transit
+          type: string
+          enum:
+          - AIR
+          - OCEAN
+          example: AIR
+        origin_code:
+          description: 'Destination port code. Air: 3-char IATA code. Ocean: 5-char UN/LOCODE.'
+          type: string
+          minLength: 3
+          maxLength: 5
+          example: CNYTN
+        pieces:
+          description: 'Pieces have different definitions depending on the `mot` and `type`. Commercial Air: the number of pieces in the MAWB. Commercial Ocean: the number of cartons. Postal Air/Ocean: the receptacle count (optional).'
+          type: integer
+          exclusiveMin: 0
+          exclusiveMax: 100000
+          example: 42
+        transport_number:
+          description: The flight number without the carrier code or the voyage number if `mot` is ocean.
+          type: string
+          example: 237E
+        type:
+          description: The type of waybill.
+          type: string
+          enum:
+          - COMMERCIAL
+          - POSTAL
+          example: COMMERCIAL
+        vessel_name:
+          description: Vessel name. Required when `mot` is ocean.
+          type: string
+          maxLength: 32
+          example: Odyssey
+        waybill_number:
+          description: 'The waybill number format depends on the `mot` and `type`. Commercial Air: 11-digit MAWB. Commercial Ocean: Master B/L number. Postal: CN38/CN41, PAWB or consignment reference.'
+          type: string
+          example: '16012345675'
+        weight_uom:
+          description: Unit of measurement for `gross_weight`.
+          type: string
+          enum:
+          - KG
+          example: KG
+      required:
+      - arrival_date
+      - carrier_code
+      - departure_date
+      - destination_code
+      - gross_weight
+      - manifests
+      - mot
+      - origin_code
+      - transport_number
+      - type
+      - waybill_number
+      - weight_uom
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      in: header
+      description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+    PrivilegedClient:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - PGA
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+  - Waybills
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

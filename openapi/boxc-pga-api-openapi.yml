@@ -1,0 +1,540 @@
+openapi: 3.2.0
+info:
+  x-logo:
+    url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
+    altText: BoxC
+  title: BoxC PGA API
+  version: '1.131'
+  description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
+tags:
+- name: PGA
+  x-displayName: PGA
+  description: Use this resource to determine if a product is PGA. Your balance will be debited $0.03 for each `hs_code` submitted.
+paths:
+  /pga:
+    post:
+      tags:
+      - PGA
+      summary: POST /pga
+      description: Determine if one or more hs codes are PGA.
+      operationId: addPGA
+      security:
+      - JWT:
+        - pga
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST https://api.boxc.com/v1/pga \\\n    -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"pga\": {\n        \"destination\": {\n          \"country\": \"US\"\n        },\n        \"hs_codes\": [\n          \"99990084\"\n        ],\n        \"origin\": {\n          \"country\": \"CN\"\n        }\n      }\n    }'\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pga:
+                  $ref: '#/components/schemas/PGA'
+              required:
+              - pga
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pga:
+                    $ref: '#/components/schemas/PGAResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                validation:
+                  summary: Validation error
+                  description: The request schema is invalid.
+                  value:
+                    code: 1000
+                    message: 'classify/origin: Required'
+                    status: error
+                    errors:
+                    - origin is required
+        '401':
+          $ref: '#/components/schemas/Unauthorized'
+        '402':
+          $ref: '#/components/schemas/PaymentRequired'
+        '403':
+          $ref: '#/components/schemas/Forbidden'
+        '429':
+          $ref: '#/components/schemas/RateLimit'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                internalServerError:
+                  summary: Internal Server Error
+                  description: Service Unavailable
+                  value:
+                    code: 1010
+                    message: Service Unavailable
+                    errors:
+                    - Service Unavailable
+                chargingError:
+                  summary: Internal Server Error - Charging Account
+                  description: Unable to deduct amount from balance
+                  value:
+                    code: 1010
+                    message: Unable to deduct amount from balance
+                    errors:
+                    - Unable to deduct amount from balance
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+              examples:
+                customsUnavailable:
+                  summary: Service Unavailable - Customs
+                  description: A dependency needed for customs data was unavailable. The response deliberately carries no detail; nothing in the request needs changing, so retry.
+                  value:
+                    code: 1010
+                    message: 'Service Unavailable: Please try again shortly.'
+                    status: error
+                    errors:
+                    - 'Service Unavailable: Please try again shortly.'
+components:
+  schemas:
+    pga:
+      type: object
+      properties:
+        destination:
+          type: object
+          description: Consignee address
+          properties:
+            country:
+              type: string
+              description: Country code
+              pattern:
+              - A-Z
+              example: US
+              minLength: 2
+              maxLength: 2
+          required:
+          - country
+        hs_codes:
+          type: array
+          minimum: 1
+          maximum: 20
+          items:
+            type: string
+            pattern:
+            - 0-9
+            example: '99990084'
+            minLength: 6
+            maxLength: 13
+        origin:
+          type: object
+          description: Origin address
+          properties:
+            country:
+              type: string
+              description: Country code
+              pattern:
+              - A-Z
+              example: CN
+              minLength: 2
+              maxLength: 2
+          required:
+          - country
+      required:
+      - destination
+      - hs_codes
+      - origin
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Unauthorized
+            description: Lack of valid authentication credentials for the resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            accessToken:
+              summary: Invalid access token
+              description: Invalid access token
+              value:
+                code: 1005
+                message: Invalid access token
+                errors:
+                - Invalid access token
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Forbidden
+            description: Error relating to insufficient permissions for a resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            revoked:
+              summary: Forbidden Authorization Revoked
+              description: 'Forbidden: Authorization revoked'
+              value:
+                code: 1008
+                message: 'Forbidden: Authorization revoked'
+                errors:
+                - 'Forbidden: Authorization revoked'
+            scope:
+              summary: Forbidden Scope
+              description: 'Forbidden: Missing required scope'
+              value:
+                code: 1009
+                message: 'Forbidden: Missing required scope'
+                errors:
+                - 'Forbidden: Missing required scope'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    PGA:
+      $ref: '#/components/schemas/pga'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    PGAResult:
+      $ref: '#/components/schemas/pga-result'
+    pga-result:
+      type: object
+      properties:
+        destination:
+          type: object
+          description: Consignee address
+          properties:
+            country:
+              type: string
+              description: Country code
+              pattern:
+              - A-Z
+              example: US
+              minLength: 2
+              maxLength: 2
+        hs_codes:
+          type: array
+          minimum: 1
+          maximum: 20
+          items:
+            type: object
+            properties:
+              additional:
+                type:
+                - object
+                - 'null'
+                description: Additional requirements for this product.
+                readOnly: true
+                properties:
+                  mandatory:
+                    type: array
+                    description: A list of fields that are required.
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: line_items[].product_id
+                  optional:
+                    type: array
+                    description: A list of fields that are optional.
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          example: line_items[].compliance.cpsc
+              agency:
+                type:
+                - string
+                - 'null'
+                description: Agency
+                example: CBP
+                maxLength: 32
+                readOnly: true
+              hs_code:
+                type: string
+                description: HS Code
+                pattern:
+                - 0-9
+                example: '99990084'
+                minLength: 6
+                maxLength: 13
+              status:
+                type: string
+                description: Status of the product.
+                enum:
+                - ACCEPT
+                - BLOCK
+                readOnly: true
+        origin:
+          type: object
+          description: Origin address
+          properties:
+            country:
+              type: string
+              description: Country code
+              pattern:
+              - A-Z
+              example: CN
+              minLength: 2
+              maxLength: 2
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      in: header
+      description: All operations require a JSON Web Token after completing an [OAuth2 flow](#tag/Authentication).
+    PrivilegedClient:
+      type: http
+      scheme: bearer
+      bearerScheme: JWT
+      description: Some clients require special privileges to use operations. No additional scope is needed.
+x-servers:
+- url: https://api.boxc.com/v1
+x-tagGroups:
+- name: Overview
+  tags:
+  - Introduction
+  - Authentication
+  - RateLimit
+  - Paginate
+  - Changelog
+- name: Operations
+  tags:
+  - CalculateDuty
+  - Classify
+  - Invoices
+  - PGA
+  - Users
+  - ValidateAddress
+  - Webhooks
+- name: Shipping
+  tags:
+  - Credentials
+  - CustomsProducts
+  - EntryPoints
+  - Estimate
+  - Labels
+  - Manifests
+  - Overpacks
+  - Shipments
+  - Track
+  - Waybills
+- name: Fulfillment
+  tags:
+  - Inbound
+  - Orders
+  - Products
+  - Shops
+  - Warehouses
+- name: Returns
+  tags:
+  - Reshipments
+  - Returns
+- name: Data
+  tags:
+  - CarrierCredentials
+  - DangerousGoods
+  - Errors
+  - Languages
+  - CarrierParameters
+  - ReturnsProcess
+  - TrackingEvents

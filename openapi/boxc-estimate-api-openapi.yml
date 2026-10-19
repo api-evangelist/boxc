@@ -4,7 +4,7 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Estimate API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: Estimate
@@ -41,18 +41,6 @@ paths:
           maxLength: 2
           minLength: 2
       - in: query
-        name: currency
-        description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
-        required: false
-        example: USD
-        schema:
-          type: string
-          format:
-          - A-Z
-          default: USD
-          maxLength: 3
-          minLength: 3
-      - in: query
         name: dg_codes
         description: A string or array of [dangerous good codes](/#tag/DangerousGoods) contained in the shipment.
         required: false
@@ -80,7 +68,7 @@ paths:
           minLength: 3
       - in: query
         name: height
-        description: The height of the shipment in CM.
+        description: The height of the shipment in CM. Use `packages[]` for multiple packages in a shipment.
         required: false
         example: 10.5
         schema:
@@ -112,7 +100,7 @@ paths:
           default: false
       - in: query
         name: length
-        description: The length of the shipment in CM.
+        description: The length of the shipment in CM. Use `packages[]` for multiple packages in a shipment.
         required: false
         example: 25
         schema:
@@ -125,10 +113,10 @@ paths:
           items:
             $ref: '#/components/schemas/PackageEstimate'
           default: []
-          maxItems: 12
+          maxItems: 99
       - in: query
         name: postal_code
-        description: The destination Postal Code or ZIP Code. Conditional.
+        description: The destination postal code. Conditional.
         required: false
         example: 10128
         schema:
@@ -144,12 +132,24 @@ paths:
           maxLength: 40
       - in: query
         name: signature_confirmation
-        description: The shipment requires signature confirmation.
+        description: Indicates the shipment requires signature confirmation.
         required: false
         example: true
         schema:
           type: boolean
           default: false
+      - in: query
+        name: street1
+        description: The destination street address.
+        schema:
+          default: ''
+          maxLength: 50
+      - in: query
+        name: street2
+        description: The destination street address continued.
+        schema:
+          default: ''
+          maxLength: 50
       - in: query
         name: terms
         description: The preferred incoterms.
@@ -172,7 +172,7 @@ paths:
           default: 0
       - in: query
         name: weight
-        description: The weight of the shipment in KG.
+        description: The weight of the shipment in KG. Use `packages[]` for multiple packages in a shipment.
         required: true
         example: 0.345
         schema:
@@ -180,7 +180,7 @@ paths:
           exclusiveMinimum: 0
       - in: query
         name: width
-        description: The width of the shipment in CM.
+        description: The width of the shipment in CM. Use `packages[]` for multiple packages in a shipment.
         required: false
         example: 2
         schema:
@@ -211,12 +211,34 @@ paths:
           $ref: '#/components/schemas/RateLimit'
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
+    PackageEstimate:
+      $ref: '#/components/schemas/package-estimate'
+    BadRequest:
+      $ref: '#/components/schemas/bad-request'
     package-estimate:
       type: object
       title: Package
       properties:
+        chargeable_weight:
+          description: The greater of the gross weight and volumetric weight in kg.
+          type: decimal
+          exclusiveMinimum: 0
+          example: 1.2
+          readOnly: true
+        girth:
+          description: Girth measurement of the package in cm.
+          type: decimal
+          exclusiveMinimum: 0
+          example: 1000
+          readOnly: true
+        gross_weight:
+          description: Gross weight of the package in kg.
+          type: decimal
+          exclusiveMinimum: 0
+          example: 1.2
+          readOnly: true
         height:
           description: The height of the package in cm.
           type: decimal
@@ -229,6 +251,12 @@ components:
           exclusiveMinimum: 0
           exclusiveMaximum: 1000
           example: 15
+        volumetric weight:
+          description: Volumetric weight of the package in kg.
+          type: decimal
+          example: 0.45
+          exclusiveMinimum: 0
+          readOnly: true
         weight:
           description: The weight of the package in kg.
           type: decimal
@@ -241,114 +269,6 @@ components:
           exclusiveMinimum: 0
           exclusiveMaximum: 1000
           example: 10
-      required:
-      - height
-      - length
-      - weight
-      - width
-    PackageEstimate:
-      $ref: '#/components/schemas/package-estimate'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    BadRequest:
-      $ref: '#/components/schemas/bad-request'
-    Estimate:
-      $ref: '#/components/schemas/estimate'
-    Service:
-      $ref: '#/components/schemas/service'
-    service:
-      type: object
-      description: A list of services and their estimated price and transit time. Set by the system. If an empty array is returned then there are currently no services available for the given route.
-      properties:
-        carrier:
-          description: The last mile carrier the shipment will use for delivery.
-          type: string
-          example: USPS
-        chargeable_weight:
-          description: The greater of the gross weight and volumetric weight.
-          type: decimal
-          example: 0.412
-        cost:
-          description: The estimated shipping cost.
-          type: decimal
-          example: 3.55
-        exit_point:
-          description: The destination port the shipment will be transported to before last mile delivery.
-          type: string
-          default: null
-          example: LAX
-        gross_weight:
-          description: The greater of the requested weight and minimum gross weight for the route.
-          type: decimal
-          example: 0.25
-        insurance:
-          type: object
-          description: Insurance details for this service.
-          properties:
-            coverage:
-              type: decimal
-              description: The dollar amount covered by the insurance policy.
-              example: 30
-            fee:
-              type: decimal
-              description: The cost of coverage if insured.
-              example: 0
-        service:
-          type: string
-          description: Service name
-          example: BoxC Priority
-        surcharge:
-          description: Additional cost for this shipment based on the route and chargeable weight.
-          type: decimal
-          example: 0.75
-        terms:
-          type: array
-          description: Acceptable incoterms for this route.
-          items:
-            type: string
-          example:
-          - DAP
-          - DDU
-          - DDP
-        total_cost:
-          description: The total estimated shipping cost including applicable fees.
-          type: decimal
-          example: 3.55
-        transit_min:
-          type: integer
-          description: Estimated minimum transit time in days.
-          example: 5
-        transit_max:
-          type: integer
-          description: Estimated maximum transit time in days.
-          example: 10
-        volumetric_weight:
-          description: The volumetric weight based on the requested dimensions and route's divisor.
-          type: decimal
-          example: 0.412
     unauthorized:
       description: Unauthorized
       content:
@@ -385,6 +305,196 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
+    estimate:
+      type: object
+      description: Retrieves an estimate.
+      properties:
+        estimate:
+          type: object
+          properties:
+            currency:
+              description: The ISO 4217 currency code for the `value` parameter and rates that are returned.
+              type: string
+              example: CAD
+              default: USD
+              exactLength: 3
+              readOnly: true
+            entry_point:
+              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
+              type: string
+              default: null
+              example: LAXI01
+              readOnly: true
+            services:
+              type: array
+              readOnly: true
+              items:
+                $ref: '#/components/schemas/Service'
+    Service:
+      $ref: '#/components/schemas/service'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
+    Estimate:
+      $ref: '#/components/schemas/estimate'
+    rate-limit:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Too Many Requests
+            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Displays processing error.
+                type: array
+                minItems: 1
+                maxItems: 1
+                items:
+                  type: string
+          examples:
+            rateLimit:
+              summary: Too Many Requests
+              description: Too many requests. Please wait before trying again.
+              value:
+                code: 1015
+                message: Too many requests. Please wait before trying again.
+                errors:
+                - Too many requests. Please wait before trying again.
+    service:
+      type: object
+      description: A list of services and their estimated costs, fees, surcharges, and transit time. If an empty array is returned then there are currently no routes available for the provided parameters.
+      properties:
+        carrier:
+          description: The last mile carrier the shipment will use for delivery.
+          type: string
+          example: USPS
+          readOnly: true
+        chargeable_weight:
+          description: The greater of the gross weight and volumetric weight.
+          type: decimal
+          example: 0.412
+          readOnly: true
+        cost:
+          description: The estimated shipping cost.
+          type: decimal
+          example: 3.55
+          readOnly: true
+        exit_point:
+          description: The destination port the shipment will be transported to before last mile delivery.
+          type: string
+          default: null
+          example: LAX
+          readOnly: true
+        gross_weight:
+          description: The aggregate gross weight for the shipment. Routes require a minimum weight charge.
+          type: decimal
+          example: 0.25
+          readOnly: true
+        insurance:
+          type: object
+          description: Insurance details for this service.
+          readOnly: true
+          properties:
+            coverage:
+              type: decimal
+              description: The dollar amount covered by the insurance policy.
+              readOnly: true
+              example: 30
+              minimum: 0
+            fee:
+              type: decimal
+              description: The cost of coverage if insured.
+              readOnly: true
+              example: 0
+              minimum: 0
+        packages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackageEstimate'
+        service:
+          type: string
+          description: Service name
+          example: BoxC Priority
+          readOnly: true
+        surcharge:
+          description: Additional cost for this shipment based on the route and chargeable weight.
+          type: decimal
+          example: 0.75
+          readOnly: true
+        terms:
+          type: array
+          description: Acceptable incoterms for this route.
+          readOnly: true
+          items:
+            type: string
+          example:
+          - DAP
+          - DDU
+          - DDP
+        total_cost:
+          description: The total estimated shipping cost including applicable fees and surcharges.
+          type: decimal
+          example: 3.55
+          readOnly: true
+        transit_min:
+          type: integer
+          description: Estimated minimum transit time in days.
+          example: 5
+          readOnly: true
+        transit_max:
+          type: integer
+          description: Estimated maximum transit time in days.
+          example: 10
+          readOnly: true
+        volumetric_weight:
+          description: The aggregate volumetric weight based on the requested dimensions for each package.
+          type: decimal
+          example: 0.412
+          readOnly: true
+        zone:
+          description: The carrier zone in the destination country.
+          type:
+          - string
+          - 'null'
+          default: null
+          example: '3'
     forbidden:
       description: Forbidden
       content:
@@ -429,67 +539,6 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
-    estimate:
-      type: object
-      description: Retrieves an estimate.
-      properties:
-        estimate:
-          type: object
-          properties:
-            currency:
-              description: The ISO 4217 currency code for the **value** parameter and rates that are returned.
-              type: string
-              example: CAD
-              readOnly: true
-            entry_point:
-              description: The code for the drop off location. See [Entry Points](/#tag/EntryPoints) for a list of codes.
-              type: string
-              default: null
-              example: LAXI01
-              readOnly: true
-            services:
-              type: array
-              readOnly: true
-              items:
-                $ref: '#/components/schemas/Service'
-    rate-limit:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Too Many Requests
-            description: Error for too many requests in a given time frame. See [Rate Limits](/#tag/RateLimit) for more information.
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Displays processing error.
-                type: array
-                minItems: 1
-                maxItems: 1
-                items:
-                  type: string
-          examples:
-            rateLimit:
-              summary: Too Many Requests
-              description: Too many requests. Please wait before trying again.
-              value:
-                code: 1015
-                message: Too many requests. Please wait before trying again.
-                errors:
-                - Too many requests. Please wait before trying again.
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
   securitySchemes:
     JWT:
       type: http
@@ -517,6 +566,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -531,6 +581,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound

@@ -4,7 +4,7 @@ info:
     url: https://storage.googleapis.com/boxc_cdn/public/boxc-logo.png
     altText: BoxC
   title: BoxC Calculate Duty API
-  version: '1.123'
+  version: '1.131'
   description: A simple but powerful logistics API that drives international ecommerce by utilizing a single integration with access to dozens of carriers and global markets. BoxC can complete every leg or only select steps of a shipment's journey on your behalf with our routing engine.
 tags:
 - name: CalculateDuty
@@ -27,7 +27,7 @@ paths:
       x-codeSamples:
       - lang: cURL
         label: cURL
-        source: "curl -X POST https://api.boxc.com/v1/calculate-duty \\\n    -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"calculate\": {\n        \"currency\": \"USD\",\n        \"shipping\": 0,\n        \"insurance\": 0,\n        \"origin\": {\n          \"country\": \"GB\"\n        },\n        \"destination\": {\n          \"province\": \"NY\",\n          \"country\": \"US\"\n        },\n        \"products\": [\n          {\n            \"coo\": \"GB\",\n            \"value\": 10,\n            \"currency\": \"GBP\",\n            \"quantity\": 20,\n            \"hs_code\": \"6109100040\",\n            \"description\": \"Cotton T-Shirt\"\n          }\n        ]\n      }\n  }'\n"
+        source: "curl -X POST https://api.boxc.com/v1/calculate-duty \\\n    -H \"Authorization: Bearer <YOUR TOKEN>\" \\\n    -H \"Content-Type: application/json\" \\\n    -d '{\n      \"calculate\": {\n        \"currency\": \"USD\",\n        \"shipping\": 0,\n        \"insurance\": 0,\n        \"origin\": {\n          \"country\": \"GB\"\n        },\n        \"destination\": {\n          \"province\": \"NY\",\n          \"country\": \"US\"\n        },\n        \"products\": [\n          {\n            \"coo\": \"GB\",\n            \"value\": 10,\n            \"currency\": \"GBP\",\n            \"quantity\": 20,\n            \"hs_code\": \"6109100040\",\n            \"description\": \"Cotton T-Shirt\",\n            \"weight\": 0.213\n          }\n        ]\n      }\n  }'\n"
       requestBody:
         content:
           application/json:
@@ -46,7 +46,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  calculate:
+                  calculation:
                     $ref: '#/components/schemas/CalculateDuty'
         '400':
           description: Bad Request
@@ -64,6 +64,15 @@ paths:
                     status: error
                     errors:
                     - calculate/origin/country is required
+                providerRejected:
+                  summary: Rejected by the customs provider
+                  description: The request was well formed but the customs data provider refused it — most often an address it cannot resolve, such as a postal code that is not assigned. The message is the provider's own explanation of what to correct.
+                  value:
+                    code: 1243
+                    message: 'Unable to get tax and/or duty rates: Unable to determine the taxing jurisdictions for this location: postal code 54321 is not a valid postal code for WASHINGTON, WA, US.'
+                    status: error
+                    errors:
+                    - 'Unable to get tax and/or duty rates: Unable to determine the taxing jurisdictions for this location: postal code 54321 is not a valid postal code for WASHINGTON, WA, US.'
         '401':
           $ref: '#/components/schemas/Unauthorized'
         '402':
@@ -95,71 +104,26 @@ paths:
                     message: Unable to deduct amount from balance
                     errors:
                     - Unable to deduct amount from balance
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUnavailable'
+              examples:
+                customsUnavailable:
+                  summary: Service Unavailable - Customs
+                  description: A dependency needed for customs data was unavailable. The response deliberately carries no detail; nothing in the request needs changing, so retry.
+                  value:
+                    code: 1010
+                    message: 'Service Unavailable: Please try again shortly.'
+                    status: error
+                    errors:
+                    - 'Service Unavailable: Please try again shortly.'
 components:
   schemas:
-    Unauthorized:
-      $ref: '#/components/schemas/unauthorized'
-    PaymentRequired:
-      $ref: '#/components/schemas/payment-required'
-    payment-required:
-      description: Payment Required
-      content:
-        application/json:
-          schema:
-            type: object
-            summary: Payment Required
-            description: There are insufficient funds available for this resource
-            properties:
-              code:
-                description: Error code. Refer to the list of [Errors](/#tag/Errors).
-                type: integer
-              message:
-                description: Error message explaining the code.
-                type: string
-              status:
-                type: string
-                enum:
-                - error
-                example: error
-              errors:
-                description: Duplicate of the error message
-                type: array
-                items:
-                  type: string
-          examples:
-            paymentRequired:
-              summary: Payment Required
-              description: Insufficient funds
-              value:
-                code: 1080
-                message: Insufficient funds
-                errors:
-                - Insufficient funds
-    InternalServerError:
-      $ref: '#/components/schemas/internal-server-error'
-    bad-request:
-      type: object
-      summary: Bad Request
-      description: Validation error with the request
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Lists validation errors with the schema or the resource being operated on.
-          type: array
-          minItems: 1
-          maxItems: 5
-          items:
-            type: string
+    RateLimit:
+      $ref: '#/components/schemas/rate-limit'
     calculate-duty:
       type: object
       title: Calculate Duty
@@ -173,14 +137,8 @@ components:
           type: object
           description: Details about the origin of the shipment.
           properties:
-            city:
-              type:
-              - string
-              - 'null'
-              default: null
-              maxLength: 40
-              example: New York
             province:
+              description: Province is conditional based on the country code.
               type:
               - string
               - 'null'
@@ -188,10 +146,11 @@ components:
               maxLength: 40
               example: NY
             postal_code:
+              description: Postal Code is conditional based on the country code.
               type:
               - string
               - 'null'
-              maxLength: 40
+              maxLength: 10
               example: null
               default: null
             country:
@@ -210,14 +169,8 @@ components:
           type: object
           description: Details about the destination of the shipment.
           properties:
-            city:
-              type:
-              - string
-              - 'null'
-              default: null
-              maxLength: 40
-              example: null
             province:
+              description: Province is conditional based on the country code.
               type:
               - string
               - 'null'
@@ -225,10 +178,11 @@ components:
               maxLength: 40
               example: null
             postal_code:
+              description: Postal Code is conditional based on the country code.
               type:
               - string
               - 'null'
-              maxLength: 40
+              maxLength: 10
               example: null
               default: null
             country:
@@ -279,7 +233,7 @@ components:
                 type: string
                 minLength: 6
                 pattern: ^[0-9]{6,}$
-                example: 6109100040
+                example: '6109100040'
               quantity:
                 description: The number of units of the product.
                 type: integer
@@ -304,6 +258,13 @@ components:
                 type: number
                 exclusiveMin: 0
                 example: 10
+              weight:
+                description: Net weight of a single unit in kilograms similar to `shipment.line_items[]`.
+                type:
+                - number
+                - 'null'
+                exclusiveMin: 0
+                default: null
             required:
             - coo
             - currency
@@ -339,35 +300,10 @@ components:
       - origin
       - destination
       - products
-    CalculateDuty:
-      $ref: '#/components/schemas/calculate-duty'
     BadRequest:
       $ref: '#/components/schemas/bad-request'
-    RateLimit:
-      $ref: '#/components/schemas/rate-limit'
-    internal-server-error:
-      type: object
-      summary: Internal Server Error
-      description: Processing Error
-      properties:
-        code:
-          description: Error code. Refer to the list of [Errors](/#tag/Errors).
-          type: integer
-        message:
-          description: Error message explaining the code.
-          type: string
-        status:
-          type: string
-          enum:
-          - error
-          example: error
-        errors:
-          description: Displays processing error.
-          type: array
-          minItems: 1
-          maxItems: 1
-          items:
-            type: string
+    ServiceUnavailable:
+      $ref: '#/components/schemas/service-unavailable'
     unauthorized:
       description: Unauthorized
       content:
@@ -404,6 +340,29 @@ components:
                 message: Invalid access token
                 errors:
                 - Invalid access token
+    internal-server-error:
+      type: object
+      summary: Internal Server Error
+      description: Internal Server Error
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Displays processing error.
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            type: string
     forbidden:
       description: Forbidden
       content:
@@ -448,6 +407,54 @@ components:
                 message: 'Forbidden: Missing required scope'
                 errors:
                 - 'Forbidden: Missing required scope'
+    bad-request:
+      type: object
+      summary: Bad Request
+      description: Validation error with the request
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Lists validation errors with the schema or the resource being operated on.
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+    service-unavailable:
+      type: object
+      summary: Service Unavailable
+      description: The server cannot handle the request (because it is overloaded or down for maintenance). Generally, this is a temporary state.
+      properties:
+        code:
+          description: Error code. Refer to the list of [Errors](/#tag/Errors).
+          type: integer
+        message:
+          description: Error message explaining the code.
+          type: string
+        status:
+          type: string
+          enum:
+          - error
+          example: error
+        errors:
+          description: Duplicate of the error message
+          type: array
+          items:
+            type: string
+    Forbidden:
+      $ref: '#/components/schemas/forbidden'
+    Unauthorized:
+      $ref: '#/components/schemas/unauthorized'
     rate-limit:
       description: Too Many Requests
       content:
@@ -484,8 +491,46 @@ components:
                 message: Too many requests. Please wait before trying again.
                 errors:
                 - Too many requests. Please wait before trying again.
-    Forbidden:
-      $ref: '#/components/schemas/forbidden'
+    InternalServerError:
+      $ref: '#/components/schemas/internal-server-error'
+    CalculateDuty:
+      $ref: '#/components/schemas/calculate-duty'
+    PaymentRequired:
+      $ref: '#/components/schemas/payment-required'
+    payment-required:
+      description: Payment Required
+      content:
+        application/json:
+          schema:
+            type: object
+            summary: Payment Required
+            description: There are insufficient funds available for this resource
+            properties:
+              code:
+                description: Error code. Refer to the list of [Errors](/#tag/Errors).
+                type: integer
+              message:
+                description: Error message explaining the code.
+                type: string
+              status:
+                type: string
+                enum:
+                - error
+                example: error
+              errors:
+                description: Duplicate of the error message
+                type: array
+                items:
+                  type: string
+          examples:
+            paymentRequired:
+              summary: Payment Required
+              description: Insufficient funds
+              value:
+                code: 1080
+                message: Insufficient funds
+                errors:
+                - Insufficient funds
   securitySchemes:
     JWT:
       type: http
@@ -513,6 +558,7 @@ x-tagGroups:
   - CalculateDuty
   - Classify
   - Invoices
+  - PGA
   - Users
   - ValidateAddress
   - Webhooks
@@ -527,6 +573,7 @@ x-tagGroups:
   - Overpacks
   - Shipments
   - Track
+  - Waybills
 - name: Fulfillment
   tags:
   - Inbound
